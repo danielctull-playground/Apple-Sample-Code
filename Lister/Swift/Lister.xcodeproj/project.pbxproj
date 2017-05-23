@@ -1589,6 +1589,7 @@
 					};
 					16A9851B1936EEA5007B7F37 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = 8YM7FJN8FY;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1599,6 +1600,7 @@
 						};
 					};
 					16CBDAA618F6EE3A00233D3C = {
+						DevelopmentTeam = 8YM7FJN8FY;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1610,9 +1612,11 @@
 					};
 					16EE5953192016410052916A = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = 8YM7FJN8FY;
 					};
 					16F60BF01A854A640028B2D8 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 8YM7FJN8FY;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -1621,6 +1625,7 @@
 					};
 					16F60BFC1A854A650028B2D8 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 8YM7FJN8FY;
 					};
 					3E251756197F7A0400B8AF96 = {
 						CreatedOnToolsVersion = 6.0;
@@ -2235,7 +2240,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LISTER_BUNDLE_PREFIX = "com.example.apple-samplecode";
+				LISTER_BUNDLE_PREFIX = com.natearmstrong.lister;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2271,7 +2276,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LISTER_BUNDLE_PREFIX = "com.example.apple-samplecode";
+				LISTER_BUNDLE_PREFIX = com.natearmstrong.lister;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
