@@ -77,10 +77,10 @@ class NewListDocumentController: UIViewController, UITextFieldDelegate {
     
     // MARK: Touch Handling
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         super.touchesBegan(touches, withEvent: event)
         
-        let possibleTouch = touches.first as? UITouch
+        let possibleTouch = touches.first
         
         if let touch = possibleTouch {
             // The user has tapped outside the text field, resign first responder, if necessary.
@@ -93,14 +93,18 @@ class NewListDocumentController: UIViewController, UITextFieldDelegate {
     // MARK: UITextFieldDelegate
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        let updatedText = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        guard let text = textField.text else { return false }
+        
+        let updatedText = (text as NSString).stringByReplacingCharactersInRange(range, withString: string)
         updateForProposedListName(updatedText)
         
         return true
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
-        updateForProposedListName(textField.text)
+        guard let text = textField.text else { return }
+        
+        updateForProposedListName(text)
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {

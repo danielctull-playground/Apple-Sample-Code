@@ -40,19 +40,19 @@ public class TodayListManager {
             return todayDocumentURL
         }
 
-        if !fileManager.createDirectoryAtURL(todayDocumentFolderURL, withIntermediateDirectories: true, attributes: nil, error: nil) {
-            return nil
-        }
-
-        let sampleTodayDocumentURL = NSBundle(forClass: self).URLForResource("Today", withExtension: AppConfiguration.listerFileExtension)
-
-        if fileManager.copyItemAtURL(sampleTodayDocumentURL!, toURL: todayDocumentURL, error: nil) {
+        do {
+            try fileManager.createDirectoryAtURL(todayDocumentFolderURL, withIntermediateDirectories: true, attributes: nil)
+            
+            let sampleTodayDocumentURL = NSBundle(forClass: self).URLForResource("Today", withExtension: AppConfiguration.listerFileExtension)
+            
+            try fileManager.copyItemAtURL(sampleTodayDocumentURL!, toURL: todayDocumentURL)
             // Make the file's extension hidden.
-            fileManager.setAttributes([NSFileExtensionHidden: true], ofItemAtPath: todayDocumentURL.path!, error: nil)
-
+            try fileManager.setAttributes([NSFileExtensionHidden: true], ofItemAtPath: todayDocumentURL.path!)
+            
             return todayDocumentURL
         }
-
-        return nil
+        catch {
+            return nil
+        }
     }
 }

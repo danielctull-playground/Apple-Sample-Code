@@ -16,7 +16,7 @@ class ListItemCell: UITableViewCell {
     
     @IBOutlet weak var checkBox: CheckBox!
     
-    var isComplete: Bool = false {
+    var isComplete = false {
         didSet {
             textField.enabled = !isComplete
             checkBox.isChecked = isComplete

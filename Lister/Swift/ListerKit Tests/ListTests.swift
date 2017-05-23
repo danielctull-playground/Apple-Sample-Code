@@ -43,7 +43,7 @@ class ListTests: XCTestCase {
         list = List()
 
         XCTAssertEqual(list.color, List.Color.Gray, "The default list color is Gray.")
-        XCTAssertTrue(isEmpty(list.items), "A default list has no list items.")
+        XCTAssertTrue(list.items.isEmpty, "A default list has no list items.")
     }
     
     func testColorAndItemsDesignatedInitializer() {
@@ -53,7 +53,7 @@ class ListTests: XCTestCase {
     }
 
     func testColorAndItemsDesignatedInitializerCopiesItems() {
-        for (index, item) in enumerate(list.items) {
+        for (index, item) in list.items.enumerate() {
             XCTAssertFalse(items[index] === item, "ListItems should be copied in List's init().")
         }
     }
@@ -114,8 +114,6 @@ class ListTests: XCTestCase {
 
         XCTAssertNotNil(classRuntimeName, "The List class should be an @objc subclass.")
 
-        if classRuntimeName != nil {
-            XCTAssertEqual(classRuntimeName!, "AAPLList", "List should be archivable with the ObjC version of Lister.")
-        }
+        XCTAssertEqual(classRuntimeName, "AAPLList", "List should be archivable with the ObjC version of Lister.")
     }
 }

@@ -18,7 +18,7 @@ public class ListInfo: NSObject {
     public var name: String {
         let displayName = NSFileManager.defaultManager().displayNameAtPath(URL.path!)
 
-        return displayName.stringByDeletingPathExtension
+        return (displayName as NSString).stringByDeletingPathExtension
     }
 
     private let fetchQueue = dispatch_queue_create("com.example.apple-samplecode.listinfo", DISPATCH_QUEUE_SERIAL)

@@ -9,11 +9,11 @@
 import Cocoa
 import ListerKit
 
-class ListWindowController: NSWindowController {
-    // MARK: Types
+class ListWindowController: NSWindowController, SegueHandlerType {
+    // MARK: SegueHandlerType
     
-    struct SegueIdentifiers {
-        static let showAddItemViewController = "showAddItemViewController"
+    enum SegueIdentifier: String {
+        case ShowAddItem
     }
     
     // MARK: IBOutlets
@@ -33,7 +33,7 @@ class ListWindowController: NSWindowController {
     
     /// Allow the user to create a new list item with a keyboard shortcut (command-N).
     @IBAction func showAddItemViewController(sender: AnyObject?) {
-        performSegueWithIdentifier(SegueIdentifiers.showAddItemViewController, sender: sender)
+        performSegueWithIdentifier(.ShowAddItem, sender: sender)
     }
 
     // MARK: Overrides
@@ -47,12 +47,15 @@ class ListWindowController: NSWindowController {
     }
     
     override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == SegueIdentifiers.showAddItemViewController {
-            let listViewController = window!.contentViewController as! ListViewController
-
-            let addItemViewController = segue.destinationController as! AddItemViewController
-
-            addItemViewController.delegate = listViewController
+        let segueIdentifier = segueIdentifierForSegue(segue)
+        
+        switch segueIdentifier {
+            case .ShowAddItem:
+                let listViewController = window!.contentViewController as! ListViewController
+                
+                let addItemViewController = segue.destinationController as! AddItemViewController
+                
+                addItemViewController.delegate = listViewController
         }
     }
     
@@ -64,7 +67,7 @@ class ListWindowController: NSWindowController {
             
             let sharingServicePicker = NSSharingServicePicker(items: [listContents])
             
-            let preferredEdge =  NSRectEdge(CGRectEdge.MinYEdge.rawValue)
+            let preferredEdge =  NSRectEdge(rawValue: UInt(CGRectEdge.MinYEdge.rawValue))!
             sharingServicePicker.showRelativeToRect(NSZeroRect, ofView: sender, preferredEdge: preferredEdge)
         }
     }

@@ -17,16 +17,16 @@ class ListPresenterTestHelper: ListPresenterDelegate {
     var willChangeCallbackCount = 0
     
     /// An array of tuples representing the inserted list items.
-    var didInsertListItemCallbacks: [(listItem: ListItem, index: Int)] = []
+    var didInsertListItemCallbacks = [(listItem: ListItem, index: Int)]()
     
     /// An array of tuples representing the removed list items.
-    var didRemoveListItemCallbacks: [(listItem: ListItem, index: Int)] = []
+    var didRemoveListItemCallbacks = [(listItem: ListItem, index: Int)]()
     
     /// An array of tuples representing the updated list items.
-    var didUpdateListItemCallbacks: [(listItem: ListItem, index: Int)] = []
+    var didUpdateListItemCallbacks = [(listItem: ListItem, index: Int)]()
     
     /// An array of tuples representing the moved list items.
-    var didMoveListItemCallbacks: [(listItem: ListItem, fromIndex: Int, toIndex: Int)] = []
+    var didMoveListItemCallbacks = [(listItem: ListItem, fromIndex: Int, toIndex: Int)]()
     
     /// An array of tuples representing the updates to the list presenter's color.
     var didUpdateListColorCallbacks: [List.Color] = []
@@ -103,10 +103,10 @@ class ListPresenterTestHelper: ListPresenterDelegate {
     }
     
     /// A helper method run `assertions` once a batch of changes has occured to the list presenter.
-    func whenNextChangesOccur(assert assertions: Void -> Void) {
+    func expectOnNextChange(expectations: Void -> Void) {
         isTesting = true
         
-        self.assertions = assertions
+        self.assertions = expectations
 
         willChangeCallbackCount = 0
         remainingExpectedWillChanges = nil

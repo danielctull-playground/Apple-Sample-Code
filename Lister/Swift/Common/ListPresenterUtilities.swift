@@ -12,12 +12,12 @@ import Foundation
     Removes each list item found in `listItemsToRemove` from the `initialListItems` array. For each removal,
     the function notifies the `listPresenter`'s delegate of the change.
 */
-func removeListItemsFromListItemsWithListPresenter(listPresenter: ListPresenterType, inout #initialListItems: [ListItem], #listItemsToRemove: [ListItem]) {
-    let sortedListItemsToRemove = listItemsToRemove.sorted { find(initialListItems, $0)! > find(initialListItems, $1)! }
+func removeListItemsFromListItemsWithListPresenter(listPresenter: ListPresenterType, inout initialListItems: [ListItem], listItemsToRemove: [ListItem]) {
+    let sortedListItemsToRemove = listItemsToRemove.sort { initialListItems.indexOf($0)! > initialListItems.indexOf($1)! }
     
     for listItemToRemove in sortedListItemsToRemove {
         // Use the index of the list item to remove in the current list's list items.
-        let indexOfListItemToRemoveInOldList = find(initialListItems, listItemToRemove)!
+        let indexOfListItemToRemoveInOldList = initialListItems.indexOf(listItemToRemove)!
         
         initialListItems.removeAtIndex(indexOfListItemToRemoveInOldList)
         
@@ -29,8 +29,8 @@ func removeListItemsFromListItemsWithListPresenter(listPresenter: ListPresenterT
     Inserts each list item in `listItemsToInsert` into `initialListItems`. For each insertion, the function
     notifies the `listPresenter`'s delegate of the change.
 */
-func insertListItemsIntoListItemsWithListPresenter(listPresenter: ListPresenterType, inout #initialListItems: [ListItem], #listItemsToInsert: [ListItem]) {
-    for (idx, insertedIncompleteListItem) in enumerate(listItemsToInsert) {
+func insertListItemsIntoListItemsWithListPresenter(listPresenter: ListPresenterType, inout initialListItems: [ListItem], listItemsToInsert: [ListItem]) {
+    for (idx, insertedIncompleteListItem) in listItemsToInsert.enumerate() {
         initialListItems.insert(insertedIncompleteListItem, atIndex: idx)
         
         listPresenter.delegate?.listPresenter(listPresenter, didInsertListItem: insertedIncompleteListItem, atIndex: idx)
@@ -41,9 +41,9 @@ func insertListItemsIntoListItemsWithListPresenter(listPresenter: ListPresenterT
     Replaces the stale list items in `presentedListItems` with the new ones found in `newUpdatedListItems`. For
     each update, the function notifies the `listPresenter`'s delegate of the update.
 */
-func updateListItemsWithListItemsForListPresenter(listPresenter: ListPresenterType, inout #presentedListItems: [ListItem], #newUpdatedListItems: [ListItem]) {
+func updateListItemsWithListItemsForListPresenter(listPresenter: ListPresenterType, inout presentedListItems: [ListItem], newUpdatedListItems: [ListItem]) {
     for newlyUpdatedListItem in newUpdatedListItems {
-        let indexOfListItem = find(presentedListItems, newlyUpdatedListItem)!
+        let indexOfListItem = presentedListItems.indexOf(newlyUpdatedListItem)!
         
         presentedListItems[indexOfListItem] = newlyUpdatedListItem
         

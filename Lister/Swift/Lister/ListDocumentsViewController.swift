@@ -7,9 +7,10 @@
 */
 
 import UIKit
+import WatchConnectivity
 import ListerKit
 
-class ListDocumentsViewController: UITableViewController, ListsControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate {
+class ListDocumentsViewController: UITableViewController, ListsControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate, WCSessionDelegate, SegueHandlerType {
     // MARK: Types
 
     struct MainStoryboard {
@@ -21,12 +22,14 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
         struct TableViewCellIdentifiers {
             static let listDocumentCell = "listDocumentCell"
         }
-        
-        struct SegueIdentifiers {
-            static let newListDocument = "newListDocument"
-            static let showListDocument = "showListDocument"
-            static let showListDocumentFromUserActivity = "showListDocumentFromUserActivity"
-        }
+    }
+    
+    // MARK: SegueHandlerType
+    
+    enum SegueIdentifier: String {
+        case ShowNewListDocument
+        case ShowListDocument
+        case ShowListDocumentFromUserActivity
     }
     
     // MARK: Properties
@@ -38,6 +41,19 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
     }
     
     private var pendingLaunchContext: AppLaunchContext?
+    
+    private var watchAppInstalledAtLastStateChange = false
+    
+    // MARK: Initializers
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        if WCSession.isSupported() {
+            WCSession.defaultSession().delegate = self
+            WCSession.defaultSession().activateSession()
+        }
+    }
 
     // MARK: View Life Cycle
     
@@ -88,7 +104,7 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
     
     override func restoreUserActivityState(activity: NSUserActivity) {
         // Obtain an app launch context from the provided activity and configure the view controller with it.
-        let launchContext = AppLaunchContext(userActivity: activity)
+        guard let launchContext = AppLaunchContext(userActivity: activity, listsController: listsController) else { return }
         
         configureViewControllerWithLaunchContext(launchContext)
     }
@@ -107,8 +123,8 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
 
         let newDocumentTitle = NSLocalizedString("New List", comment: "")
         documentMenu.addOptionWithTitle(newDocumentTitle, image: nil, order: .First) {
-            // Show the NewListDocumentController.
-            self.performSegueWithIdentifier(MainStoryboard.SegueIdentifiers.newListDocument, sender: self)
+            // Show the `NewListDocumentController`.
+            self.performSegueWithIdentifier(.ShowNewListDocument, sender: self)
         }
         
         documentMenu.modalPresentationStyle = .Popover
@@ -166,27 +182,14 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
     func listsController(listsController: ListsController, didUpdateListInfo listInfo: ListInfo, atIndex index: Int) {
         let indexPath = NSIndexPath(forRow: index, inSection: 0)
         
-        let cell = tableView.cellForRowAtIndexPath(indexPath) as! ListCell
-        cell.label.text = listInfo.name
-        
-        listInfo.fetchInfoWithCompletionHandler {
-            /* 
-                The fetchInfoWithCompletionHandler(_:) method calls its completion handler on a background
-                queue, dispatch back to the main queue to make UI updates.
-            */
-            dispatch_async(dispatch_get_main_queue()) {
-                // Make sure that the list info is still visible once the color has been fetched.
-                let indexPathsForVisibleRows = self.tableView.indexPathsForVisibleRows() as! [NSIndexPath]
-
-                if contains(indexPathsForVisibleRows, indexPath) {
-                    cell.listColorView.backgroundColor = listInfo.color!.colorValue
-                }
-            }
-        }
+        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
     
     func listsControllerDidChangeContent(listsController: ListsController) {
         tableView.endUpdates()
+        
+        // This method will handle interactions with the watch connectivity session on behalf of the app.
+        updateWatchConnectivitySessionApplicationContext()
     }
     
     func listsController(listsController: ListsController, didFailCreatingListInfo listInfo: ListInfo, withError error: NSError) {
@@ -245,9 +248,9 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
                     */
                     dispatch_async(dispatch_get_main_queue()) {
                         // Make sure that the list info is still visible once the color has been fetched.
-                        let indexPathsForVisibleRows = self.tableView.indexPathsForVisibleRows() as! [NSIndexPath]
+                        guard let indexPathsForVisibleRows = self.tableView.indexPathsForVisibleRows else { return }
                         
-                        if contains(indexPathsForVisibleRows, indexPath) {
+                        if indexPathsForVisibleRows.contains(indexPath) {
                             listCell.listColorView.backgroundColor = listInfo.color!.colorValue
                         }
                     }
@@ -265,30 +268,53 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
         return false
     }
     
+    // MARK: WCSessionDelegate
+    
+    func sessionWatchStateDidChange(session: WCSession) {
+        if !watchAppInstalledAtLastStateChange && session.watchAppInstalled {
+            watchAppInstalledAtLastStateChange = session.watchAppInstalled
+            updateWatchConnectivitySessionApplicationContext()
+        }
+    }
+    
+    func session(session: WCSession, didFinishFileTransfer fileTransfer: WCSessionFileTransfer, error: NSError?) {
+        if error != nil {
+            print("\(__FUNCTION__), file: \(fileTransfer.file.fileURL), error: \(error!.localizedDescription)")
+        }
+    }
+    
+    func session(session: WCSession, didReceiveFile file: WCSessionFile) {
+        guard let lastPathComponent = file.fileURL.lastPathComponent else { return }
+        listsController.copyListFromURL(file.fileURL, toListWithName:(lastPathComponent as NSString).stringByDeletingPathExtension)
+    }
+    
     // MARK: UIStoryboardSegue Handling
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == MainStoryboard.SegueIdentifiers.newListDocument {
-            let newListDocumentController = segue.destinationViewController as! NewListDocumentController
+        let segueIdentifier = segueIdentifierForSegue(segue)
+        
+        switch segueIdentifier {
+            case .ShowNewListDocument:
+                let newListDocumentController = segue.destinationViewController as! NewListDocumentController
+                
+                newListDocumentController.listsController = listsController
 
-            newListDocumentController.listsController = listsController
-        }
-        else if segue.identifier == MainStoryboard.SegueIdentifiers.showListDocument || segue.identifier == MainStoryboard.SegueIdentifiers.showListDocumentFromUserActivity {
-            let listNavigationController = segue.destinationViewController as! UINavigationController
-            let listViewController = listNavigationController.topViewController as! ListViewController
-            listViewController.listsController = listsController
+            case .ShowListDocument, .ShowListDocumentFromUserActivity:
+                let listNavigationController = segue.destinationViewController as! UINavigationController
+                let listViewController = listNavigationController.topViewController as! ListViewController
+                listViewController.listsController = listsController
+                
+                listViewController.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem()
+                listViewController.navigationItem.leftItemsSupplementBackButton = true
             
-            listViewController.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem()
-            listViewController.navigationItem.leftItemsSupplementBackButton = true
-            
-            if segue.identifier == MainStoryboard.SegueIdentifiers.showListDocument {
-                let indexPath = tableView.indexPathForSelectedRow()!
-                listViewController.configureWithListInfo(listsController[indexPath.row])
-            }
-            else if segue.identifier == MainStoryboard.SegueIdentifiers.showListDocumentFromUserActivity {
-                let userActivityListInfo = sender as! ListInfo
-                listViewController.configureWithListInfo(userActivityListInfo)
-            }
+                if segueIdentifier == .ShowListDocument {
+                    let indexPath = tableView.indexPathForSelectedRow!
+                    listViewController.configureWithListInfo(listsController[indexPath.row])
+                }
+                else {
+                    let userActivityListInfo = sender as! ListInfo
+                    listViewController.configureWithListInfo(userActivityListInfo)
+                }
         }
     }
 
@@ -306,16 +332,97 @@ class ListDocumentsViewController: UITableViewController, ListsControllerDelegat
             continue configuration from there. Otherwise, configure the view controller directly.
         */
         if navigationController?.topViewController is UINavigationController {
-            navigationController?.popToRootViewControllerAnimated(false)
-            pendingLaunchContext = launchContext
+            dispatch_async(dispatch_get_main_queue()) {
+                // Ensure that any UI updates occur on the main queue.
+                self.navigationController?.popToRootViewControllerAnimated(false)
+                self.pendingLaunchContext = launchContext
+            }
             return
         }
         
         let listInfo = ListInfo(URL: launchContext.listURL)
         listInfo.color = launchContext.listColor
         
-        performSegueWithIdentifier(MainStoryboard.SegueIdentifiers.showListDocumentFromUserActivity, sender: listInfo)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.performSegueWithIdentifier(.ShowListDocumentFromUserActivity, sender: listInfo)
+        }
     }
     
-    
+    func updateWatchConnectivitySessionApplicationContext() {
+        // Return if `WCSession` is not supported on this iOS device or the `listsController` is unavailable.
+        guard let listsController = listsController where WCSession.isSupported() else { return }
+        
+        let session = WCSession.defaultSession()
+        
+        // Do not proceed if the watch app is not installed on the paired watch.
+        if !session.watchAppInstalled { return }
+        
+        // This array will be used to collect the data about the lists for the application context.
+        var lists = [[String: AnyObject]]()
+        // A background queue to execute operations on to fetch the information about the lists.
+        let queue = NSOperationQueue()
+        
+        // This operation will execute last and will actually update the application context.
+        let updateApplicationContextOperation = NSBlockOperation {
+            do {
+                try session.updateApplicationContext([AppConfiguration.ApplicationActivityContext.currentListsKey: lists])
+            }
+            catch let error as NSError {
+                print("Error updating watch application context: \(error.localizedDescription)")
+            }
+            // Requiring an additional catch to satisfy exhaustivity is a known issue.
+            catch {}
+        }
+        
+        // Loop through the available lists in order to accumulate contextual information about them.
+        for idx in 0..<listsController.count {
+            // Obtain the list info object from the controller.
+            let info = listsController[idx]
+            
+            // This operation will fetch the information for an individual list.
+            let listInfoOperation = NSBlockOperation {
+                // The `fetchInfoWithCompletionHandler(_:)` method executes asynchronously. Use a semaphore to wait.
+                let semaphore = dispatch_semaphore_create(0)
+                info.fetchInfoWithCompletionHandler {
+                    // Now that the `info` object is fully populated. Add an entry to the `lists` dictionary.
+                    lists.append([
+                        AppConfiguration.ApplicationActivityContext.listNameKey: info.name,
+                        AppConfiguration.ApplicationActivityContext.listColorKey: info.color!.rawValue
+                    ])
+                
+                    // Signal the semaphore indicating that it can stop waiting.
+                    dispatch_semaphore_signal(semaphore)
+                }
+            
+                // Wait on the semaphore to ensure the operation doesn't return until the fetch is complete.
+                dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            }
+            
+            // Depending on `listInfoOperation` ensures it completes before `updateApplicationContextOperation` executes.
+            updateApplicationContextOperation.addDependency(listInfoOperation)
+            queue.addOperation(listInfoOperation)
+            
+            // Use file coordination to obtain exclusive access to read the file in order to initiate a transfer.
+            let fileCoordinator = NSFileCoordinator()
+            let readingIntent = NSFileAccessIntent.readingIntentWithURL(info.URL, options: [])
+            fileCoordinator.coordinateAccessWithIntents([readingIntent], queue: NSOperationQueue()) { accessError in
+                if accessError != nil {
+                    return
+                }
+                
+                // Iterate through outstanding transfers; and cancel any for the same URL as they are obsolete.
+                for transfer in session.outstandingFileTransfers {
+                    if transfer.file.fileURL == readingIntent.URL {
+                        transfer.cancel()
+                        break
+                    }
+                }
+                
+                // Initiate the new transfer.
+                session.transferFile(readingIntent.URL, metadata: nil)
+            }
+        }
+        
+        queue.addOperation(updateApplicationContextOperation)
+    }
 }

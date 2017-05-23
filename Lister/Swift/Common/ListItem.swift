@@ -18,7 +18,7 @@ import Foundation
     version of Lister to unarchive a `ListItem` instance that was archived in the Swift version.
 */
 @objc(AAPLListItem)
-final public class ListItem: NSObject, NSCoding, NSCopying, DebugPrintable {
+final public class ListItem: NSObject, NSCoding, NSCopying, CustomDebugStringConvertible {
     // MARK: Types
     
     /**
@@ -49,9 +49,9 @@ final public class ListItem: NSObject, NSCoding, NSCopying, DebugPrintable {
         is the designated initializer for `ListItem`. All other initializers are convenience initializers.
         However, this is the only private initializer.
         
-        :param: text The intended text content of the list item.
-        :param: complete The item's initial completion state.
-        :param: UUID The item's initial UUID.
+        - parameter text: The intended text content of the list item.
+        - parameter complete: The item's initial completion state.
+        - parameter UUID: The item's initial UUID.
     */
     private init(text: String, complete: Bool, UUID: NSUUID) {
         self.text = text
@@ -62,8 +62,8 @@ final public class ListItem: NSObject, NSCoding, NSCopying, DebugPrintable {
     /**
         Initializes a `ListItem` instance with the designated text and completion state.
         
-        :param: text The text content of the list item.
-        :param: complete The item's initial completion state.
+        - parameter text: The text content of the list item.
+        - parameter complete: The item's initial completion state.
     */
     public convenience init(text: String, complete: Bool) {
         self.init(text: text, complete: complete, UUID: NSUUID())
@@ -73,7 +73,7 @@ final public class ListItem: NSObject, NSCoding, NSCopying, DebugPrintable {
         Initializes a `ListItem` instance with the designated text and a default value for `isComplete`.
         The default value for `isComplete` is false.
     
-        :param: text The intended text content of the list item.
+        - parameter text: The intended text content of the list item.
     */
     public convenience init(text: String) {
         self.init(text: text, complete: false)
@@ -114,9 +114,9 @@ final public class ListItem: NSObject, NSCoding, NSCopying, DebugPrintable {
         equal to another list item. A `ListItem` is considered to be equal to another `ListItem` if
         the underyling identities of the two list items are equal.
 
-        :param: object Any object, or nil.
+        - parameter object: Any object, or nil.
         
-        :returns: `true` if the object is a `ListItem` and it has the same underlying identity as the
+        - returns:  `true` if the object is a `ListItem` and it has the same underlying identity as the
                   receiving instance. `false` otherwise.
     */
     override public func isEqual(object: AnyObject?) -> Bool {

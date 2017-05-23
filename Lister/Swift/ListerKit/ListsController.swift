@@ -26,7 +26,7 @@ import Foundation
         your `listsControllerDidChangeContent(_:)` method will be called. This is where you would to call
         your table view's `endUpdates()` method.
     
-        :param: listsController The `ListsController` instance that will change its content.
+        - parameter listsController: The `ListsController` instance that will change its content.
     */
     optional func listsControllerWillChangeContent(listsController: ListsController)
 
@@ -34,9 +34,9 @@ import Foundation
         Notifies the receiver of this method that the lists controller is tracking a new `ListInfo`
         object. Receivers of this method should update their UI accordingly.
         
-        :param: listsController The `ListsController` instance that inserted the new `ListInfo`.
-        :param: listInfo The new `ListInfo` object that has been inserted at `index`.
-        :param: index The index that `listInfo` was inserted at.
+        - parameter listsController: The `ListsController` instance that inserted the new `ListInfo`.
+        - parameter listInfo: The new `ListInfo` object that has been inserted at `index`.
+        - parameter index: The index that `listInfo` was inserted at.
     */
     optional func listsController(listsController: ListsController, didInsertListInfo listInfo: ListInfo, atIndex index: Int)
 
@@ -44,9 +44,9 @@ import Foundation
         Notifies the receiver of this method that the lists controller received a message that `listInfo`
         has updated its content. Receivers of this method should update their UI accordingly.
         
-        :param: listsController The `ListsController` instance that was notified that `listInfo` has been updated.
-        :param: listInfo The `ListInfo` object that has been updated.
-        :param: index The index of `listInfo`, the updated `ListInfo`.
+        - parameter listsController: The `ListsController` instance that was notified that `listInfo` has been updated.
+        - parameter listInfo: The `ListInfo` object that has been updated.
+        - parameter index: The index of `listInfo`, the updated `ListInfo`.
     */
     optional func listsController(listsController: ListsController, didRemoveListInfo listInfo: ListInfo, atIndex index: Int)
 
@@ -54,9 +54,9 @@ import Foundation
         Notifies the receiver of this method that the lists controller is no longer tracking `listInfo`.
         Receivers of this method should update their UI accordingly.
         
-        :param: listsController The `ListsController` instance that removed `listInfo`.
-        :param: listInfo The removed `ListInfo` object.
-        :param: index The index that `listInfo` was removed at.
+        - parameter listsController: The `ListsController` instance that removed `listInfo`.
+        - parameter listInfo: The removed `ListInfo` object.
+        - parameter index: The index that `listInfo` was removed at.
     */
     optional func listsController(listsController: ListsController, didUpdateListInfo listInfo: ListInfo, atIndex index: Int)
 
@@ -67,7 +67,7 @@ import Foundation
         or update. For an example of how you might handle a "did change" contents call, see
         the discussion for `listsControllerWillChangeContent(_:)`.
 
-        :param: listsController The `ListsController` instance that did change its content.
+        - parameter listsController: The `ListsController` instance that did change its content.
     */
     optional func listsControllerDidChangeContent(listsController: ListsController)
 
@@ -76,9 +76,9 @@ import Foundation
         In implementing this method, you should present the error to the user. Do not rely on the
         `ListInfo` instance to be valid since an error occured in creating the object.
 
-        :param: listsController The `ListsController` that is notifying that a failure occured.
-        :param: listInfo The `ListInfo` that represents the list that couldn't be created.
-        :param: error The error that occured.
+        - parameter listsController: The `ListsController` that is notifying that a failure occured.
+        - parameter listInfo: The `ListInfo` that represents the list that couldn't be created.
+        - parameter error: The error that occured.
     */
     optional func listsController(listsController: ListsController, didFailCreatingListInfo listInfo: ListInfo, withError error: NSError)
 
@@ -86,9 +86,9 @@ import Foundation
         Notifies the receiver of this method that an error occured when removing an existing `ListInfo`
         object. In implementing this method, you should present the error to the user.
 
-        :param: listsController The `ListsController` that is notifying that a failure occured.
-        :param: listInfo The `ListInfo` that represents the list that couldn't be removed.
-        :param: error The error that occured.
+        - parameter listsController: The `ListsController` that is notifying that a failure occured.
+        - parameter listInfo: The `ListInfo` that represents the list that couldn't be removed.
+        - parameter error: The error that occured.
     */
     optional func listsController(listsController: ListsController, didFailRemovingListInfo listInfo: ListInfo, withError error: NSError)
 }
@@ -115,7 +115,7 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
     /// The `ListsController`'s delegate who is responsible for responding to `ListsController` updates.
     public weak var delegate: ListsControllerDelegate?
     
-    /// :returns: The number of tracked `ListInfo` objects.
+    /// - returns:  The number of tracked `ListInfo` objects.
     public var count: Int {
         var listInfosCount: Int!
 
@@ -144,6 +144,11 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
             self.listCoordinator.startQuery()
         }
     }
+    
+    /// A URL for the directory containing documents within the application's container.
+    public var documentsDirectory: NSURL {
+        return listCoordinator.documentsDirectory
+    }
 
     /**
         The `ListInfo` objects that are cached by the `ListsController` to allow for users of the
@@ -152,7 +157,7 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
     private var listInfos = [ListInfo]()
     
     /**
-        :returns: A private, local queue to the `ListsController` that is used to perform updates on
+        - returns: A private, local queue to the `ListsController` that is used to perform updates on
                  `listInfos`.
     */
     private let listInfoQueue = dispatch_queue_create("com.example.apple-samplecode.lister.listscontroller", DISPATCH_QUEUE_SERIAL)
@@ -172,9 +177,9 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         Initializes a `ListsController` instance with an initial `ListCoordinator` object and a sort
         predicate (if any). If no sort predicate is provided, the controller ignores sort order.
 
-        :param: listCoordinator The `ListsController`'s initial `ListCoordinator`.
-        :param: delegateQueue The queue on which the `ListsController` object invokes delegate messages.
-        :param: sortPredicate The predicate that determines the strict sort ordering of the `listInfos` array.
+        - parameter listCoordinator: The `ListsController`'s initial `ListCoordinator`.
+        - parameter delegateQueue: The queue on which the `ListsController` object invokes delegate messages.
+        - parameter sortPredicate: The predicate that determines the strict sort ordering of the `listInfos` array.
     */
     public init(listCoordinator: ListCoordinator, delegateQueue: NSOperationQueue, sortPredicate: ((lhs: ListInfo, rhs: ListInfo) -> Bool)? = nil) {
         self.listCoordinator = listCoordinator
@@ -189,7 +194,7 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
     // MARK: Subscripts
     
     /**
-        :returns: The `ListInfo` instance at a specific index. This method traps if the index is out
+        - returns:  The `ListInfo` instance at a specific index. This method traps if the index is out
                   of bounds.
     */
     public subscript(idx: Int) -> ListInfo {
@@ -230,7 +235,7 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         delegate messages: either a `listCoordinatorDidUpdateContents(insertedURLs:removedURLs:updatedURLs:)`
         call with the removed `ListInfo` object, or with an error callback.
     
-        :param: listInfo The `ListInfo` to remove from the list of tracked `ListInfo` instances.
+        - parameter listInfo: The `ListInfo` to remove from the list of tracked `ListInfo` instances.
     */
     public func removeListInfo(listInfo: ListInfo) {
         listCoordinator.removeListAtURL(listInfo.URL)
@@ -248,8 +253,8 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         is performed to make sure that the name is a valid list name. Doing so will decrease the errors
         that you see when you actually create a list.
 
-        :param: list The `List` object that should be used to save the initial list.
-        :param: name The name of the new list.
+        - parameter list: The `List` object that should be used to save the initial list.
+        - parameter name: The name of the new list.
     */
     public func createListInfoForList(list: List, withName name: String) {
         listCoordinator.createURLForList(list, withName: name)
@@ -261,24 +266,35 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         method should be called before `createListInfoForList(_:withName:)` is called to ensure to minimize
         the number of errors that can occur when creating a list.
 
-        :param: name The name to check to see if it's valid or not.
+        - parameter name: The name to check to see if it's valid or not.
         
-        :returns: `true` if the list can be created with the given name, `false` otherwise.
+        - returns:  `true` if the list can be created with the given name, `false` otherwise.
     */
     public func canCreateListInfoWithName(name: String) -> Bool {
         return listCoordinator.canCreateListWithName(name)
     }
     
     /**
+        Attempts to copy a `list` at a given `URL` to the appropriate location in the documents directory.
+        This method forwards to `listCoordinator` to actually perform the document copy.
+        
+        - parameter URL: The `NSURL` object representing the list to be copied.
+        - parameter name: The name of the `list` to be overwritten.
+    */
+    public func copyListFromURL(URL: NSURL, toListWithName name: String) {
+        listCoordinator.copyListFromURL(URL, toListWithName: name)
+    }
+    
+    /**
         Lets the `ListsController` know that `listInfo` has been udpdated. Once the change is reflected
         in `listInfos` array, a didUpdateListInfo message is sent.
         
-        :param: listInfo The `ListInfo` instance that has new content.
+        - parameter listInfo: The `ListInfo` instance that has new content.
     */
     public func setListInfoHasNewContents(listInfo: ListInfo) {
         dispatch_async(listInfoQueue) {
             // Remove the old list info and replace it with the new one.
-            let indexOfListInfo = find(self.listInfos, listInfo)!
+            let indexOfListInfo = self.listInfos.indexOf(listInfo)!
 
             self.listInfos[indexOfListInfo] = listInfo
 
@@ -302,11 +318,11 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         as well. For more information about this method, see the method description for this method
         in the `ListCoordinator` class.
 
-        :param: insertedURLs The `NSURL` instances that should be tracekd.
-        :param: removedURLs The `NSURL` instances that should be untracked.
-        :param: updatedURLs The `NSURL` instances that have had their underlying model updated.
+        - parameter insertedURLs: The `NSURL` instances that should be tracekd.
+        - parameter removedURLs: The `NSURL` instances that should be untracked.
+        - parameter updatedURLs: The `NSURL` instances that have had their underlying model updated.
     */
-    public func listCoordinatorDidUpdateContents(#insertedURLs: [NSURL], removedURLs: [NSURL], updatedURLs: [NSURL]) {
+    public func listCoordinatorDidUpdateContents(insertedURLs insertedURLs: [NSURL], removedURLs: [NSURL], updatedURLs: [NSURL]) {
         processContentChanges(insertedURLs: insertedURLs, removedURLs: removedURLs, updatedURLs: updatedURLs)
     }
     
@@ -315,8 +331,8 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         information about when this method can be called, see the description for this method in the
         `ListCoordinatorDelegate` protocol description.
         
-        :param: URL The `NSURL` instances that was failed to be created.
-        :param: error The error the describes why the create failed.
+        - parameter URL: The `NSURL` instances that was failed to be created.
+        - parameter error: The error the describes why the create failed.
     */
     public func listCoordinatorDidFailCreatingListAtURL(URL: NSURL, withError error: NSError) {
         let listInfo = ListInfo(URL: URL)
@@ -333,8 +349,8 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         more information about when this method can be called, see the description for this method in
         the `ListCoordinatorDelegate` protocol description.
         
-        :param: URL The `NSURL` instance that failed to be removed
-        :param: error The error that describes why the remove failed.
+        - parameter URL: The `NSURL` instance that failed to be removed
+        - parameter error: The error that describes why the remove failed.
     */
     public func listCoordinatorDidFailRemovingListAtURL(URL: NSURL, withError error: NSError) {
         let listInfo = ListInfo(URL: URL)
@@ -353,11 +369,11 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
         performs the updates and determines where each of these URLs were located so that the controller can 
         forward the new / removed / updated indexes as well.
     
-        :param: insertedURLs The `NSURL` instances that are newly tracked.
-        :param: removedURLs The `NSURL` instances that have just been untracked.
-        :param: updatedURLs The `NSURL` instances that have had their underlying model updated.
+        - parameter insertedURLs: The `NSURL` instances that are newly tracked.
+        - parameter removedURLs: The `NSURL` instances that have just been untracked.
+        - parameter updatedURLs: The `NSURL` instances that have had their underlying model updated.
     */
-    private func processContentChanges(#insertedURLs: [NSURL], removedURLs: [NSURL], updatedURLs: [NSURL]) {
+    private func processContentChanges(insertedURLs insertedURLs: [NSURL], removedURLs: [NSURL], updatedURLs: [NSURL]) {
         let insertedListInfos = insertedURLs.map { ListInfo(URL: $0) }
         let removedListInfos = removedURLs.map { ListInfo(URL: $0) }
         let updatedListInfos = updatedURLs.map { ListInfo(URL: $0) }
@@ -368,8 +384,8 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
             var untrackedInsertedListInfos: [ListInfo]!
             
             dispatch_sync(self.listInfoQueue) {
-                trackedRemovedListInfos = removedListInfos.filter { contains(self.listInfos, $0) }
-                untrackedInsertedListInfos = insertedListInfos.filter { !contains(self.listInfos, $0) }
+                trackedRemovedListInfos = removedListInfos.filter { self.listInfos.contains($0) }
+                untrackedInsertedListInfos = insertedListInfos.filter { !self.listInfos.contains($0) }
             }
             
             if untrackedInsertedListInfos.isEmpty && trackedRemovedListInfos.isEmpty && updatedListInfos.isEmpty {
@@ -383,7 +399,7 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
                 var trackedRemovedListInfoIndex: Int!
                 
                 dispatch_sync(self.listInfoQueue) {
-                    trackedRemovedListInfoIndex = find(self.listInfos, trackedRemovedListInfo)!
+                    trackedRemovedListInfoIndex = self.listInfos.indexOf(trackedRemovedListInfo)!
                     
                     self.listInfos.removeAtIndex(trackedRemovedListInfoIndex)
                 }
@@ -393,7 +409,7 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
 
             // Sort the untracked inserted list infos
             if let sortPredicate = self.sortPredicate {
-                untrackedInsertedListInfos.sort(sortPredicate)
+                untrackedInsertedListInfos.sortInPlace(sortPredicate)
             }
             
             // Insert
@@ -404,10 +420,10 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
                     self.listInfos += [untrackedInsertedListInfo]
                     
                     if let sortPredicate = self.sortPredicate {
-                        self.listInfos.sort(sortPredicate)
+                        self.listInfos.sortInPlace(sortPredicate)
                     }
                     
-                    untrackedInsertedListInfoIndex = find(self.listInfos, untrackedInsertedListInfo)!
+                    untrackedInsertedListInfoIndex = self.listInfos.indexOf(untrackedInsertedListInfo)!
                 }
                 
                 self.delegate?.listsController?(self, didInsertListInfo: untrackedInsertedListInfo, atIndex: untrackedInsertedListInfoIndex)
@@ -418,7 +434,7 @@ final public class ListsController: NSObject, ListCoordinatorDelegate {
                 var updatedListInfoIndex: Int?
                 
                 dispatch_sync(self.listInfoQueue) {
-                    updatedListInfoIndex = find(self.listInfos, updatedListInfo)
+                    updatedListInfoIndex = self.listInfos.indexOf(updatedListInfo)
                     
                     // Track the new list info instead of the old one.
                     if let updatedListInfoIndex = updatedListInfoIndex {

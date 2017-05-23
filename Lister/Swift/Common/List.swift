@@ -18,7 +18,7 @@ import Foundation
     the Objective-C version of Lister to unarchive a `List` instance that was archived in the Swift version.
 */
 @objc(AAPLList)
-final public class List: NSObject, NSCoding, NSCopying, DebugPrintable {
+final public class List: NSObject, NSCoding, NSCopying, CustomDebugStringConvertible {
     // MARK: Types
     
     /**
@@ -42,7 +42,7 @@ final public class List: NSObject, NSCoding, NSCopying, DebugPrintable {
         - Orange
         - Red
     */
-    public enum Color: Int, Printable {
+    public enum Color: Int, CustomStringConvertible {
         case Gray, Blue, Green, Yellow, Orange, Red
         
         // MARK: Properties
@@ -79,8 +79,8 @@ final public class List: NSObject, NSCoding, NSCopying, DebugPrintable {
         Initializes a `List` instance with the designated color and items. The default color of a `List` is
         gray.
         
-        :param: color The intended color of the list.
-        :param: items The items that represent the underlying list. The `List` class copies the items
+        - parameter color: The intended color of the list.
+        - parameter items: The items that represent the underlying list. The `List` class copies the items
                       during initialization.
     */
     public init(color: Color = .Gray, items: [ListItem] = []) {
@@ -114,9 +114,9 @@ final public class List: NSObject, NSCoding, NSCopying, DebugPrintable {
         another list. A `List` is considered to be equal to another `List` if its color and items
         are equal.
         
-        :param: object Any object, or nil.
+        - parameter object: Any object, or nil.
         
-        :returns: `true` if the object is a `List` and it has the same color and items as the receiving
+        - returns:  `true` if the object is a `List` and it has the same color and items as the receiving
                   instance. `false` otherwise.
     */
     override public func isEqual(object: AnyObject?) -> Bool {

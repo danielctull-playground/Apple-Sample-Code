@@ -11,6 +11,7 @@
 		1608C4E41939988600CC1E53 /* Lister.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3E93585E1920343C0091408E /* Lister.appex */; };
 		1608C4EA1939A12100CC1E53 /* NoItemsRowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1608C4E81939A12100CC1E53 /* NoItemsRowViewController.swift */; };
 		1608C4EB1939A12100CC1E53 /* NoItemsRowViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1608C4E91939A12100CC1E53 /* NoItemsRowViewController.xib */; };
+		160D670B1B1E181E00E923AB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 16EE5957192016430052916A /* Info.plist */; };
 		1611C5ED1A925C1D00472891 /* AppLaunchContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611C5EC1A925C1D00472891 /* AppLaunchContextTests.swift */; };
 		1611C5F31A925FE400472891 /* Today.list in Resources */ = {isa = PBXBuildFile; fileRef = 161E8A8F1A194F7F00A85E69 /* Today.list */; };
 		1611C6031A92A76200472891 /* AppLaunchContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160868781A8EB1E200A5A707 /* AppLaunchContext.swift */; };
@@ -32,18 +33,77 @@
 		1623FD021A02F99600631A60 /* ListPresenterTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FCFC1A02F99600631A60 /* ListPresenterTestHelper.swift */; };
 		1623FD031A02F99600631A60 /* ListPresenterTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FCFC1A02F99600631A60 /* ListPresenterTestHelper.swift */; };
 		162BD21F1922BA5700848FF6 /* ListerOSX.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 162BD21E1922BA5700848FF6 /* ListerOSX.entitlements */; };
+		162C25C31B1CEB51004DD2FC /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 162C25C11B1CEA57004DD2FC /* NotificationCenter.framework */; };
 		162CB9E81936F0AF00F2586B /* ListerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16EE5954192016410052916A /* ListerKit.framework */; };
 		162CB9EB1936F0DE00F2586B /* CheckBoxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162CB9EA1936F0DE00F2586B /* CheckBoxCell.swift */; };
-		164B39A919A27E410064C879 /* Launch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 164B39A819A27E410064C879 /* Launch.xib */; };
 		166A72131987F8320016C1B3 /* ListInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1674D9AE18F72B7F0019FF77 /* ListInfo.swift */; };
 		1674D9AD18F729CA0019FF77 /* ListDocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1674D9AC18F729CA0019FF77 /* ListDocumentsViewController.swift */; };
 		1674D9E118F752960019FF77 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1674D9E018F752960019FF77 /* ListViewController.swift */; };
 		1682F5F818F8ACD9000B87A6 /* ListItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1682F5F718F8ACD9000B87A6 /* ListItemCell.swift */; };
 		1686A96318FCBA9900112572 /* NewListDocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1686A96218FCBA9900112572 /* NewListDocumentController.swift */; };
-		16A9851D1936EEA5007B7F37 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168178BA19100ED6008B46DC /* NotificationCenter.framework */; };
+		169B19AE1B1BF4C0003FDA9B /* Lister WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 16F60BF11A854A640028B2D8 /* Lister WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16A985221936EEA7007B7F37 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A985211936EEA7007B7F37 /* TodayViewController.swift */; };
 		16A985241936EEA7007B7F37 /* Today.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16A985231936EEA7007B7F37 /* Today.storyboard */; };
 		16A985271936EEA7007B7F37 /* Lister.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 16A9851C1936EEA5007B7F37 /* Lister.appex */; };
+		16ADC4471B1AB6D700479D29 /* checkbox-blue-checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F6C1B128159001D63DF /* checkbox-blue-checked@2x.png */; };
+		16ADC4481B1AB6D700479D29 /* checkbox-blue-unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F6D1B128159001D63DF /* checkbox-blue-unchecked@2x.png */; };
+		16ADC4491B1AB6D700479D29 /* checkbox-gray-checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F6E1B128159001D63DF /* checkbox-gray-checked@2x.png */; };
+		16ADC44A1B1AB6D700479D29 /* checkbox-gray-unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F6F1B128159001D63DF /* checkbox-gray-unchecked@2x.png */; };
+		16ADC44B1B1AB6D700479D29 /* checkbox-green-checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F701B128159001D63DF /* checkbox-green-checked@2x.png */; };
+		16ADC44C1B1AB6D700479D29 /* checkbox-green-unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F711B128159001D63DF /* checkbox-green-unchecked@2x.png */; };
+		16ADC44D1B1AB6D700479D29 /* checkbox-orange-checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F721B128159001D63DF /* checkbox-orange-checked@2x.png */; };
+		16ADC44E1B1AB6D700479D29 /* checkbox-orange-unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F731B128159001D63DF /* checkbox-orange-unchecked@2x.png */; };
+		16ADC44F1B1AB6D700479D29 /* checkbox-red-checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F741B128159001D63DF /* checkbox-red-checked@2x.png */; };
+		16ADC4501B1AB6D700479D29 /* checkbox-red-unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F751B128159001D63DF /* checkbox-red-unchecked@2x.png */; };
+		16ADC4511B1AB6D700479D29 /* checkbox-yellow-checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F761B128159001D63DF /* checkbox-yellow-checked@2x.png */; };
+		16ADC4521B1AB6D700479D29 /* checkbox-yellow-unchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F771B128159001D63DF /* checkbox-yellow-unchecked@2x.png */; };
+		16ADC4531B1AB6E100479D29 /* glance-0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F3E1B128159001D63DF /* glance-0@2x.png */; };
+		16ADC4541B1AB6E100479D29 /* glance-10@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F3F1B128159001D63DF /* glance-10@2x.png */; };
+		16ADC4551B1AB6E100479D29 /* glance-11@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F401B128159001D63DF /* glance-11@2x.png */; };
+		16ADC4561B1AB6E100479D29 /* glance-12@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F411B128159001D63DF /* glance-12@2x.png */; };
+		16ADC4571B1AB6E100479D29 /* glance-13@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F421B128159001D63DF /* glance-13@2x.png */; };
+		16ADC4581B1AB6E100479D29 /* glance-14@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F431B128159001D63DF /* glance-14@2x.png */; };
+		16ADC4591B1AB6E100479D29 /* glance-15@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F441B128159001D63DF /* glance-15@2x.png */; };
+		16ADC45A1B1AB6E100479D29 /* glance-16@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F451B128159001D63DF /* glance-16@2x.png */; };
+		16ADC45B1B1AB6E100479D29 /* glance-17@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F461B128159001D63DF /* glance-17@2x.png */; };
+		16ADC45C1B1AB6E100479D29 /* glance-18@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F471B128159001D63DF /* glance-18@2x.png */; };
+		16ADC45D1B1AB6E100479D29 /* glance-19@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F481B128159001D63DF /* glance-19@2x.png */; };
+		16ADC45E1B1AB6E100479D29 /* glance-1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F491B128159001D63DF /* glance-1@2x.png */; };
+		16ADC45F1B1AB6E100479D29 /* glance-20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F4A1B128159001D63DF /* glance-20@2x.png */; };
+		16ADC4601B1AB6E100479D29 /* glance-21@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F4B1B128159001D63DF /* glance-21@2x.png */; };
+		16ADC4611B1AB6E100479D29 /* glance-22@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F4C1B128159001D63DF /* glance-22@2x.png */; };
+		16ADC4621B1AB6E100479D29 /* glance-23@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F4D1B128159001D63DF /* glance-23@2x.png */; };
+		16ADC4631B1AB6E100479D29 /* glance-24@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F4E1B128159001D63DF /* glance-24@2x.png */; };
+		16ADC4641B1AB6E100479D29 /* glance-25@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F4F1B128159001D63DF /* glance-25@2x.png */; };
+		16ADC4651B1AB6E100479D29 /* glance-26@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F501B128159001D63DF /* glance-26@2x.png */; };
+		16ADC4661B1AB6E100479D29 /* glance-27@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F511B128159001D63DF /* glance-27@2x.png */; };
+		16ADC4671B1AB6E100479D29 /* glance-28@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F521B128159001D63DF /* glance-28@2x.png */; };
+		16ADC4681B1AB6E100479D29 /* glance-29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F531B128159001D63DF /* glance-29@2x.png */; };
+		16ADC4691B1AB6E100479D29 /* glance-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F541B128159001D63DF /* glance-2@2x.png */; };
+		16ADC46A1B1AB6E100479D29 /* glance-30@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F551B128159001D63DF /* glance-30@2x.png */; };
+		16ADC46B1B1AB6E100479D29 /* glance-31@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F561B128159001D63DF /* glance-31@2x.png */; };
+		16ADC46C1B1AB6E100479D29 /* glance-32@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F571B128159001D63DF /* glance-32@2x.png */; };
+		16ADC46D1B1AB6E100479D29 /* glance-33@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F581B128159001D63DF /* glance-33@2x.png */; };
+		16ADC46E1B1AB6E100479D29 /* glance-34@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F591B128159001D63DF /* glance-34@2x.png */; };
+		16ADC46F1B1AB6E100479D29 /* glance-35@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F5A1B128159001D63DF /* glance-35@2x.png */; };
+		16ADC4701B1AB6E100479D29 /* glance-36@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F5B1B128159001D63DF /* glance-36@2x.png */; };
+		16ADC4711B1AB6E100479D29 /* glance-37@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F5C1B128159001D63DF /* glance-37@2x.png */; };
+		16ADC4721B1AB6E100479D29 /* glance-38@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F5D1B128159001D63DF /* glance-38@2x.png */; };
+		16ADC4731B1AB6E100479D29 /* glance-39@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F5E1B128159001D63DF /* glance-39@2x.png */; };
+		16ADC4741B1AB6E100479D29 /* glance-3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F5F1B128159001D63DF /* glance-3@2x.png */; };
+		16ADC4751B1AB6E100479D29 /* glance-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F601B128159001D63DF /* glance-40@2x.png */; };
+		16ADC4761B1AB6E100479D29 /* glance-41@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F611B128159001D63DF /* glance-41@2x.png */; };
+		16ADC4771B1AB6E100479D29 /* glance-42@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F621B128159001D63DF /* glance-42@2x.png */; };
+		16ADC4781B1AB6E100479D29 /* glance-43@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F631B128159001D63DF /* glance-43@2x.png */; };
+		16ADC4791B1AB6E100479D29 /* glance-44@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F641B128159001D63DF /* glance-44@2x.png */; };
+		16ADC47A1B1AB6E100479D29 /* glance-4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F651B128159001D63DF /* glance-4@2x.png */; };
+		16ADC47B1B1AB6E100479D29 /* glance-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F661B128159001D63DF /* glance-5@2x.png */; };
+		16ADC47C1B1AB6E100479D29 /* glance-6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F671B128159001D63DF /* glance-6@2x.png */; };
+		16ADC47D1B1AB6E100479D29 /* glance-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F681B128159001D63DF /* glance-7@2x.png */; };
+		16ADC47E1B1AB6E100479D29 /* glance-8@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F691B128159001D63DF /* glance-8@2x.png */; };
+		16ADC47F1B1AB6E100479D29 /* glance-9@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F6A1B128159001D63DF /* glance-9@2x.png */; };
+		16ADC4801B1AB6EB00479D29 /* check-all@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F791B128159001D63DF /* check-all@2x.png */; };
+		16ADC4811B1AB6EB00479D29 /* uncheck-all@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F7A1B128159001D63DF /* uncheck-all@2x.png */; };
 		16AF9FD21987FEA3008CAA4C /* LocalListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AF9FD11987FEA3008CAA4C /* LocalListCoordinator.swift */; };
 		16AF9FD6198864DA008CAA4C /* CloudListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AF9FD5198864DA008CAA4C /* CloudListCoordinator.swift */; };
 		16B6970619332B9800B1CA09 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AF5213191FF94B0088ED08 /* CheckBox.swift */; };
@@ -52,8 +112,40 @@
 		16CBDAAF18F6EE3A00233D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CBDAAE18F6EE3A00233D3C /* AppDelegate.swift */; };
 		16CBDAB718F6EE3A00233D3C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CBDAB518F6EE3A00233D3C /* Main.storyboard */; };
 		16CBDAB918F6EE3A00233D3C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16CBDAB818F6EE3A00233D3C /* Images.xcassets */; };
+		16CD55B71B1279D900DB4F4F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CD55B51B1279D900DB4F4F /* Launch Screen.storyboard */; };
+		16CD55E51B127D2400DB4F4F /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16CD55E31B127D2400DB4F4F /* Interface.storyboard */; };
+		16CD55E71B127D2400DB4F4F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16CD55E61B127D2400DB4F4F /* Images.xcassets */; };
+		16CD55EE1B127D2400DB4F4F /* Lister Watch Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 16CD55ED1B127D2400DB4F4F /* Lister Watch Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		16CD55F31B127D2400DB4F4F /* ListsInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CD55F21B127D2400DB4F4F /* ListsInterfaceController.swift */; };
+		16CD55F51B127D2400DB4F4F /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CD55F41B127D2400DB4F4F /* ExtensionDelegate.swift */; };
+		16CD55F71B127D2400DB4F4F /* GlanceInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16CD55F61B127D2400DB4F4F /* GlanceInterfaceController.swift */; };
+		16CD55FD1B127D2400DB4F4F /* Lister Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 16CD55E11B127D2400DB4F4F /* Lister Watch App.app */; };
+		16CD56141B127E6600DB4F4F /* ListerWatchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16CD560C1B127DDC00DB4F4F /* ListerWatchKit.framework */; };
+		16CD56151B127E6600DB4F4F /* ListerWatchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16CD560C1B127DDC00DB4F4F /* ListerWatchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		16DAC8AD18F9BB5400251E9D /* ListColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DAC8AC18F9BB5400251E9D /* ListColorCell.swift */; };
 		16DAC8AF18F9DAA800251E9D /* ListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DAC8AE18F9DAA800251E9D /* ListCell.swift */; };
+		16E63F2E1B128078001D63DF /* GlanceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63F2C1B12806F001D63DF /* GlanceBadge.swift */; };
+		16E63F2F1B12807A001D63DF /* GlanceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63F2C1B12806F001D63DF /* GlanceBadge.swift */; };
+		16E63F301B128082001D63DF /* ColoredTextRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63F281B128063001D63DF /* ColoredTextRowController.swift */; };
+		16E63F311B128082001D63DF /* ListItemRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63F291B128063001D63DF /* ListItemRowController.swift */; };
+		16E63F321B128084001D63DF /* ColoredTextRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63F281B128063001D63DF /* ColoredTextRowController.swift */; };
+		16E63F331B128084001D63DF /* ListItemRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63F291B128063001D63DF /* ListItemRowController.swift */; };
+		16E63F391B12811C001D63DF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F371B12811C001D63DF /* Localizable.strings */; };
+		16E63F3A1B12811C001D63DF /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 16E63F381B12811C001D63DF /* Localizable.stringsdict */; };
+		16E63FB81B128277001D63DF /* ListInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63FB61B12826F001D63DF /* ListInterfaceController.swift */; };
+		16E63FB91B128293001D63DF /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16480E2918F866990068456A /* List.swift */; };
+		16E63FBA1B128293001D63DF /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16480E2B18F866A80068456A /* ListItem.swift */; };
+		16E63FBB1B12829A001D63DF /* ListPresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FCF21A02F93000631A60 /* ListPresenterDelegate.swift */; };
+		16E63FBC1B12829A001D63DF /* ListPresenterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC30411A132B0400EE6D1C /* ListPresenterType.swift */; };
+		16E63FBD1B12829A001D63DF /* AllListItemsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FCF01A02F93000631A60 /* AllListItemsPresenter.swift */; };
+		16E63FBE1B12829A001D63DF /* IncompleteListItemsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FCF11A02F93000631A60 /* IncompleteListItemsPresenter.swift */; };
+		16E63FBF1B1282A6001D63DF /* ListPresenterAlgorithms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC30441A132B1300EE6D1C /* ListPresenterAlgorithms.swift */; };
+		16E63FC01B1282A6001D63DF /* ListPresenterUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC30451A132B1300EE6D1C /* ListPresenterUtilities.swift */; };
+		16E63FC11B1282B5001D63DF /* ListColorUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFC7D9A18FB08C90012B60F /* ListColorUI.swift */; };
+		16E63FC21B1282C0001D63DF /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3D094A193139BB00D21A98 /* AppConfiguration.swift */; };
+		16E63FC61B128615001D63DF /* ConnectivityListsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63FC51B128615001D63DF /* ConnectivityListsController.swift */; };
+		16E63FC81B12862A001D63DF /* ListInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E63FC71B12862A001D63DF /* ListInfo.swift */; };
+		16E63FC91B128682001D63DF /* ListUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6198971989AE7700D66B75 /* ListUtilities.swift */; };
 		16EE5969192016430052916A /* ListerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16EE5954192016410052916A /* ListerKit.framework */; };
 		16EE596A192016430052916A /* ListerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 16EE5954192016410052916A /* ListerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		16EE5974192019C40052916A /* ListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16480E2718F860360068456A /* ListDocument.swift */; };
@@ -61,13 +153,9 @@
 		16EE5976192019D30052916A /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16480E2B18F866A80068456A /* ListItem.swift */; };
 		16EE5977192019DC0052916A /* ListColorUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFC7D9A18FB08C90012B60F /* ListColorUI.swift */; };
 		16F60BFE1A854A650028B2D8 /* Lister WatchKit App.app in Resources */ = {isa = PBXBuildFile; fileRef = 16F60BFD1A854A650028B2D8 /* Lister WatchKit App.app */; };
-		16F60C0B1A854A650028B2D8 /* Lister WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 16F60BF11A854A640028B2D8 /* Lister WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16F60C151A854CEA0028B2D8 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 16F60C131A854CEA0028B2D8 /* Interface.storyboard */; };
 		16F60C161A854D290028B2D8 /* ListsInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FD1D1A03005800631A60 /* ListsInterfaceController.swift */; };
 		16F60C171A854D2C0028B2D8 /* ListInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FD1C1A03005800631A60 /* ListInterfaceController.swift */; };
-		16F60C181A854D330028B2D8 /* ColoredTextRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FD1A1A03005800631A60 /* ColoredTextRowController.swift */; };
-		16F60C191A854D330028B2D8 /* ListItemRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1623FD1B1A03005800631A60 /* ListItemRowController.swift */; };
-		16F60C1A1A854D330028B2D8 /* GlanceBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1628E3E519F5E9C300BCE036 /* GlanceBadge.swift */; };
 		16F60C1B1A854D330028B2D8 /* GlanceInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1628E3E619F5E9C300BCE036 /* GlanceInterfaceController.swift */; };
 		16F60C1C1A854E050028B2D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3E028CD41A1693B1004B6F9D /* Localizable.strings */; };
 		16F60C1D1A854E050028B2D8 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 3E028CD51A1693B1004B6F9D /* Localizable.stringsdict */; };
@@ -131,9 +219,10 @@
 		16F60C571A854E220028B2D8 /* check-all@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1623FD3D1A0301D600631A60 /* check-all@2x.png */; };
 		16F60C581A854E220028B2D8 /* uncheck-all@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1623FD3E1A0301D600631A60 /* uncheck-all@2x.png */; };
 		3E1305101A0437230079EB80 /* ListerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16EE5954192016410052916A /* ListerKit.framework */; };
+		3E197D501B056D740080D039 /* SegueHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E197D4F1B056D740080D039 /* SegueHandlerType.swift */; };
+		3E197D511B056D740080D039 /* SegueHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E197D4F1B056D740080D039 /* SegueHandlerType.swift */; };
 		3E25175C197F7A0500B8AF96 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E25175B197F7A0500B8AF96 /* ListTests.swift */; };
 		3E251773197F7A3600B8AF96 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E25175B197F7A0500B8AF96 /* ListTests.swift */; };
-		3E251779197F7ACC00B8AF96 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3E251777197F7ACC00B8AF96 /* Info.plist */; };
 		3E339D061923471600309AF6 /* ListerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E93587D1920355C0091408E /* ListerKit.framework */; };
 		3E339D071923471600309AF6 /* ListerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3E93587D1920355C0091408E /* ListerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3E3D094C19313A8400D21A98 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3D094A193139BB00D21A98 /* AppConfiguration.swift */; };
@@ -148,7 +237,6 @@
 		3E6F0E3C198C83DA009A4CBB /* NSColor+AppSpecific.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFC7D9D18FB08C90012B60F /* NSColor+AppSpecific.swift */; };
 		3E79958D19EC7E820077233E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E79958C19EC7E820077233E /* Main.storyboard */; };
 		3E8576E219205618004FF442 /* ListerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E93587D1920355C0091408E /* ListerKit.framework */; };
-		3E93585F1920343C0091408E /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168178BA19100ED6008B46DC /* NotificationCenter.framework */; };
 		3E9358641920343C0091408E /* ListerTodayOSX.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 3E9358631920343C0091408E /* ListerTodayOSX.entitlements */; };
 		3E9358671920343C0091408E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3E9358651920343C0091408E /* InfoPlist.strings */; };
 		3E9358691920343C0091408E /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9358681920343C0091408E /* TodayViewController.swift */; };
@@ -198,6 +286,13 @@
 			remoteGlobalIDString = 3E93585D1920343C0091408E;
 			remoteInfo = ListerTodayOSX;
 		};
+		160D670C1B1E185E00E923AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16CBDAA618F6EE3A00233D3C;
+			remoteInfo = Lister;
+		};
 		1611C5EE1A925C1D00472891 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
@@ -212,6 +307,13 @@
 			remoteGlobalIDString = 3E93587C1920355C0091408E;
 			remoteInfo = "ListerKit (OSX)";
 		};
+		169B19AF1B1BF4C0003FDA9B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16F60BF01A854A640028B2D8;
+			remoteInfo = "Lister WatchKit Extension";
+		};
 		16A985251936EEA7007B7F37 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
@@ -225,6 +327,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 16A9851B1936EEA5007B7F37;
 			remoteInfo = ListerToday;
+		};
+		16CD55EF1B127D2400DB4F4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16CD55EC1B127D2400DB4F4F;
+			remoteInfo = "Lister Watch App Extension";
+		};
+		16CD55FB1B127D2400DB4F4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16CD55E01B127D2400DB4F4F;
+			remoteInfo = "Lister Watch App";
+		};
+		16CD56161B127E6600DB4F4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 16CD560B1B127DDC00DB4F4F;
+			remoteInfo = "ListerKit (watchOS)";
 		};
 		16EE5967192016430052916A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -246,13 +369,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 16F60BFC1A854A650028B2D8;
 			remoteInfo = "Lister WatchKit App";
-		};
-		16F60C091A854A650028B2D8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 16CBDA9F18F6EE3A00233D3C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 16F60BF01A854A640028B2D8;
-			remoteInfo = "Lister WatchKit Extension";
 		};
 		3E25176E197F7A1400B8AF96 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -351,7 +467,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				16F60C0B1A854A650028B2D8 /* Lister WatchKit Extension.appex in Embed App Extensions */,
+				169B19AE1B1BF4C0003FDA9B /* Lister WatchKit Extension.appex in Embed App Extensions */,
 				16A985271936EEA7007B7F37 /* Lister.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -364,6 +480,39 @@
 			dstSubfolderSpec = 10;
 			files = (
 				16EE596A192016430052916A /* ListerKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD56031B127D2500DB4F4F /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				16CD55EE1B127D2400DB4F4F /* Lister Watch Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD56051B127D2500DB4F4F /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				16CD55FD1B127D2400DB4F4F /* Lister Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD56181B127E6600DB4F4F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				16CD56151B127E6600DB4F4F /* ListerWatchKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -401,8 +550,6 @@
 		1623FCFA1A02F99600631A60 /* AllListItemsPresenterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AllListItemsPresenterTests.swift; path = "ListerKit Tests/AllListItemsPresenterTests.swift"; sourceTree = SOURCE_ROOT; };
 		1623FCFB1A02F99600631A60 /* IncompleteListItemsPresenterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IncompleteListItemsPresenterTests.swift; path = "ListerKit Tests/IncompleteListItemsPresenterTests.swift"; sourceTree = SOURCE_ROOT; };
 		1623FCFC1A02F99600631A60 /* ListPresenterTestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ListPresenterTestHelper.swift; path = "ListerKit Tests/ListPresenterTestHelper.swift"; sourceTree = SOURCE_ROOT; };
-		1623FD1A1A03005800631A60 /* ColoredTextRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColoredTextRowController.swift; sourceTree = "<group>"; };
-		1623FD1B1A03005800631A60 /* ListItemRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListItemRowController.swift; sourceTree = "<group>"; };
 		1623FD1C1A03005800631A60 /* ListInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListInterfaceController.swift; sourceTree = "<group>"; };
 		1623FD1D1A03005800631A60 /* ListsInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListsInterfaceController.swift; sourceTree = "<group>"; };
 		1623FD251A0301C500631A60 /* checkbox-blue-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "checkbox-blue-checked@2x.png"; path = "Lister WatchKit App/Assets/CheckBox/checkbox-blue-checked@2x.png"; sourceTree = SOURCE_ROOT; };
@@ -419,21 +566,19 @@
 		1623FD301A0301C500631A60 /* checkbox-yellow-unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "checkbox-yellow-unchecked@2x.png"; path = "Lister WatchKit App/Assets/CheckBox/checkbox-yellow-unchecked@2x.png"; sourceTree = SOURCE_ROOT; };
 		1623FD3D1A0301D600631A60 /* check-all@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "check-all@2x.png"; path = "Lister WatchKit App/Assets/Menus/check-all@2x.png"; sourceTree = SOURCE_ROOT; };
 		1623FD3E1A0301D600631A60 /* uncheck-all@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "uncheck-all@2x.png"; path = "Lister WatchKit App/Assets/Menus/uncheck-all@2x.png"; sourceTree = SOURCE_ROOT; };
-		1628E3E519F5E9C300BCE036 /* GlanceBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GlanceBadge.swift; path = Glance/GlanceBadge.swift; sourceTree = "<group>"; };
 		1628E3E619F5E9C300BCE036 /* GlanceInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = GlanceInterfaceController.swift; path = Glance/GlanceInterfaceController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1628E3E919F5EB9F00BCE036 /* Lister WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Lister WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		162BD21E1922BA5700848FF6 /* ListerOSX.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ListerOSX.entitlements; sourceTree = "<group>"; };
+		162C25C11B1CEA57004DD2FC /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		162CB9E71936EF8A00F2586B /* ListerToday.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ListerToday.entitlements; sourceTree = "<group>"; };
 		162CB9EA1936F0DE00F2586B /* CheckBoxCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxCell.swift; sourceTree = "<group>"; };
 		16480E2718F860360068456A /* ListDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ListDocument.swift; path = ../ListerKit/ListDocument.swift; sourceTree = "<group>"; };
 		16480E2918F866990068456A /* List.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = List.swift; path = ../Common/List.swift; sourceTree = "<group>"; };
 		16480E2B18F866A80068456A /* ListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ListItem.swift; path = ../Common/ListItem.swift; sourceTree = "<group>"; };
-		164B39A819A27E410064C879 /* Launch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Launch.xib; path = Base.lproj/Launch.xib; sourceTree = "<group>"; };
 		1674D9AC18F729CA0019FF77 /* ListDocumentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ListDocumentsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1674D9AE18F72B7F0019FF77 /* ListInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ListInfo.swift; path = ListerKit/ListInfo.swift; sourceTree = SOURCE_ROOT; };
 		1674D9B618F745670019FF77 /* Lister.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Lister.entitlements; sourceTree = "<group>"; };
 		1674D9E018F752960019FF77 /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		168178BA19100ED6008B46DC /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		1682F5F718F8ACD9000B87A6 /* ListItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListItemCell.swift; sourceTree = "<group>"; };
 		16864CA519F88AF900C7E9C0 /* glance-0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "glance-0@2x.png"; path = "Lister WatchKit App/Assets/Badge/glance-0@2x.png"; sourceTree = SOURCE_ROOT; };
 		16864CA619F88AF900C7E9C0 /* glance-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "glance-1@2x.png"; path = "Lister WatchKit App/Assets/Badge/glance-1@2x.png"; sourceTree = SOURCE_ROOT; };
@@ -488,14 +633,95 @@
 		16AF5213191FF94B0088ED08 /* CheckBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CheckBox.swift; path = ../ListerKit/CheckBox.swift; sourceTree = "<group>"; };
 		16AF9FD11987FEA3008CAA4C /* LocalListCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalListCoordinator.swift; sourceTree = "<group>"; };
 		16AF9FD5198864DA008CAA4C /* CloudListCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudListCoordinator.swift; sourceTree = "<group>"; };
+		16BB13ED1B82AFCE006E0F7C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		16C8CB3C1986C2D100F8BCFE /* ListsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = ListsController.swift; path = ../ListerKit/ListsController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		16CBDAA718F6EE3A00233D3C /* Lister.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lister.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16CBDAAB18F6EE3A00233D3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		16CBDAAE18F6EE3A00233D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		16CBDAB618F6EE3A00233D3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		16CBDAB818F6EE3A00233D3C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		16CD55B61B1279D900DB4F4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		16CD55E11B127D2400DB4F4F /* Lister Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lister Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		16CD55E41B127D2400DB4F4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		16CD55E61B127D2400DB4F4F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		16CD55E81B127D2400DB4F4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16CD55ED1B127D2400DB4F4F /* Lister Watch Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Lister Watch Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		16CD55F21B127D2400DB4F4F /* ListsInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsInterfaceController.swift; sourceTree = "<group>"; };
+		16CD55F41B127D2400DB4F4F /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		16CD55F61B127D2400DB4F4F /* GlanceInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceInterfaceController.swift; sourceTree = "<group>"; };
+		16CD55FA1B127D2400DB4F4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16CD560C1B127DDC00DB4F4F /* ListerWatchKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ListerWatchKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		16CD56101B127DDC00DB4F4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		16DAC8AC18F9BB5400251E9D /* ListColorCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListColorCell.swift; sourceTree = "<group>"; };
 		16DAC8AE18F9DAA800251E9D /* ListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListCell.swift; sourceTree = "<group>"; };
+		16E63F281B128063001D63DF /* ColoredTextRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColoredTextRowController.swift; path = "Lister WatchKit Common/ColoredTextRowController.swift"; sourceTree = "<group>"; };
+		16E63F291B128063001D63DF /* ListItemRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ListItemRowController.swift; path = "Lister WatchKit Common/ListItemRowController.swift"; sourceTree = "<group>"; };
+		16E63F2C1B12806F001D63DF /* GlanceBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GlanceBadge.swift; path = "Lister WatchKit Common/Glance/GlanceBadge.swift"; sourceTree = "<group>"; };
+		16E63F371B12811C001D63DF /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		16E63F381B12811C001D63DF /* Localizable.stringsdict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Localizable.stringsdict; sourceTree = "<group>"; };
+		16E63F3E1B128159001D63DF /* glance-0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-0@2x.png"; sourceTree = "<group>"; };
+		16E63F3F1B128159001D63DF /* glance-10@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-10@2x.png"; sourceTree = "<group>"; };
+		16E63F401B128159001D63DF /* glance-11@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-11@2x.png"; sourceTree = "<group>"; };
+		16E63F411B128159001D63DF /* glance-12@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-12@2x.png"; sourceTree = "<group>"; };
+		16E63F421B128159001D63DF /* glance-13@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-13@2x.png"; sourceTree = "<group>"; };
+		16E63F431B128159001D63DF /* glance-14@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-14@2x.png"; sourceTree = "<group>"; };
+		16E63F441B128159001D63DF /* glance-15@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-15@2x.png"; sourceTree = "<group>"; };
+		16E63F451B128159001D63DF /* glance-16@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-16@2x.png"; sourceTree = "<group>"; };
+		16E63F461B128159001D63DF /* glance-17@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-17@2x.png"; sourceTree = "<group>"; };
+		16E63F471B128159001D63DF /* glance-18@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-18@2x.png"; sourceTree = "<group>"; };
+		16E63F481B128159001D63DF /* glance-19@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-19@2x.png"; sourceTree = "<group>"; };
+		16E63F491B128159001D63DF /* glance-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-1@2x.png"; sourceTree = "<group>"; };
+		16E63F4A1B128159001D63DF /* glance-20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-20@2x.png"; sourceTree = "<group>"; };
+		16E63F4B1B128159001D63DF /* glance-21@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-21@2x.png"; sourceTree = "<group>"; };
+		16E63F4C1B128159001D63DF /* glance-22@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-22@2x.png"; sourceTree = "<group>"; };
+		16E63F4D1B128159001D63DF /* glance-23@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-23@2x.png"; sourceTree = "<group>"; };
+		16E63F4E1B128159001D63DF /* glance-24@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-24@2x.png"; sourceTree = "<group>"; };
+		16E63F4F1B128159001D63DF /* glance-25@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-25@2x.png"; sourceTree = "<group>"; };
+		16E63F501B128159001D63DF /* glance-26@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-26@2x.png"; sourceTree = "<group>"; };
+		16E63F511B128159001D63DF /* glance-27@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-27@2x.png"; sourceTree = "<group>"; };
+		16E63F521B128159001D63DF /* glance-28@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-28@2x.png"; sourceTree = "<group>"; };
+		16E63F531B128159001D63DF /* glance-29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-29@2x.png"; sourceTree = "<group>"; };
+		16E63F541B128159001D63DF /* glance-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-2@2x.png"; sourceTree = "<group>"; };
+		16E63F551B128159001D63DF /* glance-30@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-30@2x.png"; sourceTree = "<group>"; };
+		16E63F561B128159001D63DF /* glance-31@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-31@2x.png"; sourceTree = "<group>"; };
+		16E63F571B128159001D63DF /* glance-32@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-32@2x.png"; sourceTree = "<group>"; };
+		16E63F581B128159001D63DF /* glance-33@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-33@2x.png"; sourceTree = "<group>"; };
+		16E63F591B128159001D63DF /* glance-34@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-34@2x.png"; sourceTree = "<group>"; };
+		16E63F5A1B128159001D63DF /* glance-35@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-35@2x.png"; sourceTree = "<group>"; };
+		16E63F5B1B128159001D63DF /* glance-36@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-36@2x.png"; sourceTree = "<group>"; };
+		16E63F5C1B128159001D63DF /* glance-37@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-37@2x.png"; sourceTree = "<group>"; };
+		16E63F5D1B128159001D63DF /* glance-38@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-38@2x.png"; sourceTree = "<group>"; };
+		16E63F5E1B128159001D63DF /* glance-39@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-39@2x.png"; sourceTree = "<group>"; };
+		16E63F5F1B128159001D63DF /* glance-3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-3@2x.png"; sourceTree = "<group>"; };
+		16E63F601B128159001D63DF /* glance-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-40@2x.png"; sourceTree = "<group>"; };
+		16E63F611B128159001D63DF /* glance-41@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-41@2x.png"; sourceTree = "<group>"; };
+		16E63F621B128159001D63DF /* glance-42@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-42@2x.png"; sourceTree = "<group>"; };
+		16E63F631B128159001D63DF /* glance-43@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-43@2x.png"; sourceTree = "<group>"; };
+		16E63F641B128159001D63DF /* glance-44@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-44@2x.png"; sourceTree = "<group>"; };
+		16E63F651B128159001D63DF /* glance-4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-4@2x.png"; sourceTree = "<group>"; };
+		16E63F661B128159001D63DF /* glance-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-5@2x.png"; sourceTree = "<group>"; };
+		16E63F671B128159001D63DF /* glance-6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-6@2x.png"; sourceTree = "<group>"; };
+		16E63F681B128159001D63DF /* glance-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-7@2x.png"; sourceTree = "<group>"; };
+		16E63F691B128159001D63DF /* glance-8@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-8@2x.png"; sourceTree = "<group>"; };
+		16E63F6A1B128159001D63DF /* glance-9@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glance-9@2x.png"; sourceTree = "<group>"; };
+		16E63F6C1B128159001D63DF /* checkbox-blue-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-blue-checked@2x.png"; sourceTree = "<group>"; };
+		16E63F6D1B128159001D63DF /* checkbox-blue-unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-blue-unchecked@2x.png"; sourceTree = "<group>"; };
+		16E63F6E1B128159001D63DF /* checkbox-gray-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-gray-checked@2x.png"; sourceTree = "<group>"; };
+		16E63F6F1B128159001D63DF /* checkbox-gray-unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-gray-unchecked@2x.png"; sourceTree = "<group>"; };
+		16E63F701B128159001D63DF /* checkbox-green-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-green-checked@2x.png"; sourceTree = "<group>"; };
+		16E63F711B128159001D63DF /* checkbox-green-unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-green-unchecked@2x.png"; sourceTree = "<group>"; };
+		16E63F721B128159001D63DF /* checkbox-orange-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-orange-checked@2x.png"; sourceTree = "<group>"; };
+		16E63F731B128159001D63DF /* checkbox-orange-unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-orange-unchecked@2x.png"; sourceTree = "<group>"; };
+		16E63F741B128159001D63DF /* checkbox-red-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-red-checked@2x.png"; sourceTree = "<group>"; };
+		16E63F751B128159001D63DF /* checkbox-red-unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-red-unchecked@2x.png"; sourceTree = "<group>"; };
+		16E63F761B128159001D63DF /* checkbox-yellow-checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-yellow-checked@2x.png"; sourceTree = "<group>"; };
+		16E63F771B128159001D63DF /* checkbox-yellow-unchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkbox-yellow-unchecked@2x.png"; sourceTree = "<group>"; };
+		16E63F791B128159001D63DF /* check-all@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "check-all@2x.png"; sourceTree = "<group>"; };
+		16E63F7A1B128159001D63DF /* uncheck-all@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uncheck-all@2x.png"; sourceTree = "<group>"; };
+		16E63FB61B12826F001D63DF /* ListInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListInterfaceController.swift; sourceTree = "<group>"; };
+		16E63FC51B128615001D63DF /* ConnectivityListsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityListsController.swift; sourceTree = "<group>"; };
+		16E63FC71B12862A001D63DF /* ListInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListInfo.swift; sourceTree = "<group>"; };
+		16E63FCA1B12989F001D63DF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS2.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		16EE5954192016410052916A /* ListerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ListerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16EE5957192016430052916A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		16F60BF11A854A640028B2D8 /* Lister WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Lister WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -504,6 +730,7 @@
 		3E028CD41A1693B1004B6F9D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		3E028CD51A1693B1004B6F9D /* Localizable.stringsdict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Localizable.stringsdict; sourceTree = "<group>"; };
 		3E13050E1A0437120079EB80 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		3E197D4F1B056D740080D039 /* SegueHandlerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueHandlerType.swift; sourceTree = "<group>"; };
 		3E251757197F7A0400B8AF96 /* ListerKit Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ListerKit Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E25175B197F7A0500B8AF96 /* ListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListTests.swift; path = "ListerKit Tests/ListTests.swift"; sourceTree = SOURCE_ROOT; };
 		3E251767197F7A1400B8AF96 /* ListerKit Tests (OS X).xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ListerKit Tests (OS X).xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -525,8 +752,6 @@
 		3E93586A1920343C0091408E /* ListRowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListRowViewController.swift; path = ListerTodayOSX/ListRowViewController.swift; sourceTree = SOURCE_ROOT; };
 		3E93587D1920355C0091408E /* ListerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ListerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E9358801920355C0091408E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3E950668198574C80030A9D1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		3E95066A198574CD0030A9D1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		3EA0250D19204ACE0090F6DB /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3EA0250F19204BCF0090F6DB /* TodayListManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodayListManager.swift; sourceTree = "<group>"; };
 		3EA02511192052590090F6DB /* TodayViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TodayViewController.xib; path = ListerTodayOSX/TodayViewController.xib; sourceTree = SOURCE_ROOT; };
@@ -572,8 +797,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				162C25C31B1CEB51004DD2FC /* NotificationCenter.framework in Frameworks */,
 				162CB9E81936F0AF00F2586B /* ListerKit.framework in Frameworks */,
-				16A9851D1936EEA5007B7F37 /* NotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,6 +807,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				16EE5969192016430052916A /* ListerKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD55EA1B127D2400DB4F4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16CD56141B127E6600DB4F4F /* ListerWatchKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD56081B127DDC00DB4F4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,7 +868,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E8576E219205618004FF442 /* ListerKit.framework in Frameworks */,
-				3E93585F1920343C0091408E /* NotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,6 +884,8 @@
 		1603123419DA00590011D42B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				162C25C11B1CEA57004DD2FC /* NotificationCenter.framework */,
+				16E63FCA1B12989F001D63DF /* UIKit.framework */,
 				3EDD63BE1A0981AF00AC9343 /* Cocoa.framework */,
 				3E13050E1A0437120079EB80 /* Foundation.framework */,
 				1603123519DA00590011D42B /* WatchKit.framework */,
@@ -727,15 +968,6 @@
 			name = "List Presenter Tests";
 			sourceTree = "<group>";
 		};
-		1623FD221A03005D00631A60 /* Row Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				1623FD1A1A03005800631A60 /* ColoredTextRowController.swift */,
-				1623FD1B1A03005800631A60 /* ListItemRowController.swift */,
-			);
-			name = "Row Controllers";
-			sourceTree = "<group>";
-		};
 		1623FD231A03018A00631A60 /* Menus */ = {
 			isa = PBXGroup;
 			children = (
@@ -767,7 +999,6 @@
 		1628E3E419F5E9B600BCE036 /* Glance */ = {
 			isa = PBXGroup;
 			children = (
-				1628E3E519F5E9C300BCE036 /* GlanceBadge.swift */,
 				1628E3E619F5E9C300BCE036 /* GlanceInterfaceController.swift */,
 			);
 			name = Glance;
@@ -785,6 +1016,7 @@
 			isa = PBXGroup;
 			children = (
 				3E6F0E40198C847A009A4CBB /* Models */,
+				3E197D4E1B056CC80080D039 /* Application Helper Types */,
 				3EB4307D1A08357A00B64453 /* Presenters */,
 				3E6F0E41198C8487009A4CBB /* UI */,
 				3E6F0E42198C849F009A4CBB /* Configuration */,
@@ -792,16 +1024,6 @@
 			);
 			name = "Shared ListerKit Framework Code";
 			path = Lister;
-			sourceTree = "<group>";
-		};
-		168178B919100ED6008B46DC /* Imported Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				3E95066A198574CD0030A9D1 /* Foundation.framework */,
-				3E950668198574C80030A9D1 /* UIKit.framework */,
-				168178BA19100ED6008B46DC /* NotificationCenter.framework */,
-			);
-			name = "Imported Frameworks";
 			sourceTree = "<group>";
 		};
 		168645EE19F889CF00C7E9C0 /* Assets */ = {
@@ -890,12 +1112,14 @@
 		16CBDA9E18F6EE3A00233D3C = {
 			isa = PBXGroup;
 			children = (
+				16BB13ED1B82AFCE006E0F7C /* README.md */,
 				16CBDAA918F6EE3A00233D3C /* Lister iOS App */,
 				55EEFA841A1A5C9A00172D58 /* Lister WatchKit App */,
+				16E63F251B12802C001D63DF /* Shared Lister WatchKit Code */,
+				16CD56061B127D8300DB4F4F /* Lister Watch App */,
 				3E497FC718FAFA2400B32837 /* Lister OS X App */,
 				1674D9AB18F7299E0019FF77 /* Shared ListerKit Framework Code */,
 				3E6F0E46198C8663009A4CBB /* Shared Lister Resources */,
-				168178B919100ED6008B46DC /* Imported Frameworks */,
 				1603123419DA00590011D42B /* Frameworks */,
 				16CBDAA818F6EE3A00233D3C /* Products */,
 			);
@@ -915,6 +1139,9 @@
 				16F60BF11A854A640028B2D8 /* Lister WatchKit Extension.appex */,
 				16F60BFD1A854A650028B2D8 /* Lister WatchKit App.app */,
 				1611C5E81A925C1D00472891 /* Lister Tests.xctest */,
+				16CD55E11B127D2400DB4F4F /* Lister Watch App.app */,
+				16CD55ED1B127D2400DB4F4F /* Lister Watch Extension.appex */,
+				16CD560C1B127DDC00DB4F4F /* ListerWatchKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -938,6 +1165,217 @@
 				16CBDAB818F6EE3A00233D3C /* Images.xcassets */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		16CD55E21B127D2400DB4F4F /* Lister Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				16CD55E31B127D2400DB4F4F /* Interface.storyboard */,
+				16E63F3C1B128159001D63DF /* Assets */,
+				16E63F3B1B128132001D63DF /* Supporting Files */,
+			);
+			path = "Lister Watch App";
+			sourceTree = "<group>";
+		};
+		16CD55F11B127D2400DB4F4F /* Lister Watch Extension */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F341B1280AD001D63DF /* Main App */,
+				16E63F351B1280B5001D63DF /* Glance */,
+				16E63F361B1280C1001D63DF /* Supporting Files */,
+			);
+			path = "Lister Watch Extension";
+			sourceTree = "<group>";
+		};
+		16CD56061B127D8300DB4F4F /* Lister Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				16CD55F11B127D2400DB4F4F /* Lister Watch Extension */,
+				16CD55E21B127D2400DB4F4F /* Lister Watch App */,
+				16CD560D1B127DDC00DB4F4F /* ListerKit Framework (watchOS) */,
+			);
+			name = "Lister Watch App";
+			sourceTree = "<group>";
+		};
+		16CD560D1B127DDC00DB4F4F /* ListerKit Framework (watchOS) */ = {
+			isa = PBXGroup;
+			children = (
+				16E63FC41B1285E0001D63DF /* Storage */,
+				16E63FC31B1285D8001D63DF /* Supporting Files */,
+			);
+			name = "ListerKit Framework (watchOS)";
+			path = "ListerKit (watchOS)";
+			sourceTree = "<group>";
+		};
+		16E63F251B12802C001D63DF /* Shared Lister WatchKit Code */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F261B128045001D63DF /* Row Controllers */,
+				16E63F271B12804F001D63DF /* Glance */,
+			);
+			name = "Shared Lister WatchKit Code";
+			sourceTree = "<group>";
+		};
+		16E63F261B128045001D63DF /* Row Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F281B128063001D63DF /* ColoredTextRowController.swift */,
+				16E63F291B128063001D63DF /* ListItemRowController.swift */,
+			);
+			name = "Row Controllers";
+			sourceTree = "<group>";
+		};
+		16E63F271B12804F001D63DF /* Glance */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F2C1B12806F001D63DF /* GlanceBadge.swift */,
+			);
+			name = Glance;
+			sourceTree = "<group>";
+		};
+		16E63F341B1280AD001D63DF /* Main App */ = {
+			isa = PBXGroup;
+			children = (
+				16CD55F21B127D2400DB4F4F /* ListsInterfaceController.swift */,
+				16E63FB61B12826F001D63DF /* ListInterfaceController.swift */,
+				16CD55F41B127D2400DB4F4F /* ExtensionDelegate.swift */,
+			);
+			name = "Main App";
+			sourceTree = "<group>";
+		};
+		16E63F351B1280B5001D63DF /* Glance */ = {
+			isa = PBXGroup;
+			children = (
+				16CD55F61B127D2400DB4F4F /* GlanceInterfaceController.swift */,
+			);
+			path = Glance;
+			sourceTree = "<group>";
+		};
+		16E63F361B1280C1001D63DF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F371B12811C001D63DF /* Localizable.strings */,
+				16E63F381B12811C001D63DF /* Localizable.stringsdict */,
+				16CD55FA1B127D2400DB4F4F /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		16E63F3B1B128132001D63DF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				16CD55E81B127D2400DB4F4F /* Info.plist */,
+				16CD55E61B127D2400DB4F4F /* Images.xcassets */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		16E63F3C1B128159001D63DF /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F6B1B128159001D63DF /* CheckBox */,
+				16E63F3D1B128159001D63DF /* Glance */,
+				16E63F781B128159001D63DF /* Menus */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		16E63F3D1B128159001D63DF /* Glance */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F3E1B128159001D63DF /* glance-0@2x.png */,
+				16E63F3F1B128159001D63DF /* glance-10@2x.png */,
+				16E63F401B128159001D63DF /* glance-11@2x.png */,
+				16E63F411B128159001D63DF /* glance-12@2x.png */,
+				16E63F421B128159001D63DF /* glance-13@2x.png */,
+				16E63F431B128159001D63DF /* glance-14@2x.png */,
+				16E63F441B128159001D63DF /* glance-15@2x.png */,
+				16E63F451B128159001D63DF /* glance-16@2x.png */,
+				16E63F461B128159001D63DF /* glance-17@2x.png */,
+				16E63F471B128159001D63DF /* glance-18@2x.png */,
+				16E63F481B128159001D63DF /* glance-19@2x.png */,
+				16E63F491B128159001D63DF /* glance-1@2x.png */,
+				16E63F4A1B128159001D63DF /* glance-20@2x.png */,
+				16E63F4B1B128159001D63DF /* glance-21@2x.png */,
+				16E63F4C1B128159001D63DF /* glance-22@2x.png */,
+				16E63F4D1B128159001D63DF /* glance-23@2x.png */,
+				16E63F4E1B128159001D63DF /* glance-24@2x.png */,
+				16E63F4F1B128159001D63DF /* glance-25@2x.png */,
+				16E63F501B128159001D63DF /* glance-26@2x.png */,
+				16E63F511B128159001D63DF /* glance-27@2x.png */,
+				16E63F521B128159001D63DF /* glance-28@2x.png */,
+				16E63F531B128159001D63DF /* glance-29@2x.png */,
+				16E63F541B128159001D63DF /* glance-2@2x.png */,
+				16E63F551B128159001D63DF /* glance-30@2x.png */,
+				16E63F561B128159001D63DF /* glance-31@2x.png */,
+				16E63F571B128159001D63DF /* glance-32@2x.png */,
+				16E63F581B128159001D63DF /* glance-33@2x.png */,
+				16E63F591B128159001D63DF /* glance-34@2x.png */,
+				16E63F5A1B128159001D63DF /* glance-35@2x.png */,
+				16E63F5B1B128159001D63DF /* glance-36@2x.png */,
+				16E63F5C1B128159001D63DF /* glance-37@2x.png */,
+				16E63F5D1B128159001D63DF /* glance-38@2x.png */,
+				16E63F5E1B128159001D63DF /* glance-39@2x.png */,
+				16E63F5F1B128159001D63DF /* glance-3@2x.png */,
+				16E63F601B128159001D63DF /* glance-40@2x.png */,
+				16E63F611B128159001D63DF /* glance-41@2x.png */,
+				16E63F621B128159001D63DF /* glance-42@2x.png */,
+				16E63F631B128159001D63DF /* glance-43@2x.png */,
+				16E63F641B128159001D63DF /* glance-44@2x.png */,
+				16E63F651B128159001D63DF /* glance-4@2x.png */,
+				16E63F661B128159001D63DF /* glance-5@2x.png */,
+				16E63F671B128159001D63DF /* glance-6@2x.png */,
+				16E63F681B128159001D63DF /* glance-7@2x.png */,
+				16E63F691B128159001D63DF /* glance-8@2x.png */,
+				16E63F6A1B128159001D63DF /* glance-9@2x.png */,
+			);
+			name = Glance;
+			path = Badge;
+			sourceTree = "<group>";
+		};
+		16E63F6B1B128159001D63DF /* CheckBox */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F6C1B128159001D63DF /* checkbox-blue-checked@2x.png */,
+				16E63F6D1B128159001D63DF /* checkbox-blue-unchecked@2x.png */,
+				16E63F6E1B128159001D63DF /* checkbox-gray-checked@2x.png */,
+				16E63F6F1B128159001D63DF /* checkbox-gray-unchecked@2x.png */,
+				16E63F701B128159001D63DF /* checkbox-green-checked@2x.png */,
+				16E63F711B128159001D63DF /* checkbox-green-unchecked@2x.png */,
+				16E63F721B128159001D63DF /* checkbox-orange-checked@2x.png */,
+				16E63F731B128159001D63DF /* checkbox-orange-unchecked@2x.png */,
+				16E63F741B128159001D63DF /* checkbox-red-checked@2x.png */,
+				16E63F751B128159001D63DF /* checkbox-red-unchecked@2x.png */,
+				16E63F761B128159001D63DF /* checkbox-yellow-checked@2x.png */,
+				16E63F771B128159001D63DF /* checkbox-yellow-unchecked@2x.png */,
+			);
+			path = CheckBox;
+			sourceTree = "<group>";
+		};
+		16E63F781B128159001D63DF /* Menus */ = {
+			isa = PBXGroup;
+			children = (
+				16E63F791B128159001D63DF /* check-all@2x.png */,
+				16E63F7A1B128159001D63DF /* uncheck-all@2x.png */,
+			);
+			path = Menus;
+			sourceTree = "<group>";
+		};
+		16E63FC31B1285D8001D63DF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				16CD56101B127DDC00DB4F4F /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		16E63FC41B1285E0001D63DF /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				16E63FC71B12862A001D63DF /* ListInfo.swift */,
+				16E63FC51B128615001D63DF /* ConnectivityListsController.swift */,
+			);
+			name = Storage;
 			sourceTree = "<group>";
 		};
 		16EE5956192016430052916A /* Supporting Files */ = {
@@ -987,6 +1425,14 @@
 				1603124319DA00590011D42B /* Supporting Files */,
 			);
 			path = "Lister WatchKit App";
+			sourceTree = "<group>";
+		};
+		3E197D4E1B056CC80080D039 /* Application Helper Types */ = {
+			isa = PBXGroup;
+			children = (
+				3E197D4F1B056D740080D039 /* SegueHandlerType.swift */,
+			);
+			name = "Application Helper Types";
 			sourceTree = "<group>";
 		};
 		3E251774197F7ACC00B8AF96 /* iOS Supporting Files */ = {
@@ -1062,7 +1508,7 @@
 			isa = PBXGroup;
 			children = (
 				16CBDAB518F6EE3A00233D3C /* Main.storyboard */,
-				164B39A819A27E410064C879 /* Launch.xib */,
+				16CD55B51B1279D900DB4F4F /* Launch Screen.storyboard */,
 				16CBDAAE18F6EE3A00233D3C /* AppDelegate.swift */,
 				160868771A8EB1CA00A5A707 /* Context */,
 				16EE597919201D390052916A /* View Controllers */,
@@ -1330,7 +1776,6 @@
 			children = (
 				1623FD1D1A03005800631A60 /* ListsInterfaceController.swift */,
 				1623FD1C1A03005800631A60 /* ListInterfaceController.swift */,
-				1623FD221A03005D00631A60 /* Row Controllers */,
 			);
 			name = "Main App";
 			sourceTree = "<group>";
@@ -1338,6 +1783,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		16CD56091B127DDC00DB4F4F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		16EE5951192016410052916A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1407,6 +1859,7 @@
 				16CBDAA518F6EE3A00233D3C /* Resources */,
 				16AF5211191FF8F70088ED08 /* Embed Frameworks */,
 				16A9852D1936EEA7007B7F37 /* Embed App Extensions */,
+				16CD56051B127D2500DB4F4F /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
@@ -1415,12 +1868,67 @@
 				16EE596C192016430052916A /* PBXTargetDependency */,
 				16A985261936EEA7007B7F37 /* PBXTargetDependency */,
 				16A985291936EEA7007B7F37 /* PBXTargetDependency */,
-				16F60C0A1A854A650028B2D8 /* PBXTargetDependency */,
+				16CD55FC1B127D2400DB4F4F /* PBXTargetDependency */,
+				169B19B01B1BF4C0003FDA9B /* PBXTargetDependency */,
 			);
 			name = Lister;
 			productName = Lister;
 			productReference = 16CBDAA718F6EE3A00233D3C /* Lister.app */;
 			productType = "com.apple.product-type.application";
+		};
+		16CD55E01B127D2400DB4F4F /* Lister Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16CD56041B127D2500DB4F4F /* Build configuration list for PBXNativeTarget "Lister Watch App" */;
+			buildPhases = (
+				16CD55DF1B127D2400DB4F4F /* Resources */,
+				16CD56031B127D2500DB4F4F /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16CD55F01B127D2400DB4F4F /* PBXTargetDependency */,
+			);
+			name = "Lister Watch App";
+			productName = "Lister Watch App";
+			productReference = 16CD55E11B127D2400DB4F4F /* Lister Watch App.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		16CD55EC1B127D2400DB4F4F /* Lister Watch Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16CD56021B127D2500DB4F4F /* Build configuration list for PBXNativeTarget "Lister Watch Extension" */;
+			buildPhases = (
+				16CD55E91B127D2400DB4F4F /* Sources */,
+				16CD55EA1B127D2400DB4F4F /* Frameworks */,
+				16CD55EB1B127D2400DB4F4F /* Resources */,
+				16CD56181B127E6600DB4F4F /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16CD56171B127E6600DB4F4F /* PBXTargetDependency */,
+			);
+			name = "Lister Watch Extension";
+			productName = "Lister Watch App Extension";
+			productReference = 16CD55ED1B127D2400DB4F4F /* Lister Watch Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
+		16CD560B1B127DDC00DB4F4F /* ListerKit (watchOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16CD56111B127DDC00DB4F4F /* Build configuration list for PBXNativeTarget "ListerKit (watchOS)" */;
+			buildPhases = (
+				16CD56071B127DDC00DB4F4F /* Sources */,
+				16CD56081B127DDC00DB4F4F /* Frameworks */,
+				16CD56091B127DDC00DB4F4F /* Headers */,
+				16CD560A1B127DDC00DB4F4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ListerKit (watchOS)";
+			productName = "ListerKit (watchOS)";
+			productReference = 16CD560C1B127DDC00DB4F4F /* ListerWatchKit.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 		16EE5953192016410052916A /* ListerKit */ = {
 			isa = PBXNativeTarget;
@@ -1487,6 +1995,7 @@
 			dependencies = (
 				3EE2348B1980530400F80662 /* PBXTargetDependency */,
 				3EE234901980536A00F80662 /* PBXTargetDependency */,
+				160D670D1B1E185E00E923AB /* PBXTargetDependency */,
 			);
 			name = "ListerKit Tests";
 			productName = ListerKitTests;
@@ -1580,7 +2089,7 @@
 		16CBDA9F18F6EE3A00233D3C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Apple Inc.";
 				TargetAttributes = {
 					1611C5E71A925C1D00472891 = {
@@ -1589,7 +2098,6 @@
 					};
 					16A9851B1936EEA5007B7F37 = {
 						CreatedOnToolsVersion = 6.0;
-						DevelopmentTeam = 8YM7FJN8FY;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1600,7 +2108,6 @@
 						};
 					};
 					16CBDAA618F6EE3A00233D3C = {
-						DevelopmentTeam = 8YM7FJN8FY;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1610,13 +2117,20 @@
 							};
 						};
 					};
+					16CD55E01B127D2400DB4F4F = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					16CD55EC1B127D2400DB4F4F = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					16CD560B1B127DDC00DB4F4F = {
+						CreatedOnToolsVersion = 7.0;
+					};
 					16EE5953192016410052916A = {
 						CreatedOnToolsVersion = 6.0;
-						DevelopmentTeam = 8YM7FJN8FY;
 					};
 					16F60BF01A854A640028B2D8 = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 8YM7FJN8FY;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -1625,11 +2139,10 @@
 					};
 					16F60BFC1A854A650028B2D8 = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 8YM7FJN8FY;
 					};
 					3E251756197F7A0400B8AF96 = {
 						CreatedOnToolsVersion = 6.0;
-						TestTargetID = 16EE5953192016410052916A;
+						TestTargetID = 16CBDAA618F6EE3A00233D3C;
 					};
 					3E251766197F7A1400B8AF96 = {
 						CreatedOnToolsVersion = 6.0;
@@ -1667,6 +2180,9 @@
 				16F60BFC1A854A650028B2D8 /* Lister WatchKit App */,
 				16EE5953192016410052916A /* ListerKit */,
 				3E251756197F7A0400B8AF96 /* ListerKit Tests */,
+				16CD55EC1B127D2400DB4F4F /* Lister Watch Extension */,
+				16CD55E01B127D2400DB4F4F /* Lister Watch App */,
+				16CD560B1B127DDC00DB4F4F /* ListerKit (watchOS) */,
 				3E497FC518FAFA2400B32837 /* Lister (OS X) */,
 				3E93585D1920343C0091408E /* Lister Today (OS X) */,
 				3E93587C1920355C0091408E /* ListerKit (OS X) */,
@@ -1698,11 +2214,95 @@
 			files = (
 				3EBE02D3198CA7EB0007E4AC /* ListerDocumentIcon.icns in Resources */,
 				161E8A901A194F7F00A85E69 /* Groceries.list in Resources */,
-				164B39A919A27E410064C879 /* Launch.xib in Resources */,
+				16E63F3A1B12811C001D63DF /* Localizable.stringsdict in Resources */,
 				16CBDAB918F6EE3A00233D3C /* Images.xcassets in Resources */,
 				16CBDAB718F6EE3A00233D3C /* Main.storyboard in Resources */,
 				161E8A911A194F7F00A85E69 /* Tech Toys.list in Resources */,
+				16E63F391B12811C001D63DF /* Localizable.strings in Resources */,
 				161E8A921A194F7F00A85E69 /* Today.list in Resources */,
+				16CD55B71B1279D900DB4F4F /* Launch Screen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD55DF1B127D2400DB4F4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16ADC44C1B1AB6D700479D29 /* checkbox-green-unchecked@2x.png in Resources */,
+				16ADC4731B1AB6E100479D29 /* glance-39@2x.png in Resources */,
+				16ADC4701B1AB6E100479D29 /* glance-36@2x.png in Resources */,
+				16ADC4761B1AB6E100479D29 /* glance-41@2x.png in Resources */,
+				16CD55E71B127D2400DB4F4F /* Images.xcassets in Resources */,
+				16ADC4611B1AB6E100479D29 /* glance-22@2x.png in Resources */,
+				16ADC4751B1AB6E100479D29 /* glance-40@2x.png in Resources */,
+				16ADC44D1B1AB6D700479D29 /* checkbox-orange-checked@2x.png in Resources */,
+				16ADC4741B1AB6E100479D29 /* glance-3@2x.png in Resources */,
+				16ADC4561B1AB6E100479D29 /* glance-12@2x.png in Resources */,
+				16ADC4471B1AB6D700479D29 /* checkbox-blue-checked@2x.png in Resources */,
+				16ADC4521B1AB6D700479D29 /* checkbox-yellow-unchecked@2x.png in Resources */,
+				16ADC4621B1AB6E100479D29 /* glance-23@2x.png in Resources */,
+				16ADC4591B1AB6E100479D29 /* glance-15@2x.png in Resources */,
+				16ADC4541B1AB6E100479D29 /* glance-10@2x.png in Resources */,
+				16ADC4781B1AB6E100479D29 /* glance-43@2x.png in Resources */,
+				16ADC47D1B1AB6E100479D29 /* glance-7@2x.png in Resources */,
+				16ADC4771B1AB6E100479D29 /* glance-42@2x.png in Resources */,
+				16ADC4481B1AB6D700479D29 /* checkbox-blue-unchecked@2x.png in Resources */,
+				16ADC46F1B1AB6E100479D29 /* glance-35@2x.png in Resources */,
+				16ADC46D1B1AB6E100479D29 /* glance-33@2x.png in Resources */,
+				16ADC4641B1AB6E100479D29 /* glance-25@2x.png in Resources */,
+				16ADC45A1B1AB6E100479D29 /* glance-16@2x.png in Resources */,
+				16ADC4551B1AB6E100479D29 /* glance-11@2x.png in Resources */,
+				16ADC4581B1AB6E100479D29 /* glance-14@2x.png in Resources */,
+				16ADC4801B1AB6EB00479D29 /* check-all@2x.png in Resources */,
+				16ADC44F1B1AB6D700479D29 /* checkbox-red-checked@2x.png in Resources */,
+				16ADC46E1B1AB6E100479D29 /* glance-34@2x.png in Resources */,
+				16ADC4811B1AB6EB00479D29 /* uncheck-all@2x.png in Resources */,
+				16ADC4651B1AB6E100479D29 /* glance-26@2x.png in Resources */,
+				16ADC44B1B1AB6D700479D29 /* checkbox-green-checked@2x.png in Resources */,
+				16ADC4691B1AB6E100479D29 /* glance-2@2x.png in Resources */,
+				16ADC46A1B1AB6E100479D29 /* glance-30@2x.png in Resources */,
+				16ADC44E1B1AB6D700479D29 /* checkbox-orange-unchecked@2x.png in Resources */,
+				16ADC4681B1AB6E100479D29 /* glance-29@2x.png in Resources */,
+				16ADC4631B1AB6E100479D29 /* glance-24@2x.png in Resources */,
+				16ADC47C1B1AB6E100479D29 /* glance-6@2x.png in Resources */,
+				16ADC4601B1AB6E100479D29 /* glance-21@2x.png in Resources */,
+				16ADC4661B1AB6E100479D29 /* glance-27@2x.png in Resources */,
+				16ADC46C1B1AB6E100479D29 /* glance-32@2x.png in Resources */,
+				16ADC4671B1AB6E100479D29 /* glance-28@2x.png in Resources */,
+				16ADC4501B1AB6D700479D29 /* checkbox-red-unchecked@2x.png in Resources */,
+				16ADC44A1B1AB6D700479D29 /* checkbox-gray-unchecked@2x.png in Resources */,
+				16ADC4511B1AB6D700479D29 /* checkbox-yellow-checked@2x.png in Resources */,
+				16ADC4491B1AB6D700479D29 /* checkbox-gray-checked@2x.png in Resources */,
+				16ADC47E1B1AB6E100479D29 /* glance-8@2x.png in Resources */,
+				16ADC4721B1AB6E100479D29 /* glance-38@2x.png in Resources */,
+				16ADC4791B1AB6E100479D29 /* glance-44@2x.png in Resources */,
+				16ADC47A1B1AB6E100479D29 /* glance-4@2x.png in Resources */,
+				16ADC4711B1AB6E100479D29 /* glance-37@2x.png in Resources */,
+				16ADC45F1B1AB6E100479D29 /* glance-20@2x.png in Resources */,
+				16ADC4531B1AB6E100479D29 /* glance-0@2x.png in Resources */,
+				16ADC45E1B1AB6E100479D29 /* glance-1@2x.png in Resources */,
+				16ADC4571B1AB6E100479D29 /* glance-13@2x.png in Resources */,
+				16ADC45C1B1AB6E100479D29 /* glance-18@2x.png in Resources */,
+				16ADC45B1B1AB6E100479D29 /* glance-17@2x.png in Resources */,
+				16CD55E51B127D2400DB4F4F /* Interface.storyboard in Resources */,
+				16ADC47B1B1AB6E100479D29 /* glance-5@2x.png in Resources */,
+				16ADC47F1B1AB6E100479D29 /* glance-9@2x.png in Resources */,
+				16ADC45D1B1AB6E100479D29 /* glance-19@2x.png in Resources */,
+				16ADC46B1B1AB6E100479D29 /* glance-31@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD55EB1B127D2400DB4F4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD560A1B127DDC00DB4F4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1795,7 +2395,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E251779197F7ACC00B8AF96 /* Info.plist in Resources */,
+				160D670B1B1E181E00E923AB /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1875,6 +2475,40 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		16CD55E91B127D2400DB4F4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16CD55F51B127D2400DB4F4F /* ExtensionDelegate.swift in Sources */,
+				16E63F301B128082001D63DF /* ColoredTextRowController.swift in Sources */,
+				16E63FC61B128615001D63DF /* ConnectivityListsController.swift in Sources */,
+				16E63F2F1B12807A001D63DF /* GlanceBadge.swift in Sources */,
+				16E63FB81B128277001D63DF /* ListInterfaceController.swift in Sources */,
+				16CD55F31B127D2400DB4F4F /* ListsInterfaceController.swift in Sources */,
+				16E63FC81B12862A001D63DF /* ListInfo.swift in Sources */,
+				16CD55F71B127D2400DB4F4F /* GlanceInterfaceController.swift in Sources */,
+				16E63F311B128082001D63DF /* ListItemRowController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16CD56071B127DDC00DB4F4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16E63FC91B128682001D63DF /* ListUtilities.swift in Sources */,
+				16E63FBD1B12829A001D63DF /* AllListItemsPresenter.swift in Sources */,
+				16E63FBC1B12829A001D63DF /* ListPresenterType.swift in Sources */,
+				16E63FBA1B128293001D63DF /* ListItem.swift in Sources */,
+				16E63FBE1B12829A001D63DF /* IncompleteListItemsPresenter.swift in Sources */,
+				16E63FC11B1282B5001D63DF /* ListColorUI.swift in Sources */,
+				16E63FBF1B1282A6001D63DF /* ListPresenterAlgorithms.swift in Sources */,
+				16E63FC21B1282C0001D63DF /* AppConfiguration.swift in Sources */,
+				16E63FBB1B12829A001D63DF /* ListPresenterDelegate.swift in Sources */,
+				16E63FB91B128293001D63DF /* List.swift in Sources */,
+				16E63FC01B1282A6001D63DF /* ListPresenterUtilities.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		16EE594F192016410052916A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1891,6 +2525,7 @@
 				16C8CB3D1986C2D100F8BCFE /* ListsController.swift in Sources */,
 				161E8A961A1956D400A85E69 /* DirectoryMonitor.swift in Sources */,
 				3EBC30461A132B1300EE6D1C /* ListPresenterAlgorithms.swift in Sources */,
+				3E197D501B056D740080D039 /* SegueHandlerType.swift in Sources */,
 				16EE5975192019CD0052916A /* List.swift in Sources */,
 				3EBC30421A132B0400EE6D1C /* ListPresenterType.swift in Sources */,
 				3EBC30481A132B1300EE6D1C /* ListPresenterUtilities.swift in Sources */,
@@ -1907,11 +2542,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				16F60C1B1A854D330028B2D8 /* GlanceInterfaceController.swift in Sources */,
-				16F60C181A854D330028B2D8 /* ColoredTextRowController.swift in Sources */,
 				16F60C171A854D2C0028B2D8 /* ListInterfaceController.swift in Sources */,
-				16F60C1A1A854D330028B2D8 /* GlanceBadge.swift in Sources */,
+				16E63F321B128084001D63DF /* ColoredTextRowController.swift in Sources */,
+				16E63F2E1B128078001D63DF /* GlanceBadge.swift in Sources */,
+				16E63F331B128084001D63DF /* ListItemRowController.swift in Sources */,
 				16F60C161A854D290028B2D8 /* ListsInterfaceController.swift in Sources */,
-				16F60C191A854D330028B2D8 /* ListItemRowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1983,6 +2618,7 @@
 				3EBC30471A132B1300EE6D1C /* ListPresenterAlgorithms.swift in Sources */,
 				3E3D094D19313A8500D21A98 /* AppConfiguration.swift in Sources */,
 				1623FCF41A02F93000631A60 /* AllListItemsPresenter.swift in Sources */,
+				3E197D511B056D740080D039 /* SegueHandlerType.swift in Sources */,
 				3E5F97ED1920378000723004 /* ListItem.swift in Sources */,
 				3EBC30491A132B1300EE6D1C /* ListPresenterUtilities.swift in Sources */,
 				3E5F97EE1920378300723004 /* List.swift in Sources */,
@@ -2002,6 +2638,11 @@
 			target = 3E93585D1920343C0091408E /* Lister Today (OS X) */;
 			targetProxy = 1608C4E51939988600CC1E53 /* PBXContainerItemProxy */;
 		};
+		160D670D1B1E185E00E923AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16CBDAA618F6EE3A00233D3C /* Lister */;
+			targetProxy = 160D670C1B1E185E00E923AB /* PBXContainerItemProxy */;
+		};
 		1611C5EF1A925C1D00472891 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 16CBDAA618F6EE3A00233D3C /* Lister */;
@@ -2012,6 +2653,11 @@
 			target = 3E93587C1920355C0091408E /* ListerKit (OS X) */;
 			targetProxy = 162170B51A8536F800B02D04 /* PBXContainerItemProxy */;
 		};
+		169B19B01B1BF4C0003FDA9B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16F60BF01A854A640028B2D8 /* Lister WatchKit Extension */;
+			targetProxy = 169B19AF1B1BF4C0003FDA9B /* PBXContainerItemProxy */;
+		};
 		16A985261936EEA7007B7F37 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 16A9851B1936EEA5007B7F37 /* Lister Today */;
@@ -2021,6 +2667,21 @@
 			isa = PBXTargetDependency;
 			target = 16A9851B1936EEA5007B7F37 /* Lister Today */;
 			targetProxy = 16A985281936EEA7007B7F37 /* PBXContainerItemProxy */;
+		};
+		16CD55F01B127D2400DB4F4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16CD55EC1B127D2400DB4F4F /* Lister Watch Extension */;
+			targetProxy = 16CD55EF1B127D2400DB4F4F /* PBXContainerItemProxy */;
+		};
+		16CD55FC1B127D2400DB4F4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16CD55E01B127D2400DB4F4F /* Lister Watch App */;
+			targetProxy = 16CD55FB1B127D2400DB4F4F /* PBXContainerItemProxy */;
+		};
+		16CD56171B127E6600DB4F4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 16CD560B1B127DDC00DB4F4F /* ListerKit (watchOS) */;
+			targetProxy = 16CD56161B127E6600DB4F4F /* PBXContainerItemProxy */;
 		};
 		16EE5968192016430052916A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2036,11 +2697,6 @@
 			isa = PBXTargetDependency;
 			target = 16F60BFC1A854A650028B2D8 /* Lister WatchKit App */;
 			targetProxy = 16F60BFF1A854A650028B2D8 /* PBXContainerItemProxy */;
-		};
-		16F60C0A1A854A650028B2D8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 16F60BF01A854A640028B2D8 /* Lister WatchKit Extension */;
-			targetProxy = 16F60C091A854A650028B2D8 /* PBXContainerItemProxy */;
 		};
 		3E25176F197F7A1400B8AF96 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2108,6 +2764,22 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
+		16CD55B51B1279D900DB4F4F /* Launch Screen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				16CD55B61B1279D900DB4F4F /* Base */,
+			);
+			name = "Launch Screen.storyboard";
+			sourceTree = "<group>";
+		};
+		16CD55E31B127D2400DB4F4F /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				16CD55E41B127D2400DB4F4F /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
 		16F60C131A854CEA0028B2D8 /* Interface.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2133,10 +2805,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -2144,6 +2812,7 @@
 				INFOPLIST_FILE = "Lister Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lister.app/Lister";
 			};
@@ -2155,13 +2824,10 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "Lister Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lister.app/Lister";
 			};
@@ -2181,6 +2847,7 @@
 				INFOPLIST_FILE = ListerToday/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				METAL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).Lister.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Lister;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -2198,6 +2865,7 @@
 				INFOPLIST_FILE = ListerToday/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				METAL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).Lister.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Lister;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -2225,6 +2893,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2239,11 +2908,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LISTER_BUNDLE_PREFIX = com.natearmstrong.lister;
+				LISTER_BUNDLE_PREFIX = "com.example.apple-samplecode";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TOOLCHAINS = default;
 			};
 			name = Debug;
 		};
@@ -2275,9 +2944,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LISTER_BUNDLE_PREFIX = com.natearmstrong.lister;
+				LISTER_BUNDLE_PREFIX = "com.example.apple-samplecode";
 				SDKROOT = iphoneos;
+				TOOLCHAINS = default;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -2286,13 +2955,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Lister/Lister.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Lister/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -2304,17 +2973,160 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Lister/Lister.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Lister/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		16CD55FE1B127D2500DB4F4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IBSC_MODULE = "Lister Watch Extension";
+				INFOPLIST_FILE = "$(SRCROOT)/Lister Watch App/Info.plist";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+		16CD55FF1B127D2500DB4F4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IBSC_MODULE = "Lister Watch Extension";
+				INFOPLIST_FILE = "$(SRCROOT)/Lister Watch App/Info.plist";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+		16CD56001B127D2500DB4F4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Lister Watch Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+		16CD56011B127D2500DB4F4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Lister Watch Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+		16CD56121B127DDC00DB4F4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "ListerKit (watchOS)/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.ListerKit--watchOS-";
+				PRODUCT_NAME = ListerWatchKit;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		16CD56131B127DDC00DB4F4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "ListerKit (watchOS)/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.ListerKit--watchOS-";
+				PRODUCT_NAME = ListerWatchKit;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -2340,6 +3152,7 @@
 				INFOPLIST_FILE = ListerKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -2369,6 +3182,7 @@
 				INFOPLIST_FILE = ListerKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -2393,6 +3207,7 @@
 				INFOPLIST_FILE = "Lister WatchKit App/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -2411,6 +3226,7 @@
 				INFOPLIST_FILE = "Lister WatchKit App/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -2430,9 +3246,9 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Lister WatchKit Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -2447,9 +3263,9 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				INFOPLIST_FILE = "Lister WatchKit Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.Lister.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -2461,10 +3277,6 @@
 			buildSettings = {
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -2472,7 +3284,9 @@
 				INFOPLIST_FILE = "ListerKit Tests/iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lister.app/Lister";
 			};
 			name = Debug;
 		};
@@ -2481,36 +3295,33 @@
 			buildSettings = {
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "ListerKit Tests/iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lister.app/Lister";
 			};
 			name = Release;
 		};
 		3E251771197F7A1400B8AF96 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "ListerKit Tests/OS X/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -2518,19 +3329,18 @@
 		3E251772197F7A1400B8AF96 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "ListerKit Tests/OS X/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "${LISTER_BUNDLE_PREFIX}.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -2551,7 +3361,7 @@
 				);
 				INFOPLIST_FILE = ListerOSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).$(PRODUCT_NAME:rfc1034identifier)OSX";
 				PRODUCT_NAME = Lister;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
@@ -2572,7 +3382,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				INFOPLIST_FILE = ListerOSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).$(PRODUCT_NAME:rfc1034identifier)OSX";
 				PRODUCT_NAME = Lister;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
@@ -2595,7 +3405,7 @@
 				);
 				INFOPLIST_FILE = ListerTodayOSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).ListerOSX.$(PRODUCT_NAME:rfc1034identifier)OSX";
 				PRODUCT_NAME = Lister;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
@@ -2616,7 +3426,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				INFOPLIST_FILE = ListerTodayOSX/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).ListerOSX.$(PRODUCT_NAME:rfc1034identifier)OSX";
 				PRODUCT_NAME = Lister;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
@@ -2646,7 +3456,7 @@
 				INFOPLIST_FILE = ListerKitOSX/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).$(PRODUCT_NAME:rfc1034identifier)OSX";
 				PRODUCT_NAME = ListerKit;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
@@ -2674,7 +3484,7 @@
 				INFOPLIST_FILE = ListerKitOSX/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LISTER_BUNDLE_PREFIX).$(PRODUCT_NAME:rfc1034identifier)OSX";
 				PRODUCT_NAME = ListerKit;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
@@ -2719,6 +3529,33 @@
 			buildConfigurations = (
 				16CBDAC918F6EE3A00233D3C /* Debug */,
 				16CBDACA18F6EE3A00233D3C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		16CD56021B127D2500DB4F4F /* Build configuration list for PBXNativeTarget "Lister Watch Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16CD56001B127D2500DB4F4F /* Debug */,
+				16CD56011B127D2500DB4F4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		16CD56041B127D2500DB4F4F /* Build configuration list for PBXNativeTarget "Lister Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16CD55FE1B127D2500DB4F4F /* Debug */,
+				16CD55FF1B127D2500DB4F4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		16CD56111B127DDC00DB4F4F /* Build configuration list for PBXNativeTarget "ListerKit (watchOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				16CD56121B127DDC00DB4F4F /* Debug */,
+				16CD56131B127DDC00DB4F4F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

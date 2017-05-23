@@ -43,7 +43,7 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
         }
     }
 
-    var listPresenter: AllListItemsPresenter! {
+    var listPresenter: AllListItemsPresenter? {
         return document?.listPresenter as? AllListItemsPresenter
     }
     
@@ -65,15 +65,19 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         if document == nil { return 0 }
 
+        guard let listPresenter = listPresenter else { return 0 }
+        
         return listPresenter.isEmpty ? 1 : listPresenter.count
     }
     
     func tableView(tableView: NSTableView, viewForTableColumn: NSTableColumn, row: Int) -> NSView {
+        guard let listPresenter = listPresenter else { return tableView.makeViewWithIdentifier(TableViewConstants.ViewIdentifiers.noListItemViewIdentifier, owner: nil)! }
+        
         if listPresenter.isEmpty {
-            return tableView.makeViewWithIdentifier(TableViewConstants.ViewIdentifiers.noListItemViewIdentifier, owner: nil) as! NSView
+            return tableView.makeViewWithIdentifier(TableViewConstants.ViewIdentifiers.noListItemViewIdentifier, owner: nil)!
         }
         
-        var listItemView = tableView.makeViewWithIdentifier(TableViewConstants.ViewIdentifiers.listItemViewIdentifier, owner: nil) as! ListItemView
+        let listItemView = tableView.makeViewWithIdentifier(TableViewConstants.ViewIdentifiers.listItemViewIdentifier, owner: nil) as! ListItemView
         
         let listItem = listPresenter.presentedListItems[row]
         
@@ -84,7 +88,7 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     
     // Only allow rows to be selectable if there are items in the list.
     func tableView(tableView: NSTableView, shouldSelectRow: Int) -> Bool {
-        return !listPresenter.isEmpty
+        return !listPresenter!.isEmpty
     }
     
     func tableView(tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableViewDropOperation) -> NSDragOperation {
@@ -99,7 +103,7 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
             if info.draggingSource() === tableView {
                 if let listItems = listItemsWithListerPasteboardType(pasteboard) {
                     // Only allow a move if there's a single item being moved, and the list allows it.
-                    if listItems.count == 1 && listPresenter.canMoveListItem(listItems.first!, toIndex: row) {
+                    if listItems.count == 1 && listPresenter!.canMoveListItem(listItems.first!, toIndex: row) {
                         result = .Move
                     }
                 }
@@ -125,14 +129,14 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
             
             let listItem = listItems!.first!
 
-            let fromIndex = find(listPresenter.presentedListItems, listItem)!
+            let fromIndex = listPresenter!.presentedListItems.indexOf(listItem)!
             
             var normalizedToIndex = row
             if fromIndex < row {
                 normalizedToIndex--
             }
 
-            listPresenter.moveListItem(listItem, toIndex: normalizedToIndex)
+            listPresenter!.moveListItem(listItem, toIndex: normalizedToIndex)
         }
         else {
             if let listItems = listItemsWithListerPasteboardType(pasteboard) {
@@ -141,14 +145,14 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
                     listItem.refreshIdentity()
                 }
 
-                listPresenter.insertListItems(listItems)
+                listPresenter!.insertListItems(listItems)
             }
             else {
                 let listItems = listItemsWithStringPasteboardType(pasteboard)
                 
                 precondition(listItems != nil, "`listItems` must not be nil.")
                 
-                listPresenter.insertListItems(listItems!)
+                listPresenter!.insertListItems(listItems!)
             }
         }
         
@@ -156,6 +160,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     }
     
     func tableView(tableView: NSTableView, writeRowsWithIndexes indexes: NSIndexSet, toPasteboard pasteboard: NSPasteboard) -> Bool {
+        guard let listPresenter = listPresenter else { return false }
+        
         if listPresenter.isEmpty {
             return false
         }
@@ -171,7 +177,7 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     
     func listItemsWithListerPasteboardType(pasteboard: NSPasteboard, refreshesItemIdentities: Bool = false) -> [ListItem]? {
         if pasteboard.canReadItemWithDataConformingToTypes([TableViewConstants.pasteboardType]) {
-            for pasteboardItem in pasteboard.pasteboardItems as! [NSPasteboardItem] {
+            for pasteboardItem in pasteboard.pasteboardItems! {
 
                 if let itemsData = pasteboardItem.dataForType(TableViewConstants.pasteboardType) {
                     var allItems = [ListItem]()
@@ -199,11 +205,10 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
         if pasteboard.canReadItemWithDataConformingToTypes([NSPasteboardTypeString]) {
             var allItems = [ListItem]()
 
-            for pasteboardItem in pasteboard.pasteboardItems as! [NSPasteboardItem] {
-                if let targetType = pasteboardItem.availableTypeFromArray([NSPasteboardTypeString]) {
-                    if let pasteboardString = pasteboardItem.stringForType(targetType) {
-                        allItems += ListFormatting.listItemsFromString(pasteboardString)
-                    }
+            for pasteboardItem in pasteboard.pasteboardItems! {
+                if let targetType = pasteboardItem.availableTypeFromArray([NSPasteboardTypeString]),
+                   let pasteboardString = pasteboardItem.stringForType(targetType) {
+                    allItems += ListFormatting.listItemsFromString(pasteboardString)
                 }
             }
             
@@ -230,6 +235,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     func cut(sender: AnyObject) {
         let selectedRowIndexes = tableView.selectedRowIndexes
         
+        guard let listPresenter = listPresenter else { return }
+        
         if selectedRowIndexes.count > 0 {
             let listItems = listPresenter.listItemsAtIndexes(selectedRowIndexes)
             
@@ -241,6 +248,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     
     func copy(sender: AnyObject) {
         let selectedRowIndexes = tableView.selectedRowIndexes
+        
+        guard let listPresenter = listPresenter else { return }
         
         if selectedRowIndexes.count > 0 {
             let listItems = listPresenter.listItemsAtIndexes(selectedRowIndexes)
@@ -256,6 +265,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
         if listItems == nil {
             listItems = listItemsWithStringPasteboardType(NSPasteboard.generalPasteboard())
         }
+        
+        guard let listPresenter = listPresenter else { return }
 
         // Only copy/paste if items were inserted.
         if listItems != nil && listItems!.count > 0 {
@@ -264,6 +275,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     }
     
     override func keyDown(event: NSEvent) {
+        guard let listPresenter = listPresenter else { return }
+        
         // Only handle delete keyboard event.
         if event.charactersIgnoringModifiers == String(Character(UnicodeScalar(NSDeleteCharacter))) {
             let listItems = listPresenter.listItemsAtIndexes(tableView.selectedRowIndexes)
@@ -275,16 +288,18 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     // MARK: IBActions
     
     @IBAction func markAllListItemsAsComplete(sender: NSButton) {
-        listPresenter.updatePresentedListItemsToCompletionState(true)
+        listPresenter?.updatePresentedListItemsToCompletionState(true)
     }
     
     @IBAction func markAllListItemsAsIncomplete(sender: NSButton) {
-        listPresenter.updatePresentedListItemsToCompletionState(false)
+        listPresenter?.updatePresentedListItemsToCompletionState(false)
     }
     
     // MARK:  ListItemViewDelegate
 
     func listItemViewDidToggleCompletionState(listItemView: ListItemView) {
+        guard let listPresenter = listPresenter else { return }
+        
         let row = tableView.rowForView(listItemView)
 
         let listItem = listPresenter.presentedListItems[row]
@@ -300,6 +315,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
         }
         
         let cleansedString = listItemView.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        
+        guard let listPresenter = listPresenter else { return }
         
         let listItem = listPresenter.presentedListItems[row]
         
@@ -317,12 +334,16 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     func addItemViewController(addItemViewController: AddItemViewController, didCreateNewItemWithText text: String) {
         let newListItem = ListItem(text: text)
         
+        guard let listPresenter = listPresenter else { return }
+        
         listPresenter.insertListItem(newListItem)
     }
     
     // MARK: ColorPaletteViewDelegate
 
     func colorPaletteViewDidChangeSelectedColor(colorPaletteView: ColorPaletteView) {
+        guard let listPresenter = listPresenter else { return }
+        
         listPresenter.color = colorPaletteView.selectedColor
     }
     
@@ -341,6 +362,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     func listPresenter(_: ListPresenterType, didInsertListItem listItem: ListItem, atIndex index: Int) {
         let indexSet = NSIndexSet(index: index)
         
+        guard let listPresenter = listPresenter else { return }
+        
         // Hide the "No items in list" row.
         if index == 0 && listPresenter.count == 1 {
             tableView.removeRowsAtIndexes(indexSet, withAnimation: .SlideUp)
@@ -353,6 +376,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
         let indexSet = NSIndexSet(index: index)
         
         tableView.removeRowsAtIndexes(indexSet, withAnimation: .SlideUp)
+        
+        guard let listPresenter = listPresenter else { return }
         
         // Show the "No items in list" row.
         if index == 0 && listPresenter.isEmpty {
@@ -378,8 +403,8 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
             `ListItemView` subclasses since they only have a tint color.
         */
         tableView.enumerateAvailableRowViewsUsingBlock { rowView, _ in
-            if let listItemView = rowView.viewAtColumn(0) as? ListItemView {
-                listItemView.tintColor = self.listPresenter.color.colorValue
+            if let listItemView = rowView.viewAtColumn(0) as? ListItemView, colorValue = self.listPresenter?.color.colorValue {
+                listItemView.tintColor = colorValue
             }
         }
     }
@@ -409,7 +434,7 @@ class ListViewController: NSViewController, ColorPaletteViewDelegate, ListItemVi
     func configureListItemView(listItemView: ListItemView, forListItem listItem: ListItem) {
         listItemView.isComplete = listItem.isComplete
         
-        listItemView.tintColor = listPresenter.color.colorValue
+        listItemView.tintColor = listPresenter!.color.colorValue
         
         listItemView.stringValue = listItem.text
         

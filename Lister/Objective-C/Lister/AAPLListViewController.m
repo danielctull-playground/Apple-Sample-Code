@@ -85,6 +85,18 @@ NSString *const AAPLListViewControllerListColorCellIdentifier = @"listColorCell"
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentStateChangedNotification:) name:UIDocumentStateChangedNotification object:self.document];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self becomeFirstResponder];
+    
+    // If available, obtain a reference to the 'newItemCell` and make its `textField` the first responder.
+    NSIndexPath *newItemIndexPath = [NSIndexPath indexPathForRow: 0 inSection: 0];
+    AAPLListItemCell *newItemCell = [self.tableView cellForRowAtIndexPath:newItemIndexPath];
+    
+    [newItemCell.textField becomeFirstResponder];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     

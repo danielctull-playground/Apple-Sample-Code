@@ -45,7 +45,7 @@ class ColorPaletteView: NSView {
     
     @IBOutlet weak var overlayLayoutConstraint: NSLayoutConstraint!
 
-    var selectedColor: List.Color = .Gray {
+    var selectedColor = List.Color.Gray {
         didSet {
             overlayView.layer!.backgroundColor = selectedColor.colorValue.CGColor
         }

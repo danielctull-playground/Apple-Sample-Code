@@ -22,7 +22,7 @@ class ListItemView: NSTableCellView, NSTextFieldDelegate {
     
     weak var delegate: ListItemViewDelegate?
     
-    var isComplete: Bool = false {
+    var isComplete = false {
         didSet {
             statusCheckBox.isChecked = isComplete
             textField!.textColor = isComplete ? NSColor.completeItemTextColor() : NSColor.incompleteItemTextColor()

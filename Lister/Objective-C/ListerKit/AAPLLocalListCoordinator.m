@@ -28,6 +28,12 @@
 @implementation AAPLLocalListCoordinator
 @synthesize delegate = _delegate;
 
+#pragma mark - Property Overrides
+
+- (NSURL *)documentsDirectory {
+    return [AAPLListUtilities localDocumentsDirectory];
+}
+
 #pragma mark - Initialization
 
 - (instancetype)initWithPredicate:(NSPredicate *)predicate firstQueryUpdateHandler:(void (^)(void))firstQueryUpdateHandler {
@@ -116,6 +122,12 @@
     return ![[NSFileManager defaultManager] fileExistsAtPath:documentURL.path];
 }
 
+- (void)copyListFromURL:(NSURL *)URL toListWithName:(NSString *)name {
+    NSURL *documentURL = [self documentURLForName:name];
+    
+    [AAPLListUtilities copyFromURL:URL toURL:documentURL];
+}
+
 #pragma mark - AAPLDirectoryMonitorDelegate
 
 - (void)directoryMonitorDidObserveChange:(AAPLDirectoryMonitor *)directoryMonitor {
@@ -161,7 +173,7 @@
 }
 
 - (NSURL *)documentURLForName:(NSString *)name {
-    NSURL *documentURLWithoutExtension = [[AAPLListUtilities localDocumentsDirectory] URLByAppendingPathComponent:name];
+    NSURL *documentURLWithoutExtension = [self.documentsDirectory URLByAppendingPathComponent:name];
     
     return [documentURLWithoutExtension URLByAppendingPathExtension:AAPLAppConfigurationListerFileExtension];
 }

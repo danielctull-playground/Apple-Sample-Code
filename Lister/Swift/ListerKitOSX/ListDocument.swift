@@ -31,8 +31,8 @@ public class ListDocument: NSDocument {
 
     // MARK: Initializers
 
-    public convenience init?(contentsOfURL URL: NSURL, makesCustomWindowControllers: Bool, error outError: NSErrorPointer) {
-        self.init(contentsOfURL: URL, ofType: AppConfiguration.listerFileExtension, error: outError)
+    public convenience init(contentsOfURL URL: NSURL, makesCustomWindowControllers: Bool) throws {
+        try self.init(contentsOfURL: URL, ofType: AppConfiguration.listerFileExtension)
 
         self.makesCustomWindowControllers = makesCustomWindowControllers
     }
@@ -53,7 +53,7 @@ public class ListDocument: NSDocument {
         super.makeWindowControllers()
         
         if makesCustomWindowControllers {
-            let storyboard = NSStoryboard(name: "Main", bundle: nil)!
+            let storyboard = NSStoryboard(name: "Main", bundle: nil)
             
             let windowController = storyboard.instantiateControllerWithIdentifier(StoryboardConstants.listWindowControllerStoryboardIdentifier) as! NSWindowController
 
@@ -67,31 +67,30 @@ public class ListDocument: NSDocument {
     
     // MARK: Serialization / Deserialization
     
-    override public func readFromData(data: NSData, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
+    override public func readFromData(data: NSData, ofType typeName: String) throws {
         unarchivedList = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? List
 
         if let unarchivedList = unarchivedList {
             listPresenter?.setList(unarchivedList)
             
-            return true
+            return
         }
         
-        if outError != nil {
-            outError.memory = NSError(domain: NSCocoaErrorDomain, code: NSFileReadCorruptFileError, userInfo: [
+        throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadCorruptFileError, userInfo: [
                 NSLocalizedDescriptionKey: NSLocalizedString("Could not read file.", comment: "Read error description"),
                 NSLocalizedFailureReasonErrorKey: NSLocalizedString("File was in an invalid format.", comment: "Read failure reason")
-            ])
-        }
-
-        return false
+        ])
     }
     
-    override public func dataOfType(typeName: String, error outError: NSErrorPointer) -> NSData? {
+    override public func dataOfType(typeName: String) throws -> NSData {
         if let archiveableList = listPresenter?.archiveableList {
             return NSKeyedArchiver.archivedDataWithRootObject(archiveableList)
         }
         
-        return nil
+        throw NSError(domain: "ListDocumentDomain", code: -1, userInfo: [
+            NSLocalizedDescriptionKey: NSLocalizedString("Could not archive list", comment: "Archive error description"),
+            NSLocalizedFailureReasonErrorKey: NSLocalizedString("No list presenter was available for the document", comment: "Archive failure reason")
+        ])
     }
     
     // MARK: Handoff

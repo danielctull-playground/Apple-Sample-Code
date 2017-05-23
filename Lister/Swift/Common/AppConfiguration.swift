@@ -27,14 +27,26 @@ public class AppConfiguration {
         // The watch user activity is used to continue activities started on the watch on other devices.
         public static let watch = "com.example.apple-samplecode.Lister.watch"
         
-        public static let listURLPathUserInfoKey = "listURLPathUserInfoKey"
-        public static let listColorUserInfoKey = "listColorUserInfoKey"
+        // The user info key used for storing the list path for use in transition from glance -> app on the watch.
+        public static var listURLPathUserInfoKey = "listURLPathUserInfoKey"
+        
+        // The user info key used for storing the list color for use in transition from glance -> app on the watch.
+        public static var listColorUserInfoKey = "listColorUserInfoKey"
+    }
+    
+    // Keys used to store information in a WCSession context.
+    public struct ApplicationActivityContext {
+        public static let currentListsKey = "ListerCurrentLists"
+        public static let listNameKey = "name"
+        public static let listColorKey = "color"
     }
     
     // Constants used in assembling and handling the custom lister:// URL scheme.
     public struct ListerScheme {
-        public static let name = "lister"
-        public static let colorQueryKey = "color"
+        // The scheme name used for encoding the list when transitioning from today -> app on iOS.
+        public static var name = "lister"
+        // The query key used for encoding the list color when transitioning from today -> app on iOS.
+        public static var colorQueryKey = "color"
     }
     
     /*
@@ -117,12 +129,16 @@ public class AppConfiguration {
     
     private func registerDefaults() {
         #if os(iOS)
-            let defaultOptions: [NSObject: AnyObject] = [
+            let defaultOptions: [String: AnyObject] = [
                 Defaults.firstLaunchKey: true,
                 Defaults.storageOptionKey: Storage.NotSet.rawValue
             ]
+        #elseif os(watchOS)
+            let defaultOptions: [String: AnyObject] = [
+                Defaults.firstLaunchKey: true
+            ]
         #elseif os(OSX)
-            let defaultOptions: [NSObject: AnyObject] = [
+            let defaultOptions: [String: AnyObject] = [
                 Defaults.firstLaunchKey: true
             ]
         #endif
@@ -183,7 +199,7 @@ public class AppConfiguration {
     }
 
     private func persistAccount() {
-        var defaults = applicationUserDefaults
+        let defaults = applicationUserDefaults
         
         if let token = NSFileManager.defaultManager().ubiquityIdentityToken {
             let ubiquityIdentityTokenArchive = NSKeyedArchiver.archivedDataWithRootObject(token)
@@ -203,10 +219,9 @@ public class AppConfiguration {
         // Determine if the logged in iCloud account has changed since the user last launched the app.
         let archivedObject: AnyObject? = applicationUserDefaults.objectForKey(Defaults.storedUbiquityIdentityToken)
         
-        if let ubiquityIdentityTokenArchive = archivedObject as? NSData {
-            if let archivedObject = NSKeyedUnarchiver.unarchiveObjectWithData(ubiquityIdentityTokenArchive) as? protocol<NSCoding, NSCopying, NSObjectProtocol> {
-                storedToken = archivedObject
-            }
+        if let ubiquityIdentityTokenArchive = archivedObject as? NSData,
+           let archivedObject = NSKeyedUnarchiver.unarchiveObjectWithData(ubiquityIdentityTokenArchive) as? protocol<NSCoding, NSCopying, NSObjectProtocol> {
+            storedToken = archivedObject
         }
         
         return storedToken

@@ -40,7 +40,7 @@ class ListsInterfaceController: WKInterfaceController, ListsControllerDelegate {
         interfaceTable.insertRowsAtIndexes(noListsIndexSet, withRowType: Storyboard.RowTypes.noLists)
         
         if AppConfiguration.sharedConfiguration.isFirstLaunch {
-            println("Lister does not currently support configuring a storage option before the iOS app is launched. Please launch the iOS app first. See the Release Notes section in README.md for more information.")
+            print("Lister does not currently support configuring a storage option before the iOS app is launched. Please launch the iOS app first. See the Release Notes section in README.md for more information.")
         }
     }
     
@@ -89,11 +89,11 @@ class ListsInterfaceController: WKInterfaceController, ListsControllerDelegate {
     // MARK: Convenience
     
     func configureRowControllerAtIndex(index: Int) {
-        let ListRowController = interfaceTable.rowControllerAtIndex(index) as! ColoredTextRowController
+        let listRowController = interfaceTable.rowControllerAtIndex(index) as! ColoredTextRowController
         
         let listInfo = listsController[index]
         
-        ListRowController.setText(listInfo.name)
+        listRowController.setText(listInfo.name)
         
         listInfo.fetchInfoWithCompletionHandler() {
             /*
@@ -101,9 +101,9 @@ class ListsInterfaceController: WKInterfaceController, ListsControllerDelegate {
                 queue, dispatch back to the main queue to make UI updates.
             */
             dispatch_async(dispatch_get_main_queue()) {
-                let ListRowController = self.interfaceTable.rowControllerAtIndex(index) as! ColoredTextRowController
+                let listRowController = self.interfaceTable.rowControllerAtIndex(index) as! ColoredTextRowController
 
-                ListRowController.setColor(listInfo.color!.colorValue)
+                listRowController.setColor(listInfo.color!.colorValue)
             }
         }
     }
@@ -137,12 +137,11 @@ class ListsInterfaceController: WKInterfaceController, ListsControllerDelegate {
             return
         }
         
-        if let listInfoURL = NSURL(fileURLWithPath: listInfoFilePath!, isDirectory: false) {
-            // Create a `ListInfo` that represents the list at `listInfoURL`.
-            let listInfo = ListInfo(URL: listInfoURL)
-            
-            // Present a `ListInterfaceController`.
-            pushControllerWithName(ListInterfaceController.Storyboard.interfaceControllerName, context: listInfo)
-        }
+        let listInfoURL = NSURL(fileURLWithPath: listInfoFilePath!, isDirectory: false)
+        // Create a `ListInfo` that represents the list at `listInfoURL`.
+        let listInfo = ListInfo(URL: listInfoURL)
+        
+        // Present a `ListInterfaceController`.
+        pushControllerWithName(ListInterfaceController.Storyboard.interfaceControllerName, context: listInfo)
     }
 }

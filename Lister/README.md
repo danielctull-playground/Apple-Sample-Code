@@ -2,18 +2,18 @@
 
 ## Version
 
-2.0
+3.1
 
 ## Build Requirements
-+ Xcode 6.3 or later
-+ iOS 8.2 SDK or later
-+ OS X 10.10 SDK or later
++ Xcode 7.0 or later
++ iOS 9.0 SDK or later
++ OS X 10.11 SDK or later
 + iCloud–enabled provisioning profile
 + App Groups–enabled provisioning profile
 
 ## Runtime Requirements
-+ iOS 8.0 or later (iOS 8.2 or later required for Apple Watch)
-+ OS X 10.10 or later
++ iOS 9.0 or later
++ OS X 10.11 or later
 
 ## About Lister
 

@@ -21,33 +21,35 @@ NSString *const AAPLAppDelegateMainStoryboardListViewControllerIdentifier = @"li
 NSString *const AAPLAppDelegateMainStoryboardListNavigationViewControllerIdentifier = @"listViewNavigationController";
 
 // View controller segue identifiers.
-NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerToNewListDocumentControllerSegueIdentifier = @"newListDocument";
+NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerToNewListDocumentControllerSegueIdentifier = @"showNewListDocument";
 NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerToListViewControllerSegueIdentifier = @"showListDocument";
 NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerContinueUserActivity = @"showListDocumentFromUserActivity";
 
 @interface AAPLAppDelegate () <UISplitViewControllerDelegate>
 
+@property (nonatomic, strong) UIApplicationShortcutItem *launchedShortcutItem;
+
 @property (nonatomic, strong) AAPLListsController *listsController;
 
 /*!
- * The root view controller of the window will always be a UISplitViewController. This is setup in
- * the main storyboard.
+    The root view controller of the window will always be a UISplitViewController. This is setup in
+    the main storyboard.
  */
 @property (nonatomic, readonly) UISplitViewController *splitViewController;
 
 /*!
- * The primary view controller of the split view controller defined in the main storyboard.
+    The primary view controller of the split view controller defined in the main storyboard.
  */
 @property (nonatomic, readonly) UINavigationController *primaryViewController;
 
 /*!
- * The view controller that displays the list of documents. If it's not visible, then this value is nil.
+    The view controller that displays the list of documents. If it's not visible, then this value is nil.
  */
 @property (nonatomic, readonly) AAPLListDocumentsViewController *listDocumentsViewController;
 
 /*!
- * @return A private, local queue used to ensure serialized access to Cloud containers during application 
- * startup.
+    @return A private, local queue used to ensure serialized access to Cloud containers during application 
+    startup.
  */
 @property (nonatomic, strong) dispatch_queue_t appDelegateQueue;
 
@@ -104,14 +106,33 @@ NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerContinue
     navigationController.topViewController.navigationItem.leftBarButtonItem = [self.splitViewController displayModeButtonItem];
     navigationController.topViewController.navigationItem.leftItemsSupplementBackButton = YES;
 
-    return YES;
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+    BOOL shouldPerformAdditionalDelegateHandling = YES;
+    
+    // If a shortcut was launched, display its information and take the appropriate action.
+    UIApplicationShortcutItem *shortcutItem = launchOptions[UIApplicationLaunchOptionsShortcutItemKey];
+    if (shortcutItem) {
+        self.launchedShortcutItem = shortcutItem;
+        
+        // This will block "performActionForShortcutItem:completionHandler" from being called.
+        shouldPerformAdditionalDelegateHandling = NO;
+    }
+    
     // Make sure that user storage preferences are set up after the app sandbox is extended. See `application:willFinishLaunchingWithOptions:` above.
     dispatch_async(self.appDelegateQueue, ^{
         [self setupUserStoragePreferences];
     });
+    
+    return shouldPerformAdditionalDelegateHandling;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    if (self.launchedShortcutItem) {
+        // Make sure that shortcut handling occurs after storage preference have been set. See `application(_:, didFinishLaunchingWithOptions:)` above.
+        dispatch_async(self.appDelegateQueue, ^{
+            [self handleApplicationShortcutItem:self.launchedShortcutItem];
+            self.launchedShortcutItem = nil;
+        });
+    }
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler {
@@ -145,6 +166,13 @@ NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerContinue
     }
     
     return NO;
+}
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
+    // Make sure that shortcut handling is coordinated with other activities handled asynchronously.
+    dispatch_async(self.appDelegateQueue, ^{
+        completionHandler([self handleApplicationShortcutItem:shortcutItem]);
+    });
 }
 
 #pragma mark - Property Overrides
@@ -297,7 +325,9 @@ NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerContinue
     }];
     [signedOutController addAction:action];
     
-    [self.listDocumentsViewController presentViewController:signedOutController animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.listDocumentsViewController presentViewController:signedOutController animated:YES completion:nil];
+    });
 }
 
 - (void)promptUserForStorageOption {
@@ -324,10 +354,29 @@ NSString *const AAPLAppDelegateMainStoryboardListDocumentsViewControllerContinue
     }];
     [storageController addAction:cloudOption];
     
-    [self.listDocumentsViewController presentViewController:storageController animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.listDocumentsViewController presentViewController:storageController animated:YES completion:nil];
+    });
 }
 
 #pragma mark - Convenience
+
+- (BOOL)handleApplicationShortcutItem:(UIApplicationShortcutItem *)shortcutItem {
+    if ([shortcutItem.type isEqualToString:[[[NSBundle mainBundle] bundleIdentifier] stringByAppendingString:@".NewInToday"]]) {
+        if (self.listDocumentsViewController && self.listsController) {
+            NSString *todayDocumentName = [[AAPLAppConfiguration sharedAppConfiguration] localizedTodayDocumentNameAndExtension];
+            NSURL *todayURL = [self.listsController.documentsDirectory URLByAppendingPathComponent:todayDocumentName isDirectory:NO];
+            
+            AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithListURL:todayURL listColor:AAPLListColorOrange];
+            
+            [self.listDocumentsViewController configureViewControllerWithLaunchContext:launchContext];
+            
+            return true;
+        }
+    }
+    
+    return false;
+}
 
 - (void)configureListsController:(BOOL)accountChanged storageOptionChangeHandler:(void (^)(void))storageOptionChangeHandler {
     if (self.listsController != nil && !accountChanged) {

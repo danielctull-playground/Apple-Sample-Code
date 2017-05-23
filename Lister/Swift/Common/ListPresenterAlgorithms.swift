@@ -18,22 +18,22 @@ enum ListItemsBatchChangeKind {
 }
 
 /// Returns an array of `ListItem` objects in `initialListItems` that don't exist in `changedListItems`.
-func findRemovedListItems(#initialListItems: [ListItem], #changedListItems: [ListItem]) -> [ListItem] {
-    return initialListItems.filter { !contains(changedListItems, $0) }
+func findRemovedListItems(initialListItems initialListItems: [ListItem], changedListItems: [ListItem]) -> [ListItem] {
+    return initialListItems.filter { !changedListItems.contains($0) }
 }
 
 /// Returns an array of `ListItem` objects in `changedListItems` that don't exist in `initialListItems`.
-func findInsertedListItems(#initialListItems: [ListItem], #changedListItems: [ListItem], filter filterHandler: ListItem -> Bool = { _ in return true }) -> [ListItem] {
-    return changedListItems.filter { !contains(initialListItems, $0) && filterHandler($0) }
+func findInsertedListItems(initialListItems initialListItems: [ListItem], changedListItems: [ListItem], filter filterHandler: ListItem -> Bool = { _ in return true }) -> [ListItem] {
+    return changedListItems.filter { !initialListItems.contains($0) && filterHandler($0) }
 }
 
 /**
     Returns an array of `ListItem` objects in `changedListItems` whose completion state changed from `initialListItems`
     relative to `changedListItems`.
 */
-func findToggledListItems(#initialListItems: [ListItem], #changedListItems: [ListItem]) -> [ListItem] {
+func findToggledListItems(initialListItems initialListItems: [ListItem], changedListItems: [ListItem]) -> [ListItem] {
     return changedListItems.filter { changedListItem in
-        if let indexOfChangedListItemInInitialListItems = find(initialListItems, changedListItem) {
+        if let indexOfChangedListItemInInitialListItems = initialListItems.indexOf(changedListItem) {
             let initialListItem = initialListItems[indexOfChangedListItemInInitialListItems]
             
             if initialListItem.isComplete != changedListItem.isComplete {
@@ -49,9 +49,9 @@ func findToggledListItems(#initialListItems: [ListItem], #changedListItems: [Lis
     Returns an array of `ListItem` objects in `changedListItems` whose text changed from `initialListItems`
     relative to `changedListItems.
 */
-func findListItemsWithUpdatedText(#initialListItems: [ListItem], #changedListItems: [ListItem]) -> [ListItem] {
+func findListItemsWithUpdatedText(initialListItems initialListItems: [ListItem], changedListItems: [ListItem]) -> [ListItem] {
     return changedListItems.filter { changedListItem in
-        if let indexOfChangedListItemInInitialListItems = find(initialListItems, changedListItem) {
+        if let indexOfChangedListItemInInitialListItems = initialListItems.indexOf(changedListItem) {
             let initialListItem = initialListItems[indexOfChangedListItemInInitialListItems]
 
             if initialListItem.text != changedListItem.text {
@@ -71,11 +71,11 @@ func findListItemsWithUpdatedText(#initialListItems: [ListItem], #changedListIte
     used to ensure that the list items in multiple arrays are referencing the same objects in memory as what the
     presented list items are presenting.
 */
-func replaceAnyEqualUnchangedNewListItemsWithPreviousUnchangedListItems(inout #replaceableNewListItems: [ListItem], #previousUnchangedListItems: [ListItem]) {
+func replaceAnyEqualUnchangedNewListItemsWithPreviousUnchangedListItems(inout replaceableNewListItems replaceableNewListItems: [ListItem], previousUnchangedListItems: [ListItem]) {
     let replaceableNewListItemsCopy = replaceableNewListItems
     
-    for (idx, replaceableNewListItem) in enumerate(replaceableNewListItemsCopy) {
-        if let indexOfUnchangedListItem = find(previousUnchangedListItems, replaceableNewListItem) {
+    for (idx, replaceableNewListItem) in replaceableNewListItemsCopy.enumerate() {
+        if let indexOfUnchangedListItem = previousUnchangedListItems.indexOf(replaceableNewListItem) {
             replaceableNewListItems[idx] = previousUnchangedListItems[indexOfUnchangedListItem]
         }
     }
@@ -86,7 +86,7 @@ func replaceAnyEqualUnchangedNewListItemsWithPreviousUnchangedListItems(inout #r
     this function should be based on the result of the functions above. If there were no changes whatsoever,
     `nil` is returned.
 */
-func listItemsBatchChangeKindForChanges(#removedListItems: [ListItem], #insertedListItems: [ListItem], #toggledListItems: [ListItem], #listItemsWithUpdatedText: [ListItem]) -> ListItemsBatchChangeKind? {
+func listItemsBatchChangeKindForChanges(removedListItems removedListItems: [ListItem], insertedListItems: [ListItem], toggledListItems: [ListItem], listItemsWithUpdatedText: [ListItem]) -> ListItemsBatchChangeKind? {
     /**
         Switch on the different scenarios that we can isolate uniquely for whether or not changes were made in
         a specific kind of change. Look at the case values for a quick way to see which batch change kind is

@@ -14,18 +14,30 @@
 @property (nonatomic, readonly) AAPLListColor listColor;
 
 /*!
- * Initializes an \c AAPLAppLaunchContext instance with the color and URL designated by the user activity.
- *
- * \param userActivity
- * The userActivity providing the file URL and list color to launch to.
-*/
-- (instancetype)initWithUserActivity:(NSUserActivity *)userActivity;
+    Initializes an \c AAPLAppLaunchContext instance with the color and URL provided.
+
+    \param listURL
+    The URL of the file to launch to.
+    \param listColor
+    The \c AAPLListColor of the file to launch to.
+ */
+- (instancetype)initWithListURL:(NSURL *)listURL listColor:(AAPLListColor)listColor;
 
 /*!
- * Initializes an \c AAPLAppLaunchContext instance with the color and URL designated by the lister:// URL.
- *
- * \param listerURL
- * The URL adhering to the lister:// scheme providing the file URL and list color to launch to.
+    Initializes an \c AAPLAppLaunchContext instance with the color and URL designated by the user activity.
+
+    \param userActivity
+    The userActivity providing the file URL and list color to launch to.
+    \param listsController 
+    The listsController to be used to derive the URL available in the userActivty, if necessary.
+*/
+- (instancetype)initWithUserActivity:(NSUserActivity *)userActivity listsController:(AAPLListsController *)listsController;
+
+/*!
+    Initializes an \c AAPLAppLaunchContext instance with the color and URL designated by the lister:// URL.
+
+    \param listerURL
+    The URL adhering to the lister:// scheme providing the file URL and list color to launch to.
 */
 - (instancetype)initWithListerURL:(NSURL *)listerURL;
 

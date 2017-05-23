@@ -8,7 +8,7 @@
 
 import Cocoa
 
-// A protocol that allows a delegate of AddItemViewController to be aware of any new items that should be created.
+// A protocol that allows a delegate of `AddItemViewController` to be aware of any new items that should be created.
 @objc protocol AddItemViewControllerDelegate {
     func addItemViewController(addItemViewController: AddItemViewController, didCreateNewItemWithText text: String)
 }

@@ -7,6 +7,7 @@
 */
 
 import UIKit
+import WatchConnectivity
 
 /// Protocol that allows a list document to notify other objects of it being deleted.
 @objc public protocol ListDocumentDelegate {
@@ -30,8 +31,8 @@ public class ListDocument: UIDocument {
     }
 
     // MARK: Serialization / Deserialization
-    
-    override public func loadFromContents(contents: AnyObject, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
+
+    override public func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
         if let unarchivedList = NSKeyedUnarchiver.unarchiveObjectWithData(contents as! NSData) as? List {
             /*
                 This method is called on the queue that the `openWithCompletionHandler(_:)` method was called
@@ -44,25 +45,54 @@ public class ListDocument: UIDocument {
                 return
             }
 
-            return true
+            return
         }
         
-        if outError != nil {
-            outError.memory = NSError(domain: NSCocoaErrorDomain, code: NSFileReadCorruptFileError, userInfo: [
-                NSLocalizedDescriptionKey: NSLocalizedString("Could not read file", comment: "Read error description"),
-                NSLocalizedFailureReasonErrorKey: NSLocalizedString("File was in an invalid format", comment: "Read failure reason")
-            ])
-        }
-        
-        return false
+        throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadCorruptFileError, userInfo: [
+            NSLocalizedDescriptionKey: NSLocalizedString("Could not read file", comment: "Read error description"),
+            NSLocalizedFailureReasonErrorKey: NSLocalizedString("File was in an invalid format", comment: "Read failure reason")
+        ])
     }
 
-    override public func contentsForType(typeName: String, error outError: NSErrorPointer) -> AnyObject? {
+    override public func contentsForType(typeName: String) throws -> AnyObject {
         if let archiveableList = listPresenter?.archiveableList {
             return NSKeyedArchiver.archivedDataWithRootObject(archiveableList)
         }
 
-        return nil
+        throw NSError(domain: "ListDocumentDomain", code: -1, userInfo: [
+            NSLocalizedDescriptionKey: NSLocalizedString("Could not archive list", comment: "Archive error description"),
+            NSLocalizedFailureReasonErrorKey: NSLocalizedString("No list presenter was available for the document", comment: "Archive failure reason")
+        ])
+    }
+    
+    // MARK: Saving
+    
+    override public func saveToURL(url: NSURL, forSaveOperation saveOperation: UIDocumentSaveOperation, completionHandler: ((Bool) -> Void)?) {
+        super.saveToURL(url, forSaveOperation: saveOperation) { success in
+            // On a successful save, transfer the file to the paired watch if appropriate.
+            if WCSession.isSupported() && WCSession.defaultSession().watchAppInstalled && success {
+                let fileCoordinator = NSFileCoordinator()
+                let readingIntent = NSFileAccessIntent.readingIntentWithURL(url, options: [])
+                fileCoordinator.coordinateAccessWithIntents([readingIntent], queue: NSOperationQueue()) { accessError in
+                    if accessError != nil {
+                        return
+                    }
+                    
+                    let session = WCSession.defaultSession()
+                    
+                    for transfer in session.outstandingFileTransfers {
+                        if transfer.file.fileURL == readingIntent.URL {
+                            transfer.cancel()
+                            break
+                        }
+                    }
+                    
+                    session.transferFile(readingIntent.URL, metadata: nil)
+                }
+            }
+            
+            completionHandler?(success)
+        }
     }
     
     // MARK: Deletion

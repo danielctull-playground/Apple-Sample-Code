@@ -73,12 +73,12 @@ class AllListItemsPresenterTests: XCTestCase {
     }
     
     func testItemInitializationNoReshufflingCaseWhenItemsAreAlreadyInOrder() {
-        let incompleteListItems = map(1...5) { ListItem(text: "\($0)", complete: false) }
+        let incompleteListItems = (1...5).map { ListItem(text: "\($0)", complete: false) }
         let incompleteList = List(color: .Green, items: incompleteListItems)
         let incompletePresenter = AllListItemsPresenter()
         incompletePresenter.setList(incompleteList)
         
-        let completeListItems = map(1...5) { ListItem(text: "\($0)", complete: true) }
+        let completeListItems = (1...5).map { ListItem(text: "\($0)", complete: true) }
         let completeList = List(color: .Green, items: completeListItems)
         let completePresenter = AllListItemsPresenter()
         completePresenter.setList(completeList)
@@ -98,7 +98,7 @@ class AllListItemsPresenterTests: XCTestCase {
     func testSetColorWithDifferentColor() {
         let newColor = List.Color.Orange
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             XCTAssertEqual(self.presenter.color, newColor, "The getter for the color should return the new color.")
 
             let didUpdateListColorCallbackCount = self.testHelper.didUpdateListColorCallbacks.count
@@ -108,7 +108,7 @@ class AllListItemsPresenterTests: XCTestCase {
 
             let updatedColor = self.testHelper.didUpdateListColorCallbacks.first!
             XCTAssertEqual(updatedColor, newColor, "The delegate callback should provide the new color.")
-        })
+        }
 
         presenter.color = newColor
     }
@@ -118,7 +118,7 @@ class AllListItemsPresenterTests: XCTestCase {
         
         presenter.color = .Orange
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             XCTAssertEqual(self.presenter.color, initialListColor, "The getter for the color should return the initial color.")
             
             let didUpdateListColorCallbackCount = self.testHelper.didUpdateListColorCallbacks.count
@@ -128,7 +128,7 @@ class AllListItemsPresenterTests: XCTestCase {
             
             let newColor = self.testHelper.didUpdateListColorCallbacks.first!
             XCTAssertEqual(newColor, initialListColor, "The delegate callback should provide the initial color.")
-        })
+        }
         
         undoManager.undo()
     }
@@ -138,7 +138,7 @@ class AllListItemsPresenterTests: XCTestCase {
     func testInsertIncompleteListItem() {
         let incompleteListItem = ListItem(text: "foo", complete: false)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didInsertListItemCallbackCount = self.testHelper.didInsertListItemCallbacks.count
             
             XCTAssertEqual(didInsertListItemCallbackCount, 1, "Only one item should be inserted.")
@@ -150,7 +150,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(incompleteListItem, listItem, "The inserted item should be the same as the item the delegate receives.")
             
             XCTAssertEqual(insertedIndex, 0, "The incomplete item should be inserted at the top of the list.")
-        })
+        }
         
         presenter.insertListItem(incompleteListItem)
     }
@@ -158,7 +158,7 @@ class AllListItemsPresenterTests: XCTestCase {
     func testInsertCompleteListItem() {
         let completeListItem = ListItem(text: "foo", complete: true)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didInsertListItemCallbackCount = self.testHelper.didInsertListItemCallbacks.count
             
             XCTAssertEqual(didInsertListItemCallbackCount, 1, "Only one item should be inserted.")
@@ -170,7 +170,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(completeListItem, listItem, "The inserted item should be the same as the item the delegate receives.")
             
             XCTAssertEqual(insertedIndex, self.initialListItemCount, "The complete item should be inserted at the bottom of the list.")
-        })
+        }
         
         presenter.insertListItem(completeListItem)
     }
@@ -180,7 +180,7 @@ class AllListItemsPresenterTests: XCTestCase {
         
         presenter.insertListItem(listItemToInsert)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Make sure the underlying list is back to its initial state.
             XCTAssertEqual(self.presentedListItems, self.presenter.presentedListItems, "The list should be the same after a change + undo.")
             
@@ -190,10 +190,10 @@ class AllListItemsPresenterTests: XCTestCase {
             
             if didRemoveListItemCallbackCount != 1 { return }
             
-            let (listItem, removedIndex) = self.testHelper.didRemoveListItemCallbacks.first!
+            let (listItem, _) = self.testHelper.didRemoveListItemCallbacks.first!
             
             XCTAssertEqual(listItem, listItemToInsert, "The removed item should be the item we initially inserted.")
-        })
+        }
         
         undoManager.undo()
     }
@@ -213,20 +213,20 @@ class AllListItemsPresenterTests: XCTestCase {
             listItemsToInsert[2]: 0
         ]
 
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didInsertListItemCallbackCount = self.testHelper.didInsertListItemCallbacks.count
             XCTAssertEqual(didInsertListItemCallbackCount, listItemsToInsert.count, "Only one item should be inserted.")
             
             if didInsertListItemCallbackCount != listItemsToInsert.count { return }
             
             for (listItem, insertedIndex) in self.testHelper.didInsertListItemCallbacks {
-                XCTAssertTrue(contains(listItemsToInsert, listItem), "The inserted item should be one of the items we wanted to insert.")
+                XCTAssertTrue(listItemsToInsert.contains(listItem), "The inserted item should be one of the items we wanted to insert.")
                 
                 if let expectedInsertedIndex = listItemsToInsertWithExpectedInsertedIndexes[listItem] {
                     XCTAssertEqual(expectedInsertedIndex, insertedIndex, "The items should be inserted at the expected indexes.")
                 }
             }
-        })
+        }
         
         presenter.insertListItems(listItemsToInsert)
     }
@@ -240,7 +240,7 @@ class AllListItemsPresenterTests: XCTestCase {
         
         presenter.insertListItems(listItemsToInsert)
 
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Make sure the underlying list is back to its initial state.
             XCTAssertEqual(self.presentedListItems, self.presenter.presentedListItems, "The list should be the same after a change + undo.")
             
@@ -250,10 +250,10 @@ class AllListItemsPresenterTests: XCTestCase {
             
             if didRemoveListItemCallbackCount != listItemsToInsert.count { return }
             
-            for (listItem, removedIndex) in self.testHelper.didRemoveListItemCallbacks {
-                XCTAssertTrue(contains(listItemsToInsert, listItem), "The removed item should one of the items we initially inserted.")
+            for (listItem, _) in self.testHelper.didRemoveListItemCallbacks {
+                XCTAssertTrue(listItemsToInsert.contains(listItem), "The removed item should one of the items we initially inserted.")
             }
-        })
+        }
         
         undoManager.undo()
     }
@@ -262,9 +262,9 @@ class AllListItemsPresenterTests: XCTestCase {
     
     func testRemoveListItem() {
         let listItemToRemove = presentedListItems[2]
-        let indexOfItemToRemove = find(presenter.presentedListItems, listItemToRemove)!
+        let indexOfItemToRemove = presenter.presentedListItems.indexOf(listItemToRemove)!
 
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didRemoveListItemCallbackCount = self.testHelper.didRemoveListItemCallbacks.count
             XCTAssertEqual(didRemoveListItemCallbackCount, 1, "Only one item should be removed.")
             
@@ -275,7 +275,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(listItemToRemove, listItem, "The removed item should be the same as the item the delegate receives.")
             
             XCTAssertEqual(removedIndex, indexOfItemToRemove, "The incomplete item should be removed at the index it was before removal.")
-        })
+        }
 
         presenter.removeListItem(listItemToRemove)
     }
@@ -283,11 +283,11 @@ class AllListItemsPresenterTests: XCTestCase {
     func testRemoveListItemAfterUndo() {
         let listItemToRemove = presentedListItems[2]
         
-        let indexOfItemToRemove = find(presenter.presentedListItems, listItemToRemove)!
+        let indexOfItemToRemove = presenter.presentedListItems.indexOf(listItemToRemove)!
         
         presenter.removeListItem(listItemToRemove)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Make sure the underlying list is back to its initial state.
             XCTAssertEqual(self.presentedListItems, self.presenter.presentedListItems, "The list should be the same after a change + undo.")
             
@@ -302,7 +302,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(listItem, listItemToRemove, "The inserted item should be the item we initially removed.")
             
             XCTAssertEqual(insertedIndex, indexOfItemToRemove, "The inserted index should be the same as the list item's initial index.")
-        })
+        }
 
         undoManager.undo()
     }
@@ -322,7 +322,7 @@ class AllListItemsPresenterTests: XCTestCase {
             listItemsToRemove[2]: 1
         ]
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didRemoveListItemsCallbackCount = self.testHelper.didRemoveListItemCallbacks.count
             
             XCTAssertEqual(didRemoveListItemsCallbackCount, listItemsToRemove.count, "There should be \(listItemsToRemove.count) elements removed.")
@@ -330,13 +330,13 @@ class AllListItemsPresenterTests: XCTestCase {
             if didRemoveListItemsCallbackCount != listItemsToRemove.count { return }
             
             for (listItem, removedIndex) in self.testHelper.didRemoveListItemCallbacks {
-                XCTAssertTrue(contains(listItemsToRemove, listItem), "The removed item should be one of the items we wanted to remove.")
+                XCTAssertTrue(listItemsToRemove.contains(listItem), "The removed item should be one of the items we wanted to remove.")
                 
                 if let expectedRemovedIndex = listItemsToRemoveWithExpectedRemovedIndex[listItem] {
                     XCTAssertEqual(removedIndex, expectedRemovedIndex, "The items should be removed at the expected indexes.")
                 }
             }
-        })
+        }
         
         presenter.removeListItems(listItemsToRemove)
     }
@@ -350,7 +350,7 @@ class AllListItemsPresenterTests: XCTestCase {
         
         presenter.removeListItems(listItemsToRemove)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Make sure the underlying list is back to its initial state.
             XCTAssertEqual(self.presentedListItems, self.presenter.presentedListItems, "The list should be the same after a change + undo.")
             
@@ -360,10 +360,10 @@ class AllListItemsPresenterTests: XCTestCase {
             
             if didInsertListItemCallbackCount != listItemsToRemove.count { return }
             
-            for (listItem, insertedIndex) in self.testHelper.didRemoveListItemCallbacks {
-                XCTAssertTrue(contains(listItemsToRemove, listItem), "The inserted item should one of the items we initially removed.")
+            for (listItem, _) in self.testHelper.didRemoveListItemCallbacks {
+                XCTAssertTrue(listItemsToRemove.contains(listItem), "The inserted item should one of the items we initially removed.")
             }
-        })
+        }
         
         undoManager.undo()
     }
@@ -401,7 +401,7 @@ class AllListItemsPresenterTests: XCTestCase {
         let listItemDestinationIndex = 0
         let listItemToRemove = presentedListItems[listItemToRemoveIndex]
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didMoveListItemsCallbackCount = self.testHelper.didMoveListItemCallbacks.count
             
             XCTAssertEqual(didMoveListItemsCallbackCount, 1, "There should one elements moved.")
@@ -413,7 +413,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(fromIndex, listItemToRemoveIndex, "The item should be moved at the item's initial index.")
             
             XCTAssertEqual(toIndex, listItemDestinationIndex, "The item should be moved to the destination index.")
-        })
+        }
         
         presenter.moveListItem(listItemToRemove, toIndex: listItemDestinationIndex)
     }
@@ -425,7 +425,7 @@ class AllListItemsPresenterTests: XCTestCase {
         
         presenter.moveListItem(listItemToRemove, toIndex: listItemDestinationIndex)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Make sure the underlying list is back to its initial state.
             XCTAssertEqual(self.presentedListItems, self.presenter.presentedListItems, "The list should be the same after a change + undo.")
             
@@ -442,7 +442,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(fromIndex, listItemDestinationIndex, "`fromIndex` should be the same as the list item's initial destination index.")
 
             XCTAssertEqual(toIndex, listItemToRemoveIndex + 1, "`toIndex` should be the same as the list item's initial index.")
-        })
+        }
         
         undoManager.undo()
     }
@@ -452,7 +452,7 @@ class AllListItemsPresenterTests: XCTestCase {
         let listItemDestinationIndex = 4
         let listItemToMove = presentedListItems[listItemToMoveIndex]
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didMoveListItemsCallbackCount = self.testHelper.didMoveListItemCallbacks.count
             
             XCTAssertEqual(didMoveListItemsCallbackCount, 1, "There should one elements moved.")
@@ -464,7 +464,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(fromIndex, listItemToMoveIndex, "The item should be moved at the item's initial index.")
             
             XCTAssertEqual(toIndex, listItemDestinationIndex, "The item should be moved to the destination index.")
-        })
+        }
         
         presenter.moveListItem(listItemToMove, toIndex: listItemDestinationIndex)
     }
@@ -476,7 +476,7 @@ class AllListItemsPresenterTests: XCTestCase {
 
         presenter.moveListItem(listItemToRemove, toIndex: listItemDestinationIndex)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Make sure the underlying list is back to its initial state.
             XCTAssertEqual(self.presentedListItems, self.presenter.presentedListItems, "The list should be the same after a change + undo.")
             
@@ -491,7 +491,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(listItem, listItemToRemove, "The moved item should be the item we initially moved.")
             XCTAssertEqual(fromIndex, listItemDestinationIndex, "`fromIndex` should be the same as the list item's initial destination index.")
             XCTAssertEqual(toIndex, listItemToRemoveIndex, "`toIndex` should be the same as the list item's initial index.")
-        })
+        }
         
         undoManager.undo()
     }
@@ -504,7 +504,7 @@ class AllListItemsPresenterTests: XCTestCase {
         let expectedFromIndex = 1
         let expectedToIndex = initialListItemCount - 1
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Test for item toggling.
             let didMoveListItemCallbackCount = self.testHelper.didMoveListItemCallbacks.count
             XCTAssertEqual(didMoveListItemCallbackCount, 1, "There should be one \"move\" callback.")
@@ -529,7 +529,7 @@ class AllListItemsPresenterTests: XCTestCase {
             
             XCTAssertTrue(incompleteListItem.isComplete, "The item should be complete after the toggle.")
             XCTAssertEqual(updatedIndex, expectedToIndex, "The item should be updated in place.")
-        })
+        }
         
         presenter.toggleListItem(incompleteListItem)
     }
@@ -537,10 +537,10 @@ class AllListItemsPresenterTests: XCTestCase {
     func testToggleCompleteListItem() {
         let completeListItem = initiallyCompleteListItems[2]
         
-        let expectedFromIndex = find(presentedListItems, completeListItem)!
+        let expectedFromIndex = presentedListItems.indexOf(completeListItem)!
         let expectedToIndex = 0
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Test for item moving.
             let didMoveListItemCallbackCount = self.testHelper.didMoveListItemCallbacks.count
             XCTAssertEqual(didMoveListItemCallbackCount, 1, "There should be one \"move\" callback.")
@@ -564,7 +564,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(updatedListItem, completeListItem, "The delegate should receive the \"update\" callback with the toggled list item.")
             XCTAssertFalse(completeListItem.isComplete, "The item should be incomplete after the toggle.")
             XCTAssertEqual(updatedIndex, expectedToIndex, "The item should be updated in place.")
-        })
+        }
 
         presenter.toggleListItem(completeListItem)
     }
@@ -572,12 +572,12 @@ class AllListItemsPresenterTests: XCTestCase {
     func testToggleListItemAfterUndo() {
         let listItem = presentedListItems[2]
         
-        let expectedFromIndex = find(presentedListItems, listItem)!
+        let expectedFromIndex = presentedListItems.indexOf(listItem)!
         let expectedToIndex = 0
         
         presenter.toggleListItem(listItem)
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Test for item moving.
             let didMoveListItemCallbackCount = self.testHelper.didMoveListItemCallbacks.count
             XCTAssertEqual(didMoveListItemCallbackCount, 1, "There should be one \"move\" callback.")
@@ -601,7 +601,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(updatedListItem, listItem, "The delegate should receive the \"update\" callback with the toggled list item.")
             XCTAssertTrue(listItem.isComplete, "The item should be complete after the toggle.")
             XCTAssertEqual(updatedIndex, expectedFromIndex, "The item should be updated in place.")
-        })
+        }
         
         undoManager.undo()
     }
@@ -614,7 +614,7 @@ class AllListItemsPresenterTests: XCTestCase {
         
         let newText = "foo bar baz qux"
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didUpdateListItemCallbackCount = self.testHelper.didUpdateListItemCallbacks.count
             XCTAssertEqual(didUpdateListItemCallbackCount, 1, "There should be one \"update\" callback.")
             
@@ -625,7 +625,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(updatedListItem, listItem, "The update list item should be the same as our provided list item.")
             XCTAssertEqual(updatedListItemIndex, listItemIndex, "The update should be an in-place update.")
             XCTAssertEqual(updatedListItem.text, newText, "The text should be updated.")
-        })
+        }
 
         presenter.updateListItem(listItem, withText: newText)
     }
@@ -635,7 +635,7 @@ class AllListItemsPresenterTests: XCTestCase {
         let listItem = presentedListItems[listItemIndex]
         let initialListItemText = listItem.text
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             let didUpdateListItemCallbackCount = self.testHelper.didUpdateListItemCallbacks.count
             XCTAssertEqual(didUpdateListItemCallbackCount, 1, "There should be one \"update\" callback.")
             
@@ -646,7 +646,7 @@ class AllListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(updatedListItem, listItem, "The update list item should be the same as our provided list item.")
             XCTAssertEqual(updatedListItemIndex, listItemIndex, "The update should be an in-place update.")
             XCTAssertEqual(updatedListItem.text, initialListItemText, "The text should be updated to its initial value.")
-        })
+        }
         
         undoManager.undo()
     }
@@ -654,11 +654,11 @@ class AllListItemsPresenterTests: XCTestCase {
     // MARK: `updatePresentedListItemsToCompletionState(_:)`
 
     func testUpdatePresentedListItemsToCompletionState() {
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             XCTAssertEqual(self.testHelper.didUpdateListItemCallbacks.count, self.initiallyIncompleteListItems.count, "There should be one \"event\" per incomplete, presented item.")
 
             for (listItem, updatedIndex) in self.testHelper.didUpdateListItemCallbacks {
-                if let indexOfUpdatedListItem = find(self.presentedListItems, listItem) {
+                if let indexOfUpdatedListItem = self.presentedListItems.indexOf(listItem) {
                     XCTAssertEqual(updatedIndex, indexOfUpdatedListItem, "The updated index should be the same as the initial index.")
 
                     XCTAssertTrue(listItem.isComplete, "The item should be complete after the update.")
@@ -667,7 +667,7 @@ class AllListItemsPresenterTests: XCTestCase {
                     XCTFail("One of the updated list items was never supposed to be in the list.")
                 }
             }
-        })
+        }
 
         presenter.updatePresentedListItemsToCompletionState(true)
     }
@@ -675,13 +675,13 @@ class AllListItemsPresenterTests: XCTestCase {
     func testUpdatePresentedListItemsToCompletionStateAfterUndo() {
         presenter.updatePresentedListItemsToCompletionState(true)
 
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             var presentedListItemsCopy = self.presentedListItems.map { $0.copy() as! ListItem }
 
             XCTAssertEqual(self.testHelper.didUpdateListItemCallbacks.count, self.initiallyIncompleteListItems.count, "The undo should perform \(self.presentedListItems.count) updates to revert the previous update for each modified item.")
 
             for (listItem, updatedIndex) in self.testHelper.didUpdateListItemCallbacks {
-                if let indexOfUpdatedListItem = find(presentedListItemsCopy, listItem) {
+                if let indexOfUpdatedListItem = presentedListItemsCopy.indexOf(listItem) {
                     let listItemCopy = presentedListItemsCopy[indexOfUpdatedListItem]
 
                     XCTAssertEqual(updatedIndex, indexOfUpdatedListItem, "The updated index should be the same as the initial index.")
@@ -692,7 +692,7 @@ class AllListItemsPresenterTests: XCTestCase {
                     XCTFail("One of the updated list items was never supposed to be in the list.")
                 }
             }
-        })
+        }
 
         undoManager.undo()
     }

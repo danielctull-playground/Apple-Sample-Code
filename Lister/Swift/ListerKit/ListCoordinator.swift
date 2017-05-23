@@ -28,7 +28,7 @@ import Foundation
     make its delegate aware by calling one of the appropriate error methods defined in the
     `ListCoordinatorDelegate` protocol.
 */
-@objc public protocol ListCoordinator {
+public protocol ListCoordinator: class {
     // MARK: Properties
     
     /**
@@ -36,6 +36,9 @@ import Foundation
         `ListCoordinator` instance determines such events occured.
     */
     weak var delegate: ListCoordinatorDelegate? { get set }
+    
+    /// A URL for the directory containing documents within the application's container.
+    var documentsDirectory: NSURL { get }
     
     // MARK: Methods
     
@@ -66,7 +69,7 @@ import Foundation
         The "remove" is intended to be called on the `ListsController` instance with a `ListInfo` object
         whose URL would be forwarded down to the coordinator through this method.
     
-        :param: URL The `NSURL` instance to remove from the list of important instances.
+        - parameter URL: The `NSURL` instance to remove from the list of important instances.
     */
     func removeListAtURL(URL: NSURL)
 
@@ -80,8 +83,8 @@ import Foundation
         method. The "create" is intended to be called on the `ListsController` instance with a `ListInfo`
         object whose URL would be forwarded down to the coordinator through this method.
     
-        :param: list The list to create a backing `NSURL` for.
-        :param: name The new name for the list.
+        - parameter list: The list to create a backing `NSURL` for.
+        - parameter name: The new name for the list.
     */
     func createURLForList(list: List, withName name: String)
     
@@ -94,11 +97,19 @@ import Foundation
         `canCreateListWithName(_:)` method on `ListsController`, which will forward down to the current
         `ListCoordinator` instance.
     
-        :param: name The name to use when checking to see if a list can be created.
+        - parameter name: The name to use when checking to see if a list can be created.
     
-        :returns: `true` if the list can be created with the given name, `false` otherwise.
+        - returns:  `true` if the list can be created with the given name, `false` otherwise.
     */
     func canCreateListWithName(name: String) -> Bool
+    
+    /**
+        Attempts to copy a `list` at a given `URL` to the appropriate location in the documents directory.
+        
+        - parameter URL: The `NSURL` object representing the list to be copied.
+        - parameter name: The name of the `list` to be overwritten.
+    */
+    func copyListFromURL(URL: NSURL, toListWithName name: String)
 }
 
 
@@ -108,18 +119,18 @@ import Foundation
     tracked `NSURL` instances. The `ListCoordinatorDelegate` also allows a `ListCoordinator` to notify
     its delegate of any errors that occured when removing or creating a list for a given URL.
 */
-@objc public protocol ListCoordinatorDelegate {
+public protocol ListCoordinatorDelegate: class {
     /**
         Notifies the `ListCoordinatorDelegate` instance of any changes to the tracked URLs of the
         `ListCoordinator`. For more information about when this method should be called, see the
         description for the other `ListCoordinator` methods mentioned above that manipulate the tracked
         `NSURL` instances.
     
-        :param: insertedURLs The `NSURL` instances that are newly tracked.
-        :param: removedURLs The `NSURL` instances that have just been untracked.
-        :param: updatedURLs The `NSURL` instances that have had their underlying model updated.
+        - parameter insertedURLs: The `NSURL` instances that are newly tracked.
+        - parameter removedURLs: The `NSURL` instances that have just been untracked.
+        - parameter updatedURLs: The `NSURL` instances that have had their underlying model updated.
     */
-     func listCoordinatorDidUpdateContents(#insertedURLs: [NSURL], removedURLs: [NSURL], updatedURLs: [NSURL])
+     func listCoordinatorDidUpdateContents(insertedURLs insertedURLs: [NSURL], removedURLs: [NSURL], updatedURLs: [NSURL])
     
     /**
         Notifies a `ListCoordinatorDelegate` instance of an error that occured when a coordinator
@@ -127,8 +138,8 @@ import Foundation
         when this method should be called, see the description for the `removeListAtURL(_:)` method
         on `ListCoordinator`.
     
-        :param: URL The `NSURL` instance that failed to be removed.
-        :param: error The error that describes why the remove failed.
+        - parameter URL: The `NSURL` instance that failed to be removed.
+        - parameter error: The error that describes why the remove failed.
     */
     func listCoordinatorDidFailRemovingListAtURL(URL: NSURL, withError error: NSError)
 
@@ -137,8 +148,8 @@ import Foundation
         tried to create a list at a given URL. For more information about when this method should be
         called, see the description for the `createURLForList(_:withName:)` method on `ListCoordinator`.
     
-        :param: URL The `NSURL` instance that couldn't be created for a list.
-        :param: error The error the describes why the create failed.
+        - parameter URL: The `NSURL` instance that couldn't be created for a list.
+        - parameter error: The error the describes why the create failed.
     */
     func listCoordinatorDidFailCreatingListAtURL(URL: NSURL, withError error: NSError)
 }

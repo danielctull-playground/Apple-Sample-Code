@@ -8,7 +8,27 @@
 
 import Foundation
 
-@objc public class CloudListCoordinator: ListCoordinator {
+/**
+    An object that conforms to the `CloudListCoordinator` protocol and is responsible for implementing
+    entry points in order to communicate with an `ListCoordinatorDelegate`. In the case of Lister,
+    this is the `ListsController` instance. The main responsibility of a `CloudListCoordinator` is
+    to track different `NSURL` instances that are important. The iCloud coordinator is responsible for
+    making sure that the `ListsController` knows about the current set of iCloud documents that are
+    available.
+
+    There are also other responsibilities that an `CloudListCoordinator` must have that are specific
+    to the underlying storage mechanism of the coordinator. A `CloudListCoordinator` determines whether
+    or not a new list can be created with a specific name, it removes URLs tied to a specific list, and
+    it is also responsible for listening for updates to any changes that occur at a specific URL
+    (e.g. a list document is updated on another device, etc.).
+
+    Instances of `CloudListCoordinator` can search for URLs in an asynchronous way. When a new `NSURL`
+    instance is found, removed, or updated, the `ListCoordinator` instance must make its delegate
+    aware of the updates. If a failure occured in removing or creating an `NSURL` for a given list,
+    it must make its delegate aware by calling one of the appropriate error methods defined in the
+    `ListCoordinatorDelegate` protocol.
+*/
+public class CloudListCoordinator: ListCoordinator {
     // MARK: Properties
     
     public weak var delegate: ListCoordinatorDelegate?
@@ -19,7 +39,7 @@ import Foundation
     /// Initialized asynchronously in init(predicate:).
     private var _documentsDirectory: NSURL!
     
-    private var documentsDirectory: NSURL {
+    public var documentsDirectory: NSURL {
         var documentsDirectory: NSURL!
         
         dispatch_sync(documentsDirectoryQueue) {
@@ -36,12 +56,29 @@ import Foundation
     
     // MARK: Initializers
     
+    /**
+        Initializes an `CloudListCoordinator` based on a path extension used to identify files that can be
+        managed by the app. Also provides a block parameter that can be used to provide actions to be executed
+        when the coordinator returns its first set of documents. This coordinator monitors the app's iCloud Drive
+        container.
+
+        - parameter pathExtension: The extension that should be used to identify documents of interest to this coordinator.
+        - parameter firstQueryUpdateHandler: The handler that is executed once the first results are returned.
+    */
     public convenience init(pathExtension: String, firstQueryUpdateHandler: (Void -> Void)? = nil) {
         let predicate = NSPredicate(format: "(%K.pathExtension = %@)", argumentArray: [NSMetadataItemURLKey, pathExtension])
         
         self.init(predicate: predicate, firstQueryUpdateHandler: firstQueryUpdateHandler)
     }
     
+    /**
+        Initializes an `CloudListCoordinator` based on a single document used to identify a file that should
+        be monitored. Also provides a block parameter that can be used to provide actions to be executed when the
+        coordinator returns its initial result. This coordinator monitors the app's iCloud Drive container.
+
+        - parameter lastPathComponent: The file name that should be monitored by this coordinator.
+        - parameter firstQueryUpdateHandler: The handler that is executed once the first results are returned.
+    */
     public convenience init(lastPathComponent: String, firstQueryUpdateHandler: (Void -> Void)? = nil) {
         let predicate = NSPredicate(format: "(%K.lastPathComponent = %@)", argumentArray: [NSMetadataItemURLKey, lastPathComponent])
 
@@ -120,6 +157,12 @@ import Foundation
         
         return !NSFileManager.defaultManager().fileExistsAtPath(documentURL.path!)
     }
+    
+    public func copyListFromURL(URL: NSURL, toListWithName name: String) {
+        let documentURL = documentURLForName(name)
+        
+        ListUtilities.copyFromURL(URL, toURL: documentURL)
+    }
 
     public func removeListAtURL(URL: NSURL) {
         ListUtilities.removeListAtURL(URL) { error in
@@ -160,33 +203,39 @@ import Foundation
     @objc private func metadataQueryDidUpdate(notification: NSNotification) {
         metadataQuery.disableUpdates()
         
-        var insertedURLs = [NSURL]()
-        var removedURLs = [NSURL]()
-        var updatedURLs = [NSURL]()
+        let insertedURLs: [NSURL]
+        let removedURLs: [NSURL]
+        let updatedURLs: [NSURL]
         
         let metadataItemToURLTransform: NSMetadataItem -> NSURL = { metadataItem in
             return metadataItem.valueForAttribute(NSMetadataItemURLKey) as! NSURL
         }
 
-        let insertedMetadataItemsOrNil: AnyObject? = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]
-        if let insertedMetadataItems = insertedMetadataItemsOrNil as? [NSMetadataItem] {
-            insertedURLs += insertedMetadataItems.map(metadataItemToURLTransform)
+        if let insertedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem] {
+            insertedURLs = insertedMetadataItems.map(metadataItemToURLTransform)
+        }
+        else {
+            insertedURLs = []
         }
         
-        let removedMetadataItemsOrNil: AnyObject? = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey]
-        if let removedMetadataItems = removedMetadataItemsOrNil as? [NSMetadataItem] {
-            removedURLs += removedMetadataItems.map(metadataItemToURLTransform)
+        if let removedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] {
+            removedURLs = removedMetadataItems.map(metadataItemToURLTransform)
+        }
+        else {
+            removedURLs = []
         }
         
-        let updatedMetadataItemsOrNil: AnyObject? = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey]
-        if let updatedMetadataItems = updatedMetadataItemsOrNil as? [NSMetadataItem] {
+        if let updatedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] {
             let completelyDownloadedUpdatedMetadataItems = updatedMetadataItems.filter { updatedMetadataItem in
                 let downloadStatus = updatedMetadataItem.valueForAttribute(NSMetadataUbiquitousItemDownloadingStatusKey) as! String
 
                 return downloadStatus == NSMetadataUbiquitousItemDownloadingStatusCurrent
             }
 
-            updatedURLs += completelyDownloadedUpdatedMetadataItems.map(metadataItemToURLTransform)
+            updatedURLs = completelyDownloadedUpdatedMetadataItems.map(metadataItemToURLTransform)
+        }
+        else {
+            updatedURLs = []
         }
         
         delegate?.listCoordinatorDidUpdateContents(insertedURLs: insertedURLs, removedURLs: removedURLs, updatedURLs: updatedURLs)

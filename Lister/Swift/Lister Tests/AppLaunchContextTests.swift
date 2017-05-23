@@ -29,41 +29,51 @@ class AppLaunchContextTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        listURLs = NSBundle.mainBundle().URLsForResourcesWithExtension(AppConfiguration.listerFileExtension, subdirectory: "") as! [NSURL]
+        listURLs = NSBundle.mainBundle().URLsForResourcesWithExtension(AppConfiguration.listerFileExtension, subdirectory: "") ?? []
     }
     
     // MARK: Initializers
     
     func testUserActivityInitializerWithNSUserActivityDocumentURLKey() {
-        var userActivity = NSUserActivity(activityType: UserActivity.testing)
+        let userActivity = NSUserActivity(activityType: UserActivity.testing)
         
         userActivity.addUserInfoEntriesFromDictionary([
             NSUserActivityDocumentURLKey: listURLs.first!,
             AppConfiguration.UserActivity.listColorUserInfoKey: color.rawValue
         ])
         
-        let launchContext = AppLaunchContext(userActivity: userActivity)
+        let listsController = AppConfiguration.sharedConfiguration.listsControllerForCurrentConfigurationWithPathExtension(AppConfiguration.listerFileExtension, firstQueryHandler: nil)
+        let possibleLaunchContext = AppLaunchContext(userActivity: userActivity, listsController: listsController)
         
-        XCTAssertEqual(launchContext.listURL.absoluteURL!, listURLs.first!.absoluteURL!)
+        XCTAssertNotNil(possibleLaunchContext)
+        
+        guard let launchContext = possibleLaunchContext else { return }
+        
+        XCTAssertEqual(launchContext.listURL.absoluteURL, listURLs.first!.absoluteURL)
         XCTAssertEqual(launchContext.listColor, color)
     }
     
     func testUserActivityInitializerWithAppConfigurationUserActivitylistURLPathUserInfoKey() {
-        var userActivity = NSUserActivity(activityType: UserActivity.testing)
+        let userActivity = NSUserActivity(activityType: UserActivity.testing)
         
         userActivity.addUserInfoEntriesFromDictionary([
             AppConfiguration.UserActivity.listURLPathUserInfoKey: listURLs.first!.path!,
             AppConfiguration.UserActivity.listColorUserInfoKey: color.rawValue
             ])
         
-        let launchContext = AppLaunchContext(userActivity: userActivity)
+        let listsController = AppConfiguration.sharedConfiguration.listsControllerForCurrentConfigurationWithPathExtension(AppConfiguration.listerFileExtension, firstQueryHandler: nil)
+        let possibleLaunchContext = AppLaunchContext(userActivity: userActivity, listsController: listsController)
         
-        XCTAssertEqual(launchContext.listURL.absoluteURL!, listURLs.first!.absoluteURL!)
+        XCTAssertNotNil(possibleLaunchContext)
+        
+        guard let launchContext = possibleLaunchContext else { return }
+        
+        XCTAssertEqual(launchContext.listURL.absoluteURL, listURLs.first!.absoluteURL)
         XCTAssertEqual(launchContext.listColor, color)
     }
     
     func testUserActivityInitializerPrefersNSUserActivityDocumentURLKey() {
-        var userActivity = NSUserActivity(activityType: UserActivity.testing)
+        let userActivity = NSUserActivity(activityType: UserActivity.testing)
         
         userActivity.addUserInfoEntriesFromDictionary([
             NSUserActivityDocumentURLKey: listURLs.first!,
@@ -71,9 +81,14 @@ class AppLaunchContextTests: XCTestCase {
             AppConfiguration.UserActivity.listColorUserInfoKey: color.rawValue
             ])
         
-        let launchContext = AppLaunchContext(userActivity: userActivity)
+        let listsController = AppConfiguration.sharedConfiguration.listsControllerForCurrentConfigurationWithPathExtension(AppConfiguration.listerFileExtension, firstQueryHandler: nil)
+        let possibleLaunchContext = AppLaunchContext(userActivity: userActivity, listsController: listsController)
         
-        XCTAssertEqual(launchContext.listURL.absoluteURL!, listURLs.first!.absoluteURL!)
+        XCTAssertNotNil(possibleLaunchContext)
+        
+        guard let launchContext = possibleLaunchContext else { return }
+        
+        XCTAssertEqual(launchContext.listURL.absoluteURL, listURLs.first!.absoluteURL)
         XCTAssertEqual(launchContext.listColor, color)
     }
     
@@ -88,9 +103,13 @@ class AppLaunchContextTests: XCTestCase {
         let colorQueryItem = NSURLQueryItem(name: AppConfiguration.ListerScheme.colorQueryKey, value: colorQueryValue)
         urlComponents.queryItems = [colorQueryItem]
         
-        let launchContext = AppLaunchContext(listerURL: urlComponents.URL!)
+        let possibleLaunchContext = AppLaunchContext(listerURL: urlComponents.URL!)
         
-        XCTAssertEqual(launchContext.listURL.absoluteURL!, listURLs.first!.absoluteURL!)
+        XCTAssertNotNil(possibleLaunchContext)
+        
+        guard let launchContext = possibleLaunchContext else { return }
+        
+        XCTAssertEqual(launchContext.listURL.absoluteURL, listURLs.first!.absoluteURL)
         XCTAssertEqual(launchContext.listColor, color)
     }
 }

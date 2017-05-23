@@ -19,72 +19,118 @@ struct AppLaunchContext {
     // MARK: Initializers
     
     /**
+        Initializes an `AppLaunchContext` instance with the color and URL provided.
+        
+        - parameter listURL: The `URL` of the file to launch to.
+        - parameter listColor: The `List.Color` of the file to launch to.
+    */
+    init(listURL: NSURL, listColor: List.Color) {
+        self.listURL = listURL
+        self.listColor = listColor
+    }
+    
+    /**
         Initializes an `AppLaunchContext` instance with the color and URL designated by the user activity.
         
-        :param: userActivity The userActivity providing the file URL and list color to launch to.
+        - parameter userActivity: The `userActivity` providing the file URL and list color to launch to.
+        - parameter listsController: The `listsController` to be used to derive the `URL` available in the `userActivty`, if necessary.
     */
-    init(userActivity: NSUserActivity) {
-        assert(userActivity.userInfo != nil, "User activity provided to \(__FUNCTION__) has no `userInfo` dictionary.")
-        let userInfo = userActivity.userInfo!
+    init?(userActivity: NSUserActivity, listsController: ListsController) {
+        guard let userInfo = userActivity.userInfo else {
+            assertionFailure("User activity provided to \(__FUNCTION__) has no `userInfo` dictionary.")
+            return nil
+        }
         
         /*
             The URL may be provided as either a URL or a URL path via separate keys. Check first for 
             `NSUserActivityDocumentURLKey`, if not provided, obtain the path and create a file URL from it.
         */
         
-        var URL = userInfo[NSUserActivityDocumentURLKey] as? NSURL
+        var possibleURL = userInfo[NSUserActivityDocumentURLKey] as? NSURL
         
-        if URL == nil {
-            let listInfoFilePath = userInfo[AppConfiguration.UserActivity.listURLPathUserInfoKey] as? String
+        // If `URL` is `nil` the activity is being continued from a platofrm other than iOS or OS X.
+        if possibleURL == nil {
+            guard let listInfoFilePath = userInfo[AppConfiguration.UserActivity.listURLPathUserInfoKey] as? String else {
+                assertionFailure("The `userInfo` dictionary provided to \(__FUNCTION__) did not contain a URL or URL path.")
+                return nil
+            }
             
-            assert(listInfoFilePath != nil, "The `userInfo` dictionary provided to \(__FUNCTION__) did not contain a URL or URL path.")
+            let fileURLForPath = NSURL(fileURLWithPath: listInfoFilePath, isDirectory: false)
             
-            URL = NSURL(fileURLWithPath: listInfoFilePath!, isDirectory: false)
+            // Test for the existence of the file at the URL. If it exists proceed.
+            if !fileURLForPath.checkPromisedItemIsReachableAndReturnError(nil) && !fileURLForPath.checkResourceIsReachableAndReturnError(nil) {
+                // If the file does not exist at the URL created from the path construct one based on the filename.
+                let derivedURL = listsController.documentsDirectory.URLByAppendingPathComponent(fileURLForPath.lastPathComponent!, isDirectory: false)
+                
+                if !derivedURL.checkPromisedItemIsReachableAndReturnError(nil) && !derivedURL.checkResourceIsReachableAndReturnError(nil) {
+                    possibleURL = nil
+                }
+                else {
+                    possibleURL = derivedURL
+                }
+            }
+            else {
+                possibleURL = fileURLForPath
+            }
         }
         
-        assert(URL != nil, "The `userInfo` dictionary provided to \(__FUNCTION__) did not contain a valid URL.")
+        guard let URL = possibleURL else {
+            assertionFailure("The `userInfo` dictionary provided to \(__FUNCTION__) did not contain a valid URL.")
+            return nil
+        }
         
-        // Unwrap the URL obtained from the dictionary.
-        listURL = URL!
+        // Assign the URL resolved from the dictionary.
+        listURL = URL
         
-        // The color will be stored as an `Int` under the prescribed key.
-        let rawColor = userInfo[AppConfiguration.UserActivity.listColorUserInfoKey] as? Int
+        // Attempt to obtain the `rawColor` stored as an `Int` value and construct a `List.Color` from it.
+        guard let rawColor = userInfo[AppConfiguration.UserActivity.listColorUserInfoKey] as? Int,
+              let color = List.Color(rawValue: rawColor) else {
+            assertionFailure("The `userInfo` dictionary provided to \(__FUNCTION__) contains an invalid value for `color`.")
+            return nil
+        }
         
-        assert(rawColor == nil || 0...5 ~= rawColor!, "The `userInfo` dictionary provided to \(__FUNCTION__) contains an invalid value for `color`: \(rawColor).")
-        
-        // Unwrap the `rawColor` value and construct a `List.Color` from it.
-        listColor = List.Color(rawValue: rawColor!)!
+        listColor = color
     }
     
     /**
         Initializes an `AppLaunchContext` instance with the color and URL designated by the lister:// URL.
         
-        :param: listerURL The URL adhering to the lister:// scheme providing the file URL and list color to launch to.
+        - parameter listerURL: The URL adhering to the lister:// scheme providing the file URL and list color to launch to.
     */
-    init(listerURL: NSURL) {
-        assert(listerURL.scheme != nil && listerURL.scheme! == AppConfiguration.ListerScheme.name, "Non-lister URL provided to \(__FUNCTION__).")
+    init?(listerURL: NSURL) {
+        precondition(listerURL.scheme == AppConfiguration.ListerScheme.name, "Non-lister URL provided to \(__FUNCTION__).")
         
-        assert(listerURL.path != nil, "URL provided to \(__FUNCTION__) is missing `path`.")
+        guard let filePath = listerURL.path else {
+            assertionFailure("URL provided to \(__FUNCTION__) is missing `path`.")
+            return nil
+        }
         
         // Construct a file URL from the path of the lister:// URL.
-        listURL = NSURL(fileURLWithPath: listerURL.path!, isDirectory: false)!
+        listURL = NSURL(fileURLWithPath: filePath, isDirectory: false)
         
         // Extract the query items to initialize the `listColor` property from the `color` query item.
-        let urlComponents = NSURLComponents(URL: listerURL, resolvingAgainstBaseURL: false)!
-        let queryItems = urlComponents.queryItems as! [NSURLQueryItem]
+        guard let urlComponents = NSURLComponents(URL: listerURL, resolvingAgainstBaseURL: false),
+              let queryItems = urlComponents.queryItems else {
+                assertionFailure("URL provided to \(__FUNCTION__) contains no query items.")
+                return nil
+        }
         
         // Filter down to only the `color` query items. There should only be one.
         let colorQueryItems = queryItems.filter { $0.name == AppConfiguration.ListerScheme.colorQueryKey }
         
-        assert(colorQueryItems.count == 1, "URL provided to \(__FUNCTION__) should contain only one `color` query item.")
-        let colorQueryItem = colorQueryItems.first!
+        guard let colorQueryItem = colorQueryItems.first where colorQueryItems.count == 1 else {
+            assertionFailure("URL provided to \(__FUNCTION__) should contain only one `color` query item.")
+            return nil
+        }
         
-        // Obtain a `rawColor` value by converting the `String` `value` of the query item to an `Int`.
-        let rawColor = colorQueryItem.value?.toInt()
-        
-        assert(rawColor != nil || 0...5 ~= rawColor!, "URL provided to \(__FUNCTION__) contains an invalid value for `color`: \(colorQueryItem.value).")
+        // Attempt to obtain the `rawColor` stored as an `Int` value and construct a `List.Color` from it.
+        guard let colorQueryItemValue = colorQueryItem.value,
+              let rawColor = Int(colorQueryItemValue),
+              let color = List.Color(rawValue: rawColor) else {
+            assertionFailure("URL provided to \(__FUNCTION__) contains an invalid value for `color`: \(colorQueryItem.value).")
+            return nil
+        }
 
-        // Unwrap the `rawColor` value and construct a `List.Color` from it.
-        listColor = List.Color(rawValue: rawColor!)!
+        listColor = color
     }
 }

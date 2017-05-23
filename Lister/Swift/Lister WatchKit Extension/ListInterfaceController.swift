@@ -31,13 +31,15 @@ class ListInterfaceController: WKInterfaceController, ListPresenterDelegate {
     
     var listDocument: ListDocument!
     
-    var listPresenter: IncompleteListItemsPresenter! {
+    var listPresenter: IncompleteListItemsPresenter? {
         return listDocument?.listPresenter as? IncompleteListItemsPresenter
     }
     
     // MARK: Interface Table Selection
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
+        guard let listPresenter = listPresenter else { return }
+
         let listItem = listPresenter.presentedListItems[rowIndex]
 
         listPresenter.toggleListItem(listItem)
@@ -46,14 +48,20 @@ class ListInterfaceController: WKInterfaceController, ListPresenterDelegate {
     // MARK: Actions
     
     @IBAction func markAllListItemsAsComplete() {
+        guard let listPresenter = listPresenter else { return }
+        
         listPresenter.updatePresentedListItemsToCompletionState(true)
     }
     
     @IBAction func markAllListItemsAsIncomplete() {
+        guard let listPresenter = listPresenter else { return }
+
         listPresenter.updatePresentedListItemsToCompletionState(false)
     }
     
     func refreshAllData() {
+        guard let listPresenter = listPresenter else { return }
+
         let listItemCount = listPresenter.count
         if listItemCount > 0 {
             interfaceTable.setNumberOfRows(listItemCount, withRowType: Storyboard.RowTypes.item)
@@ -126,6 +134,8 @@ class ListInterfaceController: WKInterfaceController, ListPresenterDelegate {
     }
     
     func listPresenter(_: ListPresenterType, didUpdateListColorWithColor color: List.Color) {
+        guard let listPresenter = listPresenter else { return }
+
         for idx in 0..<listPresenter.count {
             configureRowControllerAtIndex(idx)
         }
@@ -150,11 +160,11 @@ class ListInterfaceController: WKInterfaceController, ListPresenterDelegate {
     func setupInterfaceTable() {
         listDocument.listPresenter = IncompleteListItemsPresenter()
         
-        listPresenter.delegate = self
+        listPresenter!.delegate = self
         
         listDocument.openWithCompletionHandler { success in
             if !success {
-                println("Couldn't open document: \(self.listDocument?.fileURL).")
+                print("Couldn't open document: \(self.listDocument?.fileURL).")
                 
                 return
             }
@@ -179,6 +189,8 @@ class ListInterfaceController: WKInterfaceController, ListPresenterDelegate {
     }
     
     func configureRowControllerAtIndex(index: Int) {
+        guard let listPresenter = listPresenter else { return }
+        
         let listItemRowController = interfaceTable.rowControllerAtIndex(index) as! ListItemRowController
         
         let listItem = listPresenter.presentedListItems[index]

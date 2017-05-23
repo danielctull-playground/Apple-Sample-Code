@@ -20,7 +20,7 @@ class ResizingTextField: NSTextField {
         let maximumSize = NSMakeSize(CGFloat.max, frame.height)
         
         // Find the size that the string occupies when displayed with the given font.
-        let boundingSize = (stringValue as NSString).boundingRectWithSize(maximumSize, options: nil, attributes: [
+        let boundingSize = (stringValue as NSString).boundingRectWithSize(maximumSize, options: [], attributes: [
             NSFontAttributeName: font!]
         )
 

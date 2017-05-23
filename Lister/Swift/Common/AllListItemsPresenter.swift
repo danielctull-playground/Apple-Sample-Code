@@ -57,7 +57,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
     private var indexOfFirstCompleteListItem: Int? {
         var firstCompleteListItemIndex: Int?
 
-        for (idx, listItem) in enumerate(presentedListItems) {
+        for (idx, listItem) in presentedListItems.enumerate() {
             if listItem.isComplete {
                 firstCompleteListItemIndex = idx
 
@@ -143,7 +143,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
             if oldList.color != newList.color {
                 undoManager?.removeAllActionsWithTarget(self)
 
-                updateListColorForListPresenterIfDifferent(self, &list.color, newList.color, isForInitialLayout: true)
+                updateListColorForListPresenterIfDifferent(self, color: &list.color, newColor: newList.color, isForInitialLayout: true)
             }
             
             return
@@ -183,7 +183,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
             
             case .Toggled:
                 // We want to toggle the *old* list item, not the one that's in `newList`.
-                let indexOfToggledListItemInOldListItems = find(oldList.items, newToggledListItems.first!)!
+                let indexOfToggledListItemInOldListItems = oldList.items.indexOf(newToggledListItems.first!)!
 
                 let listItemToToggle = oldList.items[indexOfToggledListItemInOldListItems]
     
@@ -196,17 +196,9 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
                 break
         }
         
-        updateListColorForListPresenterIfDifferent(self, &list.color, newList.color)
+        updateListColorForListPresenterIfDifferent(self, color: &list.color, newColor: newList.color)
         
         delegate?.listPresenterDidChangeListLayout(self, isInitialLayout: true)
-    }
-    
-    public var count: Int {
-        return presentedListItems.count
-    }
-    
-    public var isEmpty: Bool {
-        return presentedListItems.isEmpty
     }
 
     // MARK: Methods
@@ -217,7 +209,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         `listPresenter(_:didInsertListItem:atIndex:)` method. Calling this method registers an undo event to
         remove the list item.
     
-        :param: listItem The `ListItem` instance to insert.
+        - parameter listItem: The `ListItem` instance to insert.
     */
     public func insertListItem(listItem: ListItem) {
         delegate?.listPresenterWillChangeListLayout(self, isInitialLayout: false)
@@ -239,7 +231,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         `listPresenter(_:didInsertListItem:atIndex:)` method for each inserted list item after an individual
         list item has been inserted. Calling this method registers an undo event to remove each list item.
     
-        :param: listItems The `ListItem` instances to insert.
+        - parameter listItems: The `ListItem` instances to insert.
     */
     public func insertListItems(listItems: [ListItem]) {
         if listItems.isEmpty { return }
@@ -265,10 +257,10 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         after it has been removed. Calling this method registers an undo event to insert
         the list item at its previous index.
         
-        :param: listItem The `ListItem` instance to remove.
+        - parameter listItem: The `ListItem` instance to remove.
     */
     @objc public func removeListItem(listItem: ListItem) {
-        let listItemIndex = find(presentedListItems, listItem)
+        let listItemIndex = presentedListItems.indexOf(listItem)
         
         if listItemIndex == nil {
             preconditionFailure("A list item was requested to be removed that isn't in the list.")
@@ -295,7 +287,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         individual list item has been removed. Calling this method registers an undo event to insert the list
         items that were removed at their previous indexes.
         
-        :param: listItems The `ListItem` instances to remove.
+        - parameter listItems: The `ListItem` instances to remove.
     */
     @objc public func removeListItems(listItems: [ListItem]) {
         if listItems.isEmpty { return }
@@ -310,7 +302,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         var removedIndexes = [Int]()
         
         for listItem in listItems {
-            if let listItemIndex = find(presentedListItems, listItem) {
+            if let listItemIndex = presentedListItems.indexOf(listItem) {
                 list.items.removeAtIndex(listItemIndex)
                 
                 delegate?.listPresenter(self, didRemoveListItem: listItem, atIndex: listItemIndex)
@@ -337,16 +329,16 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         updated. Calling this method registers an undo event to revert the text change back to the text before
         the method was invoked.
     
-        :param: listItem The `ListItem` instance whose text needs to be updated.
-        :param: newText The new text for `listItem`.
+        - parameter listItem: The `ListItem` instance whose text needs to be updated.
+        - parameter newText: The new text for `listItem`.
     */
     @objc public func updateListItem(listItem: ListItem, withText newText: String) {
-        precondition(contains(presentedListItems, listItem), "A list item can only be updated if it already exists in the list.")
+        precondition(presentedListItems.contains(listItem), "A list item can only be updated if it already exists in the list.")
         
         // If the text is the same, it's a no op.
         if listItem.text == newText { return }
         
-        var index = find(presentedListItems, listItem)!
+        let index = presentedListItems.indexOf(listItem)!
         
         let oldText = listItem.text
         
@@ -368,13 +360,13 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
     /**
         Tests whether `listItem` is in the list and can be moved from its current index in the list to `toIndex`.
     
-        :param: listItem The item to test for insertion.
-        :param: toIndex The index to use to determine if `listItem` can be inserted into the list.
+        - parameter listItem: The item to test for insertion.
+        - parameter toIndex: The index to use to determine if `listItem` can be inserted into the list.
     
-        :returns: Whether or not `listItem` can be moved to `toIndex`.
+        - returns:  Whether or not `listItem` can be moved to `toIndex`.
     */
     public func canMoveListItem(listItem: ListItem, toIndex: Int) -> Bool {
-        if !contains(presentedListItems, listItem) { return false }
+        if !presentedListItems.contains(listItem) { return false }
 
         let firstCompleteListItemIndex = indexOfFirstCompleteListItem
         
@@ -395,8 +387,8 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         `listPresenter(_:didMoveListItem:fromIndex:toIndex)` method with the moved list item. Calling this
         method registers an undo event that moves the list item from its new index back to its old index.
 
-        :param: listItem The list item to move.
-        :param: toIndex The index to move `listItem` to.
+        - parameter listItem: The list item to move.
+        - parameter toIndex: The index to move `listItem` to.
     */
     @objc public func moveListItem(listItem: ListItem, toIndex: Int) {
         precondition(canMoveListItem(listItem, toIndex: toIndex), "An item can only be moved if it passes a \"can move\" test.")
@@ -422,7 +414,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         by the delegate's `listPresenter(_:didUpdateListItem:atIndex:)` method. Calling this method registers
         an undo event that toggles the list item back to its original location and completion state.
     
-        :param: listItem The list item to toggle.
+        - parameter listItem: The list item to toggle.
     */
     public func toggleListItem(listItem: ListItem) {
         delegate?.listPresenterWillChangeListLayout(self, isInitialLayout: false)
@@ -445,10 +437,10 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         updated. Calling this method registers an undo event that sets the completion states for all of the
         list items back to the original state before the method was invoked.
     
-        :param: completionState The value that all presented list item instances should have as their `isComplete` property.
+        - parameter completionState: The value that all presented list item instances should have as their `isComplete` property.
     */
     public func updatePresentedListItemsToCompletionState(completionState: Bool) {
-        var presentedListItemsNotMatchingCompletionState = presentedListItems.filter { $0.isComplete != completionState }
+        let presentedListItemsNotMatchingCompletionState = presentedListItems.filter { $0.isComplete != completionState }
       
         // If there are no list items that match the completion state, it's a no op.
         if presentedListItemsNotMatchingCompletionState.isEmpty { return }
@@ -460,16 +452,16 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
     /**
         Returns the list items at each index in `indexes` within the `presentedListItems` array.
     
-        :param: indexes The indexes that correspond to the list items that should be retrieved from `presentedListItems`.
+        - parameter indexes: The indexes that correspond to the list items that should be retrieved from `presentedListItems`.
     
-        :returns: The list items that are located at each index in `indexes` within `presentedListItems`.
+        - returns:  The list items that are located at each index in `indexes` within `presentedListItems`.
     */
     public func listItemsAtIndexes(indexes: NSIndexSet) -> [ListItem] {
         var listItems = [ListItem]()
         
         listItems.reserveCapacity(indexes.count)
         
-        indexes.enumerateIndexesUsingBlock { idx, _ in
+        for idx in indexes {
             listItems += [self.presentedListItems[idx]]
         }
         
@@ -483,11 +475,11 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         where the undo event needs to move the list item back into its original location (rather than being
         moved to an index that it would normally be moved to in a call to `toggleListItem(_:)`).
     
-        :param: listItem The list item to toggle.
-        :param: previousIndex The index to move `listItem` to.
+        - parameter listItem: The list item to toggle.
+        - parameter previousIndex: The index to move `listItem` to.
     */
     @objc private func toggleListItemForUndo(listItem: ListItem, toPreviousIndex previousIndex: Int) {
-        precondition(contains(presentedListItems, listItem), "The list item should already be in the list if it's going to be toggled.")
+        precondition(presentedListItems.contains(listItem), "The list item should already be in the list if it's going to be toggled.")
 
         delegate?.listPresenterWillChangeListLayout(self, isInitialLayout: false)
         
@@ -513,15 +505,15 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         `removeListItems(_:)` where the opposite action, such as re-inserting the list item, has to be done
         where each list item moves back to its original location before the removal.
     
-        :param: listItems The list items to insert.
-        :param: indexes The indexes at which to insert `listItems` into.
+        - parameter listItems: The list items to insert.
+        - parameter indexes: The indexes at which to insert `listItems` into.
     */
     @objc private func insertListItemsForUndo(listItems: [ListItem], atIndexes indexes: [Int]) {
         precondition(listItems.count == indexes.count, "`listItems` must have as many elements as `indexes`.")
     
         delegate?.listPresenterWillChangeListLayout(self, isInitialLayout: false)
         
-        for (listItemIndex, listItem) in enumerate(listItems) {
+        for (listItemIndex, listItem) in listItems.enumerate() {
             let insertionIndex = indexes[listItemIndex]
 
             list.items.insert(listItem, atIndex: insertionIndex)
@@ -545,14 +537,12 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         `updateListItemsWithRawColor(_:)`), we must make the parameter an `Int` and not a `List.Color`.  This
         is because Swift enums are not representable in Objective-C.
     
-        :param: rawColor The raw color value of the `List.Color` that should be set as the new color.
+        - parameter rawColor: The raw color value of the `List.Color` that should be set as the new color.
     */
     @objc private func updateListItemsWithRawColor(rawColor: Int) {
-        let oldColor = color
-
         let newColor = List.Color(rawValue: rawColor)!
 
-        updateListColorForListPresenterIfDifferent(self, &list.color, newColor, isForInitialLayout: false)
+        updateListColorForListPresenterIfDifferent(self, color: &list.color, newColor: newColor, isForInitialLayout: false)
         
         // Undo
         undoManager?.prepareWithInvocationTarget(self).updateListItemsWithRawColor(rawColor)
@@ -575,7 +565,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         for listItem in listItems {
             listItem.isComplete = !listItem.isComplete
 
-            let updatedIndex = find(presentedListItems, listItem)!
+            let updatedIndex = presentedListItems.indexOf(listItem)!
           
             delegate?.listPresenter(self, didUpdateListItem: listItem, atIndex: updatedIndex)
         }
@@ -593,12 +583,12 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         Inserts `listItem` into the list based on the list item's completion state. The delegate receives a
         `listPresenter(_:didInsertListItem:atIndex:)` callback. No undo registrations are performed.
         
-        :param: listItem The list item to insert.
+        - parameter listItem: The list item to insert.
     */
     private func unsafeInsertListItem(listItem: ListItem) {
-        precondition(!contains(presentedListItems, listItem), "A list item was requested to be added that is already in the list.")
+        precondition(!presentedListItems.contains(listItem), "A list item was requested to be added that is already in the list.")
         
-        var indexToInsertListItem = listItem.isComplete ? count : 0
+        let indexToInsertListItem = listItem.isComplete ? count : 0
         
         list.items.insert(listItem, atIndex: indexToInsertListItem)
         
@@ -609,15 +599,15 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         Moves `listItem` to `toIndex`. This method also notifies the delegate that a list item was moved
         through the `listPresenter(_:didMoveListItem:fromIndex:toIndex:)` callback.  No undo registrations are performed.
     
-        :param: listItem The list item to move to `toIndex`.
-        :param: toIndex The index at which `listItem` should be moved to.
+        - parameter listItem: The list item to move to `toIndex`.
+        - parameter toIndex: The index at which `listItem` should be moved to.
 
-        :returns: The index that `listItem` was initially located at.
+        - returns:  The index that `listItem` was initially located at.
     */
     private func unsafeMoveListItem(listItem: ListItem, toIndex: Int) -> Int {
-        precondition(contains(presentedListItems, listItem), "A list item can only be moved if it already exists in the presented list items.")
+        precondition(presentedListItems.contains(listItem), "A list item can only be moved if it already exists in the presented list items.")
         
-        var fromIndex = find(presentedListItems, listItem)!
+        let fromIndex = presentedListItems.indexOf(listItem)!
 
         list.items.removeAtIndex(fromIndex)
         list.items.insert(listItem, atIndex: toIndex)
@@ -628,7 +618,7 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
     }
 
     private func unsafeToggleListItem(listItem: ListItem) -> Int {
-        precondition(contains(presentedListItems, listItem), "A list item can only be toggled if it already exists in the list.")
+        precondition(presentedListItems.contains(listItem), "A list item can only be toggled if it already exists in the list.")
         
         // Move the list item.
         let targetIndex = listItem.isComplete ? 0 : count - 1
@@ -647,9 +637,9 @@ final public class AllListItemsPresenter: NSObject, ListPresenterType {
         Returns an array that contains the same elements as `listItems`, but sorted with incomplete list items
         followed by complete list items.
     
-        :param: listItems List items that should be reordered.
+        - parameter listItems: List items that should be reordered.
     
-        :returns: The reordered list items with incomplete list items followed by complete list items.
+        - returns:  The reordered list items with incomplete list items followed by complete list items.
     */
     private func reorderedListItemsFromListItems(listItems: [ListItem]) -> [ListItem] {
         let incompleteListItems = listItems.filter { !$0.isComplete }

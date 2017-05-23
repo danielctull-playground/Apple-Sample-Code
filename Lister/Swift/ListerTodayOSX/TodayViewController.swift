@@ -43,9 +43,8 @@ class TodayViewController: NSViewController, NCWidgetProviding, NCWidgetListView
                     return
                 }
                 
-                var error: NSError?
-                
-                if let newDocument = ListDocument(contentsOfURL: todayDocumentURL!, makesCustomWindowControllers: false, error: &error) {
+                do {
+                    let newDocument = try ListDocument(contentsOfURL: todayDocumentURL!, makesCustomWindowControllers: false)
                     let existingDocumentIsUpToDate = self.document != nil && self.document?.listPresenter?.archiveableList == newDocument.listPresenter?.archiveableList
                     
                     if existingDocumentIsUpToDate {
@@ -62,7 +61,7 @@ class TodayViewController: NSViewController, NCWidgetProviding, NCWidgetListView
                         completionHandler(.NewData)
                     }
                 }
-                else {
+                catch {
                     completionHandler(.Failed)
                 }
             }
@@ -142,7 +141,7 @@ class TodayViewController: NSViewController, NCWidgetProviding, NCWidgetListView
     func setListRowRepresentedObjects() {
         var representedObjects = [AnyObject]()
 
-        let listColor = listPresenter!.color.colorValue
+        let listColor = listPresenter!.color.notificationCenterColorValue
         
         // The "Open in Lister" has a `representedObject` as an `NSColor`, representing the text color.
         representedObjects += [TodayWidgetRowPurposeBox(purpose: .OpenLister, userInfo: listColor)]

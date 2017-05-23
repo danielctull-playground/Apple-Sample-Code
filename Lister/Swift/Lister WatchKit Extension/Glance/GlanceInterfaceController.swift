@@ -22,7 +22,7 @@ class GlanceInterfaceController: WKInterfaceController, ListsControllerDelegate,
     
     var listDocument: ListDocument?
     
-    var listPresenter: AllListItemsPresenter! {
+    var listPresenter: AllListItemsPresenter? {
         return listDocument?.listPresenter as? AllListItemsPresenter
     }
     
@@ -35,7 +35,7 @@ class GlanceInterfaceController: WKInterfaceController, ListsControllerDelegate,
         super.init()
         
         if AppConfiguration.sharedConfiguration.isFirstLaunch {
-            println("Lister does not currently support configuring a storage option before the iOS app is launched. Please launch the iOS app first. See the Release Notes section in README.md for more information.")
+            print("Lister does not currently support configuring a storage option before the iOS app is launched. Please launch the iOS app first. See the Release Notes section in README.md for more information.")
         }
     }
     
@@ -144,7 +144,7 @@ class GlanceInterfaceController: WKInterfaceController, ListsControllerDelegate,
             */
             let userInfo: [NSObject: AnyObject] = [
                 AppConfiguration.UserActivity.listURLPathUserInfoKey: self.listDocument!.fileURL.path!,
-                AppConfiguration.UserActivity.listColorUserInfoKey: self.listPresenter.color.rawValue
+                AppConfiguration.UserActivity.listColorUserInfoKey: self.listPresenter!.color.rawValue
             ]
             
             /*
@@ -156,6 +156,8 @@ class GlanceInterfaceController: WKInterfaceController, ListsControllerDelegate,
     }
     
     func presentGlanceBadge() {
+        guard let listPresenter = listPresenter else { return }
+
         let totalListItemCount = listPresenter.count
         
         let completeListItemCount = listPresenter.presentedListItems.filter { $0.isComplete }.count

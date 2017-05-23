@@ -7,6 +7,7 @@
 */
 
 @import ListerKit;
+@import WatchConnectivity;
 
 #import "AAPLListDocumentsViewController.h"
 #import "AAPLAppDelegate.h"
@@ -19,15 +20,32 @@
 // Table view cell identifiers.
 NSString *const AAPLListDocumentsViewControllerListDocumentCellIdentifier = @"listDocumentCell";
 
-@interface AAPLListDocumentsViewController () <AAPLListsControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate>
+@interface AAPLListDocumentsViewController () <AAPLListsControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate, WCSessionDelegate>
 
 @property (nonatomic, strong) AAPLAppLaunchContext *pendingLaunchContext;
+
+@property (nonatomic) BOOL watchAppInstalledAtLastStateChange;
 
 @end
 
 
 @implementation AAPLListDocumentsViewController
-            
+
+#pragma mark - Initialization
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    
+    if (self) {
+        if ([WCSession isSupported]) {
+            [WCSession defaultSession].delegate = self;
+            [[WCSession defaultSession] activateSession];
+        }
+    }
+    
+    return self;
+}
+
 #pragma mark - View Life Cycle
 
 - (void)viewDidLoad {
@@ -86,7 +104,11 @@ NSString *const AAPLListDocumentsViewControllerListDocumentCellIdentifier = @"li
 
 - (void)restoreUserActivityState:(NSUserActivity *)activity {
     // Obtain an app launch context from the provided activity and configure the view controller with it.
-    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:activity];
+    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:activity listsController:self.listsController];
+    
+    if (!launchContext) {
+        return;
+    }
     
     // Configure the view controller with the launch context.
     [self configureViewControllerWithLaunchContext:launchContext];
@@ -95,10 +117,10 @@ NSString *const AAPLListDocumentsViewControllerListDocumentCellIdentifier = @"li
 #pragma mark - IBActions
 
 /*!
- * Note that the document picker requires that code signing, entitlements, and provisioning for
- * the project have been configured before you run Lister. If you run the app without configuring
- * entitlements correctly, an exception when this method is invoked (i.e. when the "+" button is
- * clicked).
+    Note that the document picker requires that code signing, entitlements, and provisioning for
+    the project have been configured before you run Lister. If you run the app without configuring
+    entitlements correctly, an exception when this method is invoked (i.e. when the "+" button is
+    clicked).
  */
 - (IBAction)pickDocument:(UIBarButtonItem *)barButtonItem {
     UIDocumentMenuViewController *documentMenu = [[UIDocumentMenuViewController alloc] initWithDocumentTypes:@[AAPLAppConfigurationListerFileUTI] inMode:UIDocumentPickerModeImport];
@@ -161,25 +183,14 @@ NSString *const AAPLListDocumentsViewControllerListDocumentCellIdentifier = @"li
 - (void)listsController:(AAPLListsController *)listsController didUpdateListInfo:(AAPLListInfo *)listInfo atIndex:(NSInteger)index {
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     
-    AAPLListCell *cell = (AAPLListCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    cell.label.text = listInfo.name;
-    
-    [listInfo fetchInfoWithCompletionHandler:^{
-        /*
-             The fetchInfoWithCompletionHandler: method calls its completion handler on a background
-             queue, dispatch back to the main queue to make UI updates.
-        */
-        dispatch_async(dispatch_get_main_queue(), ^{
-            // Make sure that the list info is still visible once the color has been fetched.
-            if ([self.tableView.indexPathsForVisibleRows containsObject:indexPath]) {
-                cell.listColorView.backgroundColor = AAPLColorFromListColor(listInfo.color);
-            }
-        });
-    }];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)listsControllerDidChangeContent:(AAPLListsController *)listsController {
     [self.tableView endUpdates];
+    
+    // This method will handle interactions with the watch connectivity session on behalf of the app.
+    [self updateWatchConnectivitySessionApplicationContext];
 }
 
 - (void)listsController:(AAPLListsController *)listsController didFailCreatingListInfo:(AAPLListInfo *)listInfo withError:(NSError *)error {
@@ -252,6 +263,25 @@ NSString *const AAPLListDocumentsViewControllerListDocumentCellIdentifier = @"li
     return NO;
 }
 
+#pragma mark - WCSessionDelegate
+
+- (void)sessionWatchStateDidChange:(nonnull WCSession *)session {
+    if (!self.watchAppInstalledAtLastStateChange && session.watchAppInstalled) {
+        self.watchAppInstalledAtLastStateChange = session.watchAppInstalled;
+        [self updateWatchConnectivitySessionApplicationContext];
+    }
+}
+
+- (void)session:(nonnull WCSession *)session didFinishFileTransfer:(nonnull WCSessionFileTransfer *)fileTransfer error:(nullable NSError *)error {
+    if (error) {
+        NSLog(@"%s, file: %@, error: %@", __FUNCTION__, fileTransfer.file.fileURL.lastPathComponent, error.localizedDescription);
+    }
+}
+
+- (void)session:(nonnull WCSession *)session didReceiveFile:(nonnull WCSessionFile *)file {
+    [self.listsController copyListFromURL:file.fileURL toListWithName:[file.fileURL.lastPathComponent stringByDeletingPathExtension]];
+}
+
 #pragma mark - UIStoryboardSegue Handling
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -295,8 +325,11 @@ NSString *const AAPLListDocumentsViewControllerListDocumentCellIdentifier = @"li
         continue configuration from there. Otherwise, configure the view controller directly.
     */
     if ([self.navigationController.topViewController isKindOfClass:[UINavigationController class]]) {
-        [self.navigationController popToRootViewControllerAnimated:NO];
-        self.pendingLaunchContext = launchContext;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Ensure that any UI updates occur on the main queue.
+            [self.navigationController popToRootViewControllerAnimated:NO];
+            self.pendingLaunchContext = launchContext;
+        });
         
         return;
     }
@@ -304,7 +337,81 @@ NSString *const AAPLListDocumentsViewControllerListDocumentCellIdentifier = @"li
     AAPLListInfo *activityListInfo = [[AAPLListInfo alloc] initWithURL:launchContext.listURL];
     activityListInfo.color = launchContext.listColor;
     
-    [self performSegueWithIdentifier:AAPLAppDelegateMainStoryboardListDocumentsViewControllerContinueUserActivity sender:activityListInfo];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performSegueWithIdentifier:AAPLAppDelegateMainStoryboardListDocumentsViewControllerContinueUserActivity sender:activityListInfo];
+    });
+}
+
+- (void)updateWatchConnectivitySessionApplicationContext {
+    // Do not proceed if `WCSession` is not supported on this iOS device.
+    if (![WCSession isSupported]) { return; }
+    
+    WCSession *session = [WCSession defaultSession];
+    
+    // Do not proceed if the watch app is not installed on the paired watch.
+    if (!session.watchAppInstalled) { return; }
+    
+    // This array will be used to collect the data about the lists for the application context.
+    __block NSMutableArray *lists = [NSMutableArray array];
+    // A background queue to execute operations on to fetch the information about the lists.
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    
+    // This operation will execute last and will actually update the application context.
+    NSBlockOperation *updateApplicationContextOperation = [NSBlockOperation blockOperationWithBlock:^{
+        NSError *error;
+        if (![session updateApplicationContext:@{ AAPLApplicationActivityContextCurrentListsKey: [lists copy] } error:&error]) {
+            NSLog(@"Error updating context: %@", error.localizedDescription);
+        }
+    }];
+    
+    // Loop through the available lists in order to accumulate contextual information about them.
+    for (int idx = 0; idx < self.listsController.count; idx++) {
+        // Obtain the list info object from the controller.
+        AAPLListInfo *info = self.listsController[idx];
+        
+        // This operation will fetch the information for an individual list.
+        NSBlockOperation *listInfoOperation = [NSBlockOperation blockOperationWithBlock:^{
+            // The `-fetchInfoWithCompletionHandler:` method executes asynchronously. Use a semaphore to wait.
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            [info fetchInfoWithCompletionHandler:^{
+                // Now that the `info` object is fully populated. Add an entry to the `lists` dictionary.
+                [lists addObject:@{
+                    AAPLApplicationActivityContextListNameKey: info.name,
+                    AAPLApplicationActivityContextListColorKey: @(info.color)
+                }];
+                // Signal the semaphore indicating that it can stop waiting.
+                dispatch_semaphore_signal(semaphore);
+            }];
+            // Wait on the semaphore to ensure the operation doesn't return until the fetch is complete.
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        }];
+        
+        // Depending on `listInfoOperation` ensures it completes before `updateApplicationContextOperation` executes.
+        [updateApplicationContextOperation addDependency:listInfoOperation];
+        [queue addOperation:listInfoOperation];
+        
+        // Use file coordination to obtain exclusive access to read the file in order to initiate a transfer.
+        NSFileCoordinator *fileCoordinator = [[NSFileCoordinator alloc] init];
+        NSFileAccessIntent *readingIntent = [NSFileAccessIntent readingIntentWithURL:info.URL options:0];
+        [fileCoordinator coordinateAccessWithIntents:@[readingIntent] queue:[[NSOperationQueue alloc] init] byAccessor:^(NSError *accessError) {
+            if (accessError) {
+                return;
+            }
+            
+            // Iterate through outstanding transfers; and cancel any for the same URL as they are obsolete.
+            for (WCSessionFileTransfer *transfer in session.outstandingFileTransfers) {
+                if ([transfer.file.fileURL isEqual:readingIntent.URL]) {
+                    [transfer cancel];
+                    break;
+                }
+            }
+            
+            // Initiate the new transfer.
+            [session transferFile:readingIntent.URL metadata:nil];
+        }];
+    }
+    
+    [queue addOperation:updateApplicationContextOperation];
 }
 
 @end

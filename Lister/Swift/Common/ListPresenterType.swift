@@ -50,7 +50,7 @@ public protocol ListPresenterType: class {
         instance has changed. Delegates also receive a callback if the new color is different from the old
         list's color.
         
-        :param: list The new list that the `ListPresenterType` should present.
+        - parameter list: The new list that the `ListPresenterType` should present.
     */
     func setList(list: List)
     
@@ -79,4 +79,19 @@ public protocol ListPresenterType: class {
     
     /// A convenience property that should return the equivalent of `presentedListItems.isEmpty`.
     var isEmpty: Bool { get }
+}
+
+/**
+    We also want to provide implementation to each presenter that conforms
+    to this protocol that helps forwards some of its properties to the underlying
+    array of presented items. This is provided in this extension of `ListPresenterType`.
+*/
+public extension ListPresenterType {
+    var isEmpty: Bool {
+        return presentedListItems.isEmpty
+    }
+    
+    var count: Int {
+        return presentedListItems.count
+    }
 }

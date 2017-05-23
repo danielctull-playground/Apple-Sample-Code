@@ -69,10 +69,10 @@ class IncompleteListItemsPresenterTests: XCTestCase {
         let expectedChangeListItem = expectedList.items[indexOfListItemToToggle]
         expectedChangeListItem.isComplete = !expectedChangeListItem.isComplete
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Check the archiveable list against the expected list we created.
             XCTAssertEqual(self.presenter.archiveableList, expectedList, "The `archiveableList` from the presenter should match our expected list.")
-        })
+        }
 
         // Perform the toggle. No need to worry about the side affects of the toggle.
         presenter.toggleListItem(listItemToToggle)
@@ -83,7 +83,7 @@ class IncompleteListItemsPresenterTests: XCTestCase {
     func testSetColorWithDifferentColor() {
         let newColor = List.Color.Orange
 
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             XCTAssertEqual(self.presenter.color, newColor, "The getter for the color should return the new color.")
             
             let didUpdateListColorCallbackCount = self.testHelper.didUpdateListColorCallbacks.count
@@ -93,7 +93,7 @@ class IncompleteListItemsPresenterTests: XCTestCase {
             
             let updatedColor = self.testHelper.didUpdateListColorCallbacks.first!
             XCTAssertEqual(updatedColor, newColor, "The delegate callback should provide the new color.")
-        })
+        }
         
         presenter.color = newColor
     }
@@ -103,7 +103,7 @@ class IncompleteListItemsPresenterTests: XCTestCase {
     func testToggleIncompleteListItem() {
         let incompleteListItem = initiallyIncompleteListItems[1]
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Test for item updating.
             let didUpdateListItemCallbackCount = self.testHelper.didUpdateListItemCallbacks.count
             XCTAssertEqual(didUpdateListItemCallbackCount, 1, "There should be one \"update\" callback.")
@@ -116,7 +116,7 @@ class IncompleteListItemsPresenterTests: XCTestCase {
             
             XCTAssertTrue(incompleteListItem.isComplete, "The item should be complete after the toggle.")
             XCTAssertEqual(updatedIndex, 1, "The item should be updated in place.")
-        })
+        }
         
         presenter.toggleListItem(incompleteListItem)
     }
@@ -127,7 +127,7 @@ class IncompleteListItemsPresenterTests: XCTestCase {
         let completeListItemIndex = 1
         let completeListItem = presenter.presentedListItems[completeListItemIndex]
         
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             // Test for item updating.
             let didUpdateListItemCallbackCount = self.testHelper.didUpdateListItemCallbacks.count
             XCTAssertEqual(didUpdateListItemCallbackCount, 1, "There should be one \"update\" callback.")
@@ -139,7 +139,7 @@ class IncompleteListItemsPresenterTests: XCTestCase {
             XCTAssertEqual(updatedListItem, completeListItem, "The delegate should receive the \"update\" callback with the toggled list item.")
             XCTAssertTrue(completeListItem.isComplete, "The item should be complete after the toggle.")
             XCTAssertEqual(updatedIndex, completeListItemIndex, "The item should be updated in place.")
-        })
+        }
 
         presenter.toggleListItem(completeListItem)
     }
@@ -147,11 +147,11 @@ class IncompleteListItemsPresenterTests: XCTestCase {
     // MARK: `updatePresentedListItemsToCompletionState(_:)`
 
     func testUpdatePresentedListItemsToCompletionState() {
-        testHelper.whenNextChangesOccur(assert: {
+        testHelper.expectOnNextChange {
             XCTAssertEqual(self.testHelper.didUpdateListItemCallbacks.count, self.initiallyIncompleteListItems.count, "There should be one \"event\" per incomplete, presented item.")
 
             for (listItem, updatedIndex) in self.testHelper.didUpdateListItemCallbacks {
-                if let indexOfUpdatedListItem = find(self.presentedListItems, listItem) {
+                if let indexOfUpdatedListItem = self.presentedListItems.indexOf(listItem) {
                     XCTAssertEqual(updatedIndex, indexOfUpdatedListItem, "The updated index should be the same as the initial index.")
 
                     XCTAssertTrue(listItem.isComplete, "The item should be complete after the update.")
@@ -160,7 +160,7 @@ class IncompleteListItemsPresenterTests: XCTestCase {
                     XCTFail("One of the updated list items was never supposed to be in the list.")
                 }
             }
-        })
+        }
 
         presenter.updatePresentedListItemsToCompletionState(true)
     }

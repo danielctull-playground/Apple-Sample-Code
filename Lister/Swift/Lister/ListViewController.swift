@@ -73,7 +73,7 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
         return [flexibleSpace, deleteList, flexibleSpace]
     }
 
-    var textAttributes: [String: AnyObject] = [:] {
+    var textAttributes = [String: AnyObject]() {
         didSet {
             if isViewLoaded() {
                 updateInterfaceWithTextAttributes()
@@ -107,7 +107,7 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
         document.openWithCompletionHandler { success in
             if !success {
                 // In your app, handle this gracefully.
-                println("Couldn't open document: \(self.documentURL).")
+                print("Couldn't open document: \(self.documentURL).")
 
                 abort()
             }
@@ -136,6 +136,12 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
         super.viewDidAppear(animated)
         
         becomeFirstResponder()
+        
+        // If available, obtain a reference to the 'newItemCell` and make its `textField` the first responder.
+        let newItemIndexPath = NSIndexPath(forRow: 0, inSection: 0)
+        guard let newItemCell = tableView.cellForRowAtIndexPath(newItemIndexPath) as? ListItemCell else { return }
+        
+        newItemCell.textField.becomeFirstResponder()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -172,7 +178,7 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
     // MARK: Notifications
 
     func handleDocumentStateChangedNotification(notification: NSNotification) {
-        if document.documentState & .InConflict == .InConflict {
+        if document.documentState.contains(.InConflict) {
             resolveConflicts()
         }
 
@@ -234,7 +240,7 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
             identifier = MainStoryboard.TableViewCellIdentifiers.listItemCell
         }
         
-        return tableView.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath) as! UITableViewCell
+        return tableView.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath)
     }
     
     override func tableView(_: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -328,33 +334,42 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
+        defer {
+            activeTextField = nil
+        }
+        
+        guard let text = textField.text else { return }
+        
         let indexPath = indexPathForView(textField)
         
         if indexPath != nil && indexPath!.row > 0 {
             let listItem = listPresenter.presentedListItems[indexPath!.row - 1]
 
-            listPresenter.updateListItem(listItem, withText: textField.text)
+            listPresenter.updateListItem(listItem, withText: text)
         }
-        else if !textField.text.isEmpty {
-            let listItem = ListItem(text: textField.text)
+        else if !text.isEmpty {
+            let listItem = ListItem(text: text)
 
             listPresenter.insertListItem(listItem)
         }
-        
-        activeTextField = nil
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         let indexPath = indexPathForView(textField)!
-
-        // An item must have text to dismiss the keyboard.
-        if !textField.text.isEmpty || indexPath.row == 0 {
+        
+        // The 'add item' row can always dismiss the keyboard.
+        if indexPath.row == 0 {
             textField.resignFirstResponder()
 
             return true
         }
         
-        return false
+        // An item must have text to dismiss the keyboard.
+        guard let text = textField.text where !text.isEmpty else { return false }
+        
+        textField.resignFirstResponder()
+
+        return true
     }
     
     // MARK: ListColorCellDelegate
@@ -479,7 +494,7 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
         }
         else {
             let emptyViewController = storyboard?.instantiateViewControllerWithIdentifier(AppDelegate.MainStoryboard.Identifiers.emptyViewController) as! UINavigationController
-            emptyViewController.topViewController.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem()
+            emptyViewController.topViewController?.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem()
             
             let masterViewController = splitViewController?.viewControllers.first! as! UINavigationController
             splitViewController?.viewControllers = [masterViewController, emptyViewController]
@@ -516,15 +531,21 @@ class ListViewController: UITableViewController, UITextFieldDelegate, ListColorC
     }
 
     func resolveConflicts() {
-        // Any automatic merging logic or presentation of conflict resolution UI should go here.
-        // For Lister we'll pick the current version and mark the conflict versions as resolved.
-        NSFileVersion.removeOtherVersionsOfItemAtURL(documentURL, error: nil)
-
-        let conflictVersions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(documentURL) as! [NSFileVersion]
-        
-        for fileVersion in conflictVersions {
-            fileVersion.resolved = true
+        /*
+            Any automatic merging logic or presentation of conflict resolution UI should go here.
+            For Lister we'll pick the current version and mark the conflict versions as resolved.
+        */
+        do {
+            try NSFileVersion.removeOtherVersionsOfItemAtURL(documentURL)
+            
+            let conflictVersions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(documentURL)!
+            
+            for fileVersion in conflictVersions {
+                fileVersion.resolved = true
+            }
         }
+        // Any encountered errors are swallowed, handle this appropriately in your own apps.
+        catch {}
     }
     
     func indexPathForView(view: UIView) -> NSIndexPath? {

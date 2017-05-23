@@ -20,12 +20,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             static let emptyViewController = "emptyViewController"
         }
     }
+    
+    enum ShortcutIdentifier: String {
+        case NewInToday
+        
+        // MARK: Initializers
+        
+        init?(fullType: String) {
+            guard let last = fullType.componentsSeparatedByString(".").last else { return nil }
+            
+            self.init(rawValue: last)
+        }
+        
+        // MARK: Properties
+        
+        var type: String {
+            return NSBundle.mainBundle().bundleIdentifier! + ".\(self.rawValue)"
+        }
+    }
 
     // MARK: Properties
 
     var window: UIWindow?
 
     var listsController: ListsController!
+    
+    var launchedShortcutItem: UIApplicationShortcutItem?
     
     /**
         A private, local queue used to ensure serialized access to Cloud containers during application
@@ -90,20 +110,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         
         // Configure the detail controller in the `UISplitViewController` at the root of the view hierarchy.
         let navigationController = splitViewController.viewControllers.last as! UINavigationController
-        navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
-        navigationController.topViewController.navigationItem.leftItemsSupplementBackButton = true
+        navigationController.topViewController?.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+        navigationController.topViewController?.navigationItem.leftItemsSupplementBackButton = true
         
-        return true
-    }
-    
-    func applicationDidBecomeActive(application: UIApplication) {
+        var shouldPerformAdditionalDelegateHandling = true
+        
+        // If a shortcut was launched, display its information and take the appropriate action.
+        if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
+            
+            launchedShortcutItem = shortcutItem
+            
+            // This will block "performActionForShortcutItem:completionHandler" from being called.
+            shouldPerformAdditionalDelegateHandling = false
+        }
+        
         // Make sure that user storage preferences are set up after the app sandbox is extended. See `application(_:, willFinishLaunchingWithOptions:)` above.
         dispatch_async(appDelegateQueue) {
             self.setupUserStoragePreferences()
         }
+        
+        return shouldPerformAdditionalDelegateHandling
     }
     
-    func application(_: UIApplication, continueUserActivity: NSUserActivity, restorationHandler: [AnyObject]! -> Void) -> Bool {
+    func applicationDidBecomeActive(application: UIApplication) {
+        guard let launchedShortcutItem = launchedShortcutItem else { return }
+        
+        // Make sure that shortcut handling occurs after storage preference have been set. See `application(_:, didFinishLaunchingWithOptions:)` above.
+        dispatch_async(appDelegateQueue) {
+            self.handleApplicationShortcutItem(launchedShortcutItem)
+            self.launchedShortcutItem = nil
+        }
+    }
+    
+    func application(_: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
         // Lister only supports a single user activity type; if you support more than one the type is available from the `continueUserActivity` parameter.
         if let listDocumentsViewController = listDocumentsViewController {
             // Make sure that user activity continuation occurs after the app sandbox is extended. See `application(_:, willFinishLaunchingWithOptions:)` above.
@@ -117,11 +156,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         return false
     }
     
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         // Lister currently only opens URLs of the Lister scheme type.
         if url.scheme == AppConfiguration.ListerScheme.name {
             // Obtain an app launch context from the provided lister:// URL and configure the view controller with it.
-            let launchContext = AppLaunchContext(listerURL: url)
+            guard let launchContext = AppLaunchContext(listerURL: url) else { return false }
             
             if let listDocumentsViewController = listDocumentsViewController {
                 // Make sure that URL opening is handled after the app sandbox is extended. See `application(_:, willFinishLaunchingWithOptions:)` above.
@@ -134,6 +173,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
         
         return false
+    }
+    
+    func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+        // Make sure that shortcut handling is coordinated with other activities handled asynchronously.
+        dispatch_async(appDelegateQueue) {
+            completionHandler(self.handleApplicationShortcutItem(shortcutItem))
+        }
     }
     
     // MARK: UISplitViewControllerDelegate
@@ -182,7 +228,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             secondaryViewController.toolbar?.tintColor = tintColor
             
             // Display a bar button on the left to allow the user to expand or collapse the main area, similar to Mail.
-            secondaryViewController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+            secondaryViewController.topViewController?.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
             
             return secondaryViewController
         }
@@ -268,7 +314,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
         signedOutController.addAction(action)
         
-        listDocumentsViewController?.presentViewController(signedOutController, animated: true, completion: nil)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.listDocumentsViewController?.presentViewController(signedOutController, animated: true, completion: nil)
+        }
     }
     
     func promptUserForStorageOption() {
@@ -295,12 +343,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
         storageController.addAction(cloudOption)
         
-        listDocumentsViewController?.presentViewController(storageController, animated: true, completion: nil)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.listDocumentsViewController?.presentViewController(storageController, animated: true, completion: nil)
+        }
     }
    
     // MARK: Convenience
     
-    func configureListsController(#accountChanged: Bool, storageOptionChangeHandler: (Void -> Void)? = nil) {
+    func handleApplicationShortcutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
+        // Verify that the provided `shortcutItem`'s `type` is one handled by the application.
+        guard let shortcutIdentifier = ShortcutIdentifier(fullType: shortcutItem.type) else { return false }
+        
+        switch shortcutIdentifier {
+            case .NewInToday:
+                guard let listDocuments = self.listDocumentsViewController else { return false }
+                guard let listsController = self.listsController else { return false }
+                
+                let todayURL = listsController.documentsDirectory.URLByAppendingPathComponent(AppConfiguration.localizedTodayDocumentNameAndExtension, isDirectory: false)
+                let launchContext = AppLaunchContext(listURL: todayURL, listColor: List.Color.Orange)
+                
+                listDocuments.configureViewControllerWithLaunchContext(launchContext)
+                
+                return true
+        }
+        
+        // The switch is exhaustive so there is no need for a 'final' return statement.
+    }
+    
+    func configureListsController(accountChanged accountChanged: Bool, storageOptionChangeHandler: (Void -> Void)? = nil) {
         if listsController != nil && !accountChanged {
             // The current controller is correct. There is no need to reconfigure it.
             return
@@ -317,7 +387,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
         else if accountChanged {
             // A lists controller is configured; however, it needs to have its coordinator updated based on the account change. 
-            listsController.listCoordinator = AppConfiguration.sharedConfiguration.listCoordinatorForCurrentConfigurationWithLastPathComponent(AppConfiguration.listerFileExtension, firstQueryHandler: storageOptionChangeHandler)
+            listsController.listCoordinator = AppConfiguration.sharedConfiguration.listCoordinatorForCurrentConfigurationWithPathExtension(AppConfiguration.listerFileExtension, firstQueryHandler: storageOptionChangeHandler)
         }
     }
 }

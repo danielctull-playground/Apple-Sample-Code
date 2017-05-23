@@ -38,8 +38,10 @@ NSString *const AAPLAppLaunchContextTestsUserActivityType = @"com.example.apple-
         AAPLAppConfigurationUserActivityListColorUserInfoKey: @(self.color)
     }];
     
-    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:userActivity];
+    AAPLListsController *listsController = [[AAPLAppConfiguration sharedAppConfiguration] listsControllerForCurrentConfigurationWithPathExtension:AAPLAppConfigurationListerFileExtension firstQueryHandler:nil];
+    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:userActivity listsController:listsController];
     
+    XCTAssertNotNil(launchContext);
     XCTAssertEqualObjects(launchContext.listURL.absoluteURL, ((NSURL *)self.listURLs.firstObject).absoluteURL);
     XCTAssertEqual(launchContext.listColor, self.color);
 }
@@ -52,8 +54,10 @@ NSString *const AAPLAppLaunchContextTestsUserActivityType = @"com.example.apple-
         AAPLAppConfigurationUserActivityListColorUserInfoKey: @(self.color)
     }];
     
-    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:userActivity];
+    AAPLListsController *listsController = [[AAPLAppConfiguration sharedAppConfiguration] listsControllerForCurrentConfigurationWithPathExtension:AAPLAppConfigurationListerFileExtension firstQueryHandler:nil];
+    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:userActivity listsController:listsController];
     
+    XCTAssertNotNil(launchContext);
     XCTAssertEqualObjects(launchContext.listURL.absoluteURL, ((NSURL *)self.listURLs.firstObject).absoluteURL);
     XCTAssertEqual(launchContext.listColor, self.color);
 }
@@ -67,8 +71,10 @@ NSString *const AAPLAppLaunchContextTestsUserActivityType = @"com.example.apple-
         AAPLAppConfigurationUserActivityListColorUserInfoKey: @(self.color)
     }];
     
-    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:userActivity];
+    AAPLListsController *listsController = [[AAPLAppConfiguration sharedAppConfiguration] listsControllerForCurrentConfigurationWithPathExtension:AAPLAppConfigurationListerFileExtension firstQueryHandler:nil];
+    AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithUserActivity:userActivity listsController:listsController];
     
+    XCTAssertNotNil(launchContext);
     XCTAssertEqualObjects(launchContext.listURL.absoluteURL, ((NSURL *)self.listURLs.firstObject).absoluteURL);
     XCTAssertEqual(launchContext.listColor, self.color);
 }
@@ -86,6 +92,7 @@ NSString *const AAPLAppLaunchContextTestsUserActivityType = @"com.example.apple-
     
     AAPLAppLaunchContext *launchContext = [[AAPLAppLaunchContext alloc] initWithListerURL:urlComponents.URL];
     
+    XCTAssertNotNil(launchContext);
     XCTAssertEqualObjects(launchContext.listURL.absoluteURL, ((NSURL *)self.listURLs.firstObject).absoluteURL);
     XCTAssertEqual(launchContext.listColor, self.color);
 }

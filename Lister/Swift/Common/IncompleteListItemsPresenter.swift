@@ -56,7 +56,7 @@ final public class IncompleteListItemsPresenter: NSObject, ListPresenterType {
         }
         
         set {
-            updateListColorForListPresenterIfDifferent(self, &list.color, newValue, isForInitialLayout: false)
+            updateListColorForListPresenterIfDifferent(self, color: &list.color, newColor: newValue, isForInitialLayout: false)
         }
     }
     
@@ -154,7 +154,7 @@ final public class IncompleteListItemsPresenter: NSObject, ListPresenterType {
         
         // Obtain the presented list items that were unchanged. We need to update the new list to reference the old list items.
         let unchangedPresentedListItems = _presentedListItems.filter { oldListItem in
-            return !contains(newRemovedPresentedListItems, oldListItem) && !contains(newInsertedIncompleteListItems, oldListItem) && !contains(newPresentedToggledListItems, oldListItem) && !contains(newPresentedListItemsWithUpdatedText, oldListItem)
+            return !newRemovedPresentedListItems.contains(oldListItem) && !newInsertedIncompleteListItems.contains(oldListItem) && !newPresentedToggledListItems.contains(oldListItem) && !newPresentedListItemsWithUpdatedText.contains(oldListItem)
         }
         replaceAnyEqualUnchangedNewListItemsWithPreviousUnchangedListItems(replaceableNewListItems: &list.items, previousUnchangedListItems: unchangedPresentedListItems)
 
@@ -164,17 +164,9 @@ final public class IncompleteListItemsPresenter: NSObject, ListPresenterType {
             already knows.  Because the delegate hasn't seen a color change yet, the update (if it happens) is
             ok.
         */
-        updateListColorForListPresenterIfDifferent(self, &oldList.color, newList.color)
+        updateListColorForListPresenterIfDifferent(self, color: &oldList.color, newColor: newList.color)
         
         delegate?.listPresenterDidChangeListLayout(self, isInitialLayout: true)
-    }
-
-    public var count: Int {
-        return presentedListItems.count
-    }
-    
-    public var isEmpty: Bool {
-        return presentedListItems.isEmpty
     }
 
     // MARK: Methods
@@ -184,16 +176,16 @@ final public class IncompleteListItemsPresenter: NSObject, ListPresenterType {
         the completion state of the list item. Toggling a list item calls the delegate's
         `listPresenter(_:didUpdateListItem:atIndex:)` method.
         
-        :param: listItem The list item to toggle.
+        - parameter listItem: The list item to toggle.
     */
     public func toggleListItem(listItem: ListItem) {
-        precondition(contains(presentedListItems, listItem), "The list item must already be in the presented list items.")
+        precondition(presentedListItems.contains(listItem), "The list item must already be in the presented list items.")
         
         delegate?.listPresenterWillChangeListLayout(self, isInitialLayout: false)
         
         listItem.isComplete = !listItem.isComplete
         
-        let currentIndex = find(presentedListItems, listItem)!
+        let currentIndex = presentedListItems.indexOf(listItem)!
         
         delegate?.listPresenter(self, didUpdateListItem: listItem, atIndex: currentIndex)
         
@@ -206,10 +198,10 @@ final public class IncompleteListItemsPresenter: NSObject, ListPresenterType {
         delegate's `listPresenter(_:didUpdateListItem:atIndex:)` method for each list item that has been
         updated. 
 
-        :param: completionState The value that all presented list item instances should have as their `isComplete` property.
+        - parameter completionState: The value that all presented list item instances should have as their `isComplete` property.
     */
     public func updatePresentedListItemsToCompletionState(completionState: Bool) {
-        var presentedListItemsNotMatchingCompletionState = presentedListItems.filter { $0.isComplete != completionState }
+        let presentedListItemsNotMatchingCompletionState = presentedListItems.filter { $0.isComplete != completionState }
         
         // If there are no list items that match the completion state, it's a no op.
         if presentedListItemsNotMatchingCompletionState.isEmpty { return }
@@ -219,7 +211,7 @@ final public class IncompleteListItemsPresenter: NSObject, ListPresenterType {
         for listItem in presentedListItemsNotMatchingCompletionState {
             listItem.isComplete = !listItem.isComplete
             
-            let indexOfListItem = find(presentedListItems, listItem)!
+            let indexOfListItem = presentedListItems.indexOf(listItem)!
             
             delegate?.listPresenter(self, didUpdateListItem: listItem, atIndex: indexOfListItem)
         }

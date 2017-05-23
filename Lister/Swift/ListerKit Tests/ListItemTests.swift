@@ -110,7 +110,7 @@ class ListItemTests: XCTestCase {
         `AAPLListItem` class.
     */
     func testClassRuntimeNameForArchiveCompatibility() {
-        let classRuntimeName = NSStringFromClass(ListItem.self)!
+        let classRuntimeName = NSStringFromClass(ListItem.self)
 
         XCTAssertEqual(classRuntimeName, "AAPLListItem", "ListItem should be archivable with the Objective-C version of Lister.")
     }

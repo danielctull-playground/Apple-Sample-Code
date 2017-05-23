@@ -12,18 +12,18 @@ class CheckBoxLayer: CALayer {
     // MARK: Types
 
     struct SharedColors {
-        static let defaultTintColor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), [0.5, 0.5, 0.5])
+        static let defaultTintColor = CGColorCreate(CGColorSpaceCreateDeviceRGB(), [0.5, 0.5, 0.5])!
     }
     
     // MARK: Properties
 
-    var tintColor: CGColor = SharedColors.defaultTintColor {
+    var tintColor = SharedColors.defaultTintColor {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    var isChecked: Bool = false {
+    var isChecked = false {
         didSet {
             setNeedsDisplay()
         }

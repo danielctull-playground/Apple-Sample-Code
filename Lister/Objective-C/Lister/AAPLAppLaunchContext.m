@@ -10,11 +10,26 @@
 
 @implementation AAPLAppLaunchContext
 
-- (instancetype)initWithUserActivity:(NSUserActivity *)userActivity {
+- (instancetype)initWithListURL:(NSURL *)listURL listColor:(AAPLListColor)listColor {
     self = [super init];
     
     if (self) {
-        NSParameterAssert(userActivity.userInfo != nil);
+        _listURL = listURL;
+        _listColor = listColor;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithUserActivity:(NSUserActivity *)userActivity listsController:(AAPLListsController *)listsController {
+    self = [super init];
+    
+    if (self) {
+        if (!userActivity.userInfo) {
+            NSLog(@"User activity provided to \(__FUNCTION__) has no `userInfo` dictionary.");
+            return nil;
+        }
+        
         /*
             The URL may be provided as either a URL or a URL path via separate keys. Check first for
             `NSUserActivityDocumentURLKey`, if not provided, obtain the path and create a file URL from it.
@@ -23,17 +38,34 @@
         
         if (!_listURL) {
             NSString *listInfoFilePath = userActivity.userInfo[AAPLAppConfigurationUserActivityListURLPathUserInfoKey];
-            
-            NSAssert(listInfoFilePath != nil, @"The `userInfo` dictionary provided did not contain a URL or a URL path.");
-            
+            if (!listInfoFilePath) {
+                NSLog(@"The `userInfo` dictionary provided to \(__FUNCTION__) did not contain a URL or a URL path.");
+                return nil;
+            }
+
             _listURL = [NSURL fileURLWithPath:listInfoFilePath isDirectory:NO];
+            
+            if (![_listURL checkPromisedItemIsReachableAndReturnError:nil] && ![_listURL checkResourceIsReachableAndReturnError:nil]) {
+                _listURL = [listsController.documentsDirectory URLByAppendingPathComponent:_listURL.lastPathComponent isDirectory:NO];
+                
+                if (![_listURL checkPromisedItemIsReachableAndReturnError:nil] && ![_listURL checkResourceIsReachableAndReturnError:nil]) {
+                    _listURL = nil;
+                }
+            }
         }
         
-        NSAssert(_listURL != nil, @"`listURL must not be `nil`.");
+        if (!_listURL) {
+            NSLog(@"`listURL in \(__FUNCTION__) must not be `nil`.");
+            return nil;
+        }
         
         NSNumber *listInfoColorNumber = userActivity.userInfo[AAPLAppConfigurationUserActivityListColorUserInfoKey];
         
-        NSAssert(listInfoColorNumber != nil && listInfoColorNumber.integerValue >= 0 && listInfoColorNumber.integerValue < 6, @"The `userInfo` dictionary provided contains an invalid entry for the list color.");
+        if (!listInfoColorNumber && !(listInfoColorNumber.integerValue >= 0 && listInfoColorNumber.integerValue < 6)) {
+            NSLog(@"The `userInfo` dictionary provided to \(__FUNCTION__) contains an invalid entry for the list color.");
+            return nil;
+        }
+        
         // Set the `listColor` by converting the `NSNumber` to an NSInteger and casting to `AAPLListColor`.
         _listColor = (AAPLListColor)listInfoColorNumber.integerValue;
     }
@@ -45,27 +77,42 @@
     self = [super init];
     
     if (self) {
-        NSParameterAssert(listerURL.scheme != nil && [listerURL.scheme isEqualToString:@"lister"]);
+        NSParameterAssert(listerURL.scheme != nil && [listerURL.scheme isEqualToString:AAPLAppConfigurationListerSchemeName]);
         
-        NSParameterAssert(listerURL.path != nil);
+        NSString *filePath = listerURL.path;
+        if (!filePath) {
+            NSLog(@"URL provided to \(__FUNCTION__) is missing `path`.");
+            return nil;
+        }
+        
         // Construct a file URL from the path of the lister:// URL.
-        _listURL = [NSURL fileURLWithPath:listerURL.path isDirectory:NO];
-        
-        NSAssert(_listURL != nil, @"`listURL must not be `nil`.");
+        _listURL = [NSURL fileURLWithPath:filePath isDirectory:NO];
         
         // Extract the query items to initialize the `listColor` property from the `color` query item.
         NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:listerURL resolvingAgainstBaseURL:NO];
         NSArray *queryItems = urlComponents.queryItems;
         
+        if (!urlComponents || !queryItems) {
+            NSLog(@"URL provided to \(__FUNCTION__) contains no query items.");
+            return nil;
+        }
+        
         // Construct a predicate to extract the `color` query item.
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name = %@", AAPLAppConfigurationListerColorQueryKey];
         NSArray *colorQueryItems = [queryItems filteredArrayUsingPredicate:predicate];
         
-        NSAssert(colorQueryItems.count == 1, @"URL provided should contain only one `color` query item.");
+        if (colorQueryItems.count != 1) {
+            NSLog(@"URL provided should contain only one `color` query item.");
+            return nil;
+        }
         
         NSURLQueryItem *colorQueryItem = colorQueryItems.firstObject;
         
-        NSAssert(colorQueryItem.value != nil, @"URL provided contains an invalid value for `color`.");
+        if (!colorQueryItem.value) {
+            NSLog(@"URL provided contains an invalid value for `color`.");
+            return nil;
+        }
+        
         // Set the `listColor` by converting the `NSString` value to an NSInteger and casting to `AAPLListColor`.
         _listColor = colorQueryItem.value.integerValue;
     }
