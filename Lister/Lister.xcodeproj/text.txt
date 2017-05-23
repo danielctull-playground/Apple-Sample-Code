@@ -1,3 +1,0 @@
-- drop open in lister
-- user activity
-- 
