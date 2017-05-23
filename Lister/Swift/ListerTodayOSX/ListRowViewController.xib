@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6206.9" systemVersion="14A329f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6750" systemVersion="14D76" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6206.9"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6750"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="ListRowViewController" customModule="com_example_apple_samplecode_Lister_ListerTodayOSX" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="ListRowViewController" customModule="ListerToday" customModuleProvider="target">
             <connections>
                 <outlet property="checkBox" destination="cJn-qf-hFu" id="DsM-8B-gGr"/>
                 <outlet property="view" destination="lhT-yc-uvj" id="Sfy-up-pIC"/>
@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="30"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <button wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cJn-qf-hFu" customClass="CheckBox" customModule="ListerKitOSX">
+                <button wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cJn-qf-hFu" customClass="CheckBox" customModule="ListerKit">
                     <rect key="frame" x="7" y="5" width="15" height="15"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="15" id="KwE-Ht-qDQ"/>
@@ -38,7 +38,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="-2" name="value" keyPath="self.representedObject.item.text" id="714-3y-rdd">
+                        <binding destination="-2" name="value" keyPath="self.representedObject.listItem.text" id="6te-d6-Sid">
                             <dictionary key="options">
                                 <string key="NSNullPlaceholder">hello</string>
                             </dictionary>

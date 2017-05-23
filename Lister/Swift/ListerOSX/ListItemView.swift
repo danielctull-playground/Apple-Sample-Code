@@ -1,15 +1,13 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ListItemView` class is an NSTableCellView subclass that has a few controls that represent the state of a ListItem object.
-            
+    The `ListItemView` class is an `NSTableCellView` subclass that has a few controls that represent the state of a ListItem object.
 */
 
 import Cocoa
-import ListerKitOSX
+import ListerKit
 
 /// Delegate protocol to let other objects know about changes to the text field and completion state.
 @objc protocol ListItemViewDelegate {
@@ -27,7 +25,8 @@ class ListItemView: NSTableCellView, NSTextFieldDelegate {
     var isComplete: Bool = false {
         didSet {
             statusCheckBox.isChecked = isComplete
-            textField.textColor = isComplete ? NSColor.completeItemTextColor() : NSColor.incompleteItemTextColor()
+            textField!.textColor = isComplete ? NSColor.completeItemTextColor() : NSColor.incompleteItemTextColor()
+            textField!.enabled = !isComplete
         }
     }
 
@@ -43,11 +42,11 @@ class ListItemView: NSTableCellView, NSTextFieldDelegate {
     
     var stringValue: String {
         set {
-            textField.stringValue = newValue
+            textField!.stringValue = newValue
         }
     
         get {
-            return textField.stringValue
+            return textField!.stringValue
         }
     }
 

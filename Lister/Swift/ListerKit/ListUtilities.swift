@@ -1,11 +1,9 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ListUtilities` class provides a suite of convenience methods for interacting with `List` objects and their associated files.
-            
+    The `ListUtilities` class provides a suite of convenience methods for interacting with `List` objects and their associated files.
 */
 
 import Foundation
@@ -16,8 +14,29 @@ private let listUtilitiesQueue = NSOperationQueue()
 public class ListUtilities {
     // MARK: Properties
 
-    @objc public class var localDocumentsDirectory: NSURL  {
-        return NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as NSURL
+    public class var localDocumentsDirectory: NSURL  {
+        let documentsURL = sharedApplicationGroupContainer.URLByAppendingPathComponent("Documents", isDirectory: true)
+        
+        var error: NSError?
+        // This will return `true` for success if the directory is successfully created, or already exists.
+        let success = NSFileManager.defaultManager().createDirectoryAtURL(documentsURL, withIntermediateDirectories: true, attributes: nil, error: &error)
+        
+        if success {
+            return documentsURL
+        }
+        else {
+            fatalError("The shared application group documents directory doesn't exist and could not be created. Error: \(error!.localizedDescription)")
+        }
+    }
+    
+    private class var sharedApplicationGroupContainer: NSURL {
+        let containerURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier(AppConfiguration.ApplicationGroups.primary)
+
+        if containerURL == nil {
+            fatalError("The shared application group container is unavailable. Check your entitlements and provisioning profiles for this target. Details on proper setup can be found in the PDFs referenced from the README.")
+        }
+        
+        return containerURL!
     }
     
     // MARK: List Handling Methods
@@ -28,6 +47,11 @@ public class ListUtilities {
         for url in defaultListURLs {
             copyURLToDocumentsDirectory(url)
         }
+    }
+    
+    public class func copyTodayList() {
+        let url = NSBundle.mainBundle().URLForResource(AppConfiguration.localizedTodayDocumentName, withExtension: AppConfiguration.listerFileExtension)!
+        copyURLToDocumentsDirectory(url)
     }
 
     public class func migrateLocalListsToCloud() {
@@ -56,16 +80,23 @@ public class ListUtilities {
     // MARK: Convenience
     
     private class func makeItemUbiquitousAtURL(sourceURL: NSURL, documentsDirectoryURL: NSURL) {
-        let destinationFileName = sourceURL.lastPathComponent
+        let destinationFileName = sourceURL.lastPathComponent!
         
+        let fileManager = NSFileManager()
         let destinationURL = documentsDirectoryURL.URLByAppendingPathComponent(destinationFileName)
+        
+        if fileManager.isUbiquitousItemAtURL(destinationURL) ||
+            fileManager.fileExistsAtPath(destinationURL.path!) {
+            // If the file already exists in the cloud, remove the local version and return.
+            removeListAtURL(sourceURL, completionHandler: nil)
+            return
+        }
         
         let defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
         dispatch_async(defaultQueue) {
-            let fileManager = NSFileManager()
-            
             fileManager.setUbiquitous(true, itemAtURL: sourceURL, destinationURL: destinationURL, error: nil)
+            return
         }
     }
 
@@ -87,19 +118,21 @@ public class ListUtilities {
                 return
             }
             
+            // Local variables that will be used as parameters to `completionHandler`.
+            var deserializedList: List?
             var readError: NSError?
-            let contents = NSData.dataWithContentsOfURL(readingIntent.URL, options: .DataReadingUncached, error: &readError)
+
+            if let contents = NSData(contentsOfURL: readingIntent.URL, options: .DataReadingUncached, error: &readError) {
+                deserializedList = NSKeyedUnarchiver.unarchiveObjectWithData(contents) as? List
+                
+                assert(deserializedList != nil, "The provided URL must correspond to a `List` object.")
+            }
 
             if successfulSecurityScopedResourceAccess {
                 url.stopAccessingSecurityScopedResource()
             }
             
-            if let deserializedList = NSKeyedUnarchiver.unarchiveObjectWithData(contents) as? List {
-                completionHandler(deserializedList, nil)
-            }
-            else {
-                completionHandler(nil, readError)
-            }
+            completionHandler(deserializedList, readError)
         }
     }
 
@@ -161,9 +194,14 @@ public class ListUtilities {
     // MARK: Convenience
     
     private class func copyURLToDocumentsDirectory(url: NSURL) {
-        let toURL = ListUtilities.localDocumentsDirectory.URLByAppendingPathComponent(url.lastPathComponent)
+        let toURL = ListUtilities.localDocumentsDirectory.URLByAppendingPathComponent(url.lastPathComponent!)
         let fileCoordinator = NSFileCoordinator()
         var error: NSError?
+        
+        if NSFileManager().fileExistsAtPath(toURL.path!) {
+            // If the file already exists, don't attempt to copy the version from the bundle.
+            return
+        }
         
         // `url` may be a security scoped resource.
         let successfulSecurityScopedResourceAccess = url.startAccessingSecurityScopedResource()

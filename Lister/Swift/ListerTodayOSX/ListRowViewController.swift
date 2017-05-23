@@ -1,15 +1,13 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ListRowViewController` class is an NSViewController subclass that displays list items in a NCWidgetListViewController. Bindings are used to link the represented object to the view controller.
-            
+    The `ListRowViewController` class is an `NSViewController` subclass that displays list items in a `NCWidgetListViewController`. Bindings are used to link the represented object to the view controller.
 */
 
 import Cocoa
-import ListerKitOSX
+import ListerKit
 
 // Protocol that enables notifying other objects of changes to the represented object.
 protocol ListRowViewControllerDelegate: class {
@@ -23,7 +21,7 @@ class ListRowViewController: NSViewController {
 
     weak var delegate: ListRowViewControllerDelegate?
     
-    override var nibName: String {
+    override var nibName: String? {
         return "ListRowViewController"
     }
     
@@ -33,7 +31,7 @@ class ListRowViewController: NSViewController {
         super.viewDidLoad()
         
         // `representedObject` is a `ListRowRepresentedObject` instance.
-        checkBox.bind("isChecked", toObject: self, withKeyPath: "self.representedObject.item.isComplete", options: nil)
+        checkBox.bind("isChecked", toObject: self, withKeyPath: "self.representedObject.listItem.isComplete", options: nil)
         checkBox.bind("tintColor", toObject: self, withKeyPath: "self.representedObject.color", options: nil)
     }
     

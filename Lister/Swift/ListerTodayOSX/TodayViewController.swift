@@ -1,55 +1,68 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `TodayViewController` class handles display of the Today view. It leverages iCloud for seamless interaction between devices.
-            
+    The `TodayViewController` class displays the Today view containing the contents of the Today list.
 */
 
 import Cocoa
 import NotificationCenter
-import ListerKitOSX
+import ListerKit
 
-class TodayViewController: NSViewController, NCWidgetProviding, NCWidgetListViewDelegate, ListRowViewControllerDelegate, ListDocumentDelegate {
+class TodayViewController: NSViewController, NCWidgetProviding, NCWidgetListViewDelegate, ListRowViewControllerDelegate, ListPresenterDelegate {
     // MARK: Properties
 
-    @IBOutlet var listViewController: NCWidgetListViewController!
+    @IBOutlet var widgetListViewController: NCWidgetListViewController!
 
-    var document: ListDocument!
-    
-    var list: List {
-        return document.list
+    var document: ListDocument?
+
+    var listPresenter: IncompleteListItemsPresenter? {
+        return document?.listPresenter as? IncompleteListItemsPresenter
     }
     
     // Override the nib name to make sure that the view controller opens the correct nib.
-    override var nibName: String {
+    override var nibName: String? {
         return "TodayViewController"
-    }
-
-    // MARK: View Life Cycle
-
-    override func viewDidLoad()  {
-        super.viewDidLoad()
-        
-        updateWidgetContents()
-    }
-    
-    override func viewWillAppear() {
-        super.viewWillAppear()
-
-        listViewController.delegate = self
-        listViewController.hasDividerLines = false
-        listViewController.contents = []
-
-        updateWidgetContents()
     }
     
     // MARK: NCWidgetProviding
 
     func widgetPerformUpdateWithCompletionHandler(completionHandler: NCUpdateResult -> Void) {
-        updateWidgetContents(completionHandler)
+        TodayListManager.fetchTodayDocumentURLWithCompletionHandler { todayDocumentURL in
+            dispatch_async(dispatch_get_main_queue()) {
+                if todayDocumentURL == nil {
+                    self.widgetListViewController.contents = [TodayWidgetRowPurposeBox(purpose: .RequiresCloud)]
+                    
+                    completionHandler(.Failed)
+                    
+                    return
+                }
+                
+                var error: NSError?
+                
+                if let newDocument = ListDocument(contentsOfURL: todayDocumentURL!, makesCustomWindowControllers: false, error: &error) {
+                    let existingDocumentIsUpToDate = self.document != nil && self.document?.listPresenter?.archiveableList == newDocument.listPresenter?.archiveableList
+                    
+                    if existingDocumentIsUpToDate {
+                        completionHandler(.NoData)
+                    }
+                    else {
+                        self.document = newDocument
+                        
+                        let listPresenter = IncompleteListItemsPresenter()
+                        listPresenter.delegate = self
+                        
+                        self.document!.listPresenter = listPresenter
+                        
+                        completionHandler(.NewData)
+                    }
+                }
+                else {
+                    completionHandler(.Failed)
+                }
+            }
+        }
     }
     
     func widgetMarginInsetsForProposedMarginInsets(defaultMarginInset: NSEdgeInsets) -> NSEdgeInsets {
@@ -63,12 +76,12 @@ class TodayViewController: NSViewController, NCWidgetProviding, NCWidgetListView
     // MARK: NCWidgetListViewDelegate
 
     func widgetList(_: NCWidgetListViewController, viewControllerForRow row: Int) -> NSViewController {
-        let representedObjectForRow: AnyObject = listViewController.contents[row]
+        let representedObjectForRow: AnyObject = widgetListViewController.contents[row]
 
         // First check to see if it's a straightforward row to return a view controller for.
         if let todayWidgetRowPurpose = representedObjectForRow as? TodayWidgetRowPurposeBox {
             switch todayWidgetRowPurpose.purpose {
-                case .OpenLister: return OpenListerRowViewController()
+                case .OpenLister:    return OpenListerRowViewController()
                 case .NoItemsInList: return NoItemsRowViewController()
                 case .RequiresCloud: return TodayWidgetRequiresCloudViewController()
             }
@@ -86,77 +99,63 @@ class TodayViewController: NSViewController, NCWidgetProviding, NCWidgetListView
     // MARK: ListRowViewControllerDelegate
 
     func listRowViewControllerDidChangeRepresentedObjectState(listRowViewController: ListRowViewController) {
-        let indexOfListRowViewController = listViewController.rowForViewController(listRowViewController)
+        let indexOfListRowViewController = widgetListViewController.rowForViewController(listRowViewController)
         
-        let item = list[indexOfListRowViewController - 1]
-        list.toggleItem(item)
-
-        document.updateChangeCount(.ChangeDone)
-        
-        // Make sure the rows are reordered appropriately.
-        listViewController.contents = listRowRepresentedObjectsForList(list)
+        let item = listPresenter!.presentedListItems[indexOfListRowViewController - 1]
+        listPresenter!.toggleListItem(item)
     }
     
-    // MARK: ListDocumentDelegate
+    // MARK: ListPresenterDelegate
+    
+    func listPresenterDidRefreshCompleteLayout(_: ListPresenterType) {
+        // Refresh the display for all of the rows.
+        setListRowRepresentedObjects()
+    }
+    
+    /**
+        The following methods are not necessary to implement for the `TodayViewController` because the rows for
+        `widgetListViewController` are set in both `listPresenterDidRefreshCompleteLayout(_:)` and in the
+        `listPresenterDidChangeListLayout(_:isInitialLayout:)` method.
+    */
+    func listPresenterWillChangeListLayout(_: ListPresenterType, isInitialLayout: Bool) {}
+    func listPresenter(_: ListPresenterType, didInsertListItem listItem: ListItem, atIndex index: Int) {}
+    func listPresenter(_: ListPresenterType, didRemoveListItem listItem: ListItem, atIndex index: Int) {}
+    func listPresenter(_: ListPresenterType, didUpdateListItem listItem: ListItem, atIndex index: Int) {}
+    func listPresenter(_: ListPresenterType, didMoveListItem listItem: ListItem, fromIndex: Int, toIndex: Int) {}
+    func listPresenter(_: ListPresenterType, didUpdateListColorWithColor color: List.Color) {}
 
-    func listDocumentDidChangeContents(document: ListDocument) {
-        listViewController.contents = listRowRepresentedObjectsForList(list)
+    func listPresenterDidChangeListLayout(_: ListPresenterType, isInitialLayout: Bool) {
+        if isInitialLayout {
+            setListRowRepresentedObjects()
+        }
+        else {
+            document?.updateChangeCount(.ChangeDone)
+            
+            document?.saveDocumentWithDelegate(nil, didSaveSelector: nil, contextInfo: nil)
+            
+            NCWidgetController.widgetController().setHasContent(true, forWidgetWithBundleIdentifier: AppConfiguration.Extensions.widgetBundleIdentifier)
+        }
     }
     
     // MARK: Convenience
 
-    func listRowRepresentedObjectsForList(aList: List) -> [AnyObject] {
+    func setListRowRepresentedObjects() {
         var representedObjects = [AnyObject]()
 
-        let listColor = list.color.colorValue
+        let listColor = listPresenter!.color.colorValue
         
-        // The "Open in Lister" has a representedObject as an NSColor, representing the text color.
+        // The "Open in Lister" has a `representedObject` as an `NSColor`, representing the text color.
         representedObjects += [TodayWidgetRowPurposeBox(purpose: .OpenLister, userInfo: listColor)]
 
-        for item in aList.items {
-            representedObjects += [ListRowRepresentedObject(item: item, color: listColor)]
+        for listItem in listPresenter!.presentedListItems {
+            representedObjects += [ListRowRepresentedObject(listItem: listItem, color: listColor)]
         }
         
-        // Add a sentinel NSNull value to represent the "No Items" represented object.
-        if list.isEmpty {
-            // No items in the list.
+        // Add a `.NoItemsInList` box to represent the "No Items" represented object.
+        if listPresenter!.isEmpty {
             representedObjects += [TodayWidgetRowPurposeBox(purpose: .NoItemsInList)]
         }
-        
-        return representedObjects
-    }
 
-    func updateWidgetContents(completionHandler: (NCUpdateResult -> Void)? = nil) {
-        TodayListManager.fetchTodayDocumentURLWithCompletionHandler { todayDocumentURL in
-            dispatch_async(dispatch_get_main_queue()) {
-                if todayDocumentURL == nil {
-                    self.listViewController.contents = [TodayWidgetRowPurposeBox(purpose: .RequiresCloud)]
-                    
-                    completionHandler?(.Failed)
-                    
-                    return
-                }
-
-                var error: NSError?
-
-                let newDocument = ListDocument(contentsOfURL: todayDocumentURL!, makesCustomWindowControllers: false, error: &error)
-
-                if error != nil {
-                    completionHandler?(.Failed)
-                }
-                else {
-                    if self.document != nil && self.list == newDocument.list {
-                        completionHandler?(.NoData)
-                    }
-                    else {
-                        self.document = newDocument
-                        self.document.delegate = self
-                        self.listViewController.contents = self.listRowRepresentedObjectsForList(newDocument.list)
-
-                        completionHandler?(.NewData)
-                    }
-                }
-            }
-        }
+        widgetListViewController.contents = representedObjects
     }
 }

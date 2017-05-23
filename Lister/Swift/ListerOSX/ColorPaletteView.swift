@@ -1,15 +1,13 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ColorPaletteView` class is a view that allows the user to select a color defined in the List.Color enumeration.
-            
+    The `ColorPaletteView` class is a view that allows the user to select a color defined in the `List.Color` enumeration.
 */
 
 import Cocoa
-import ListerKitOSX
+import ListerKit
 import QuartzCore
 
 /// Delegate protocol to let other objects know about changes to the selected color.
@@ -82,7 +80,7 @@ class ColorPaletteView: NSView {
         for button in buttons {
             button.layer = CALayer()
 
-            let buttonColor = List.Color.fromRaw(button.tag)!
+            let buttonColor = List.Color(rawValue: button.tag)!
             button.layer!.backgroundColor = buttonColor.colorValue.CGColor
         }
     }
@@ -92,8 +90,8 @@ class ColorPaletteView: NSView {
     @IBAction func colorButtonClicked(sender: NSButton) {
         // The tag for each color was set in the storyboard for each button based
         // on the type of color.
-        let selectedColor = List.Color.fromRaw(sender.tag)!
-        
+        let selectedColor = List.Color(rawValue: sender.tag)!
+
         hideOverlayWithSelectedColor(selectedColor, animated: true)
     }
     

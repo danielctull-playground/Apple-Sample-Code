@@ -1,11 +1,9 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ListDocument` class is a `UIDocument` subclass that represents a list. `ListDocument` also manages the serialization / deserialization of the list object.
-            
+    The `ListDocument` class is a `UIDocument` subclass that represents a list. `ListDocument` manages the serialization / deserialization of the list object in addition to a list presenter.
 */
 
 import UIKit
@@ -21,20 +19,31 @@ public class ListDocument: UIDocument {
     public weak var delegate: ListDocumentDelegate?
     
     // Use a default, empty list.
-    public var list = List()
-    
-    // MARK: Initializers
+    public var listPresenter: ListPresenterType?
 
-    override public init(fileURL url: NSURL) {
-        super.init(fileURL: url)
+    // MARK: Initializers
+    
+    public init(fileURL URL: NSURL, listPresenter: ListPresenterType? = nil) {
+        self.listPresenter = listPresenter
+
+        super.init(fileURL: URL)
     }
 
     // MARK: Serialization / Deserialization
     
     override public func loadFromContents(contents: AnyObject, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
-        if let deserializedList = NSKeyedUnarchiver.unarchiveObjectWithData(contents as NSData) as? List {
-            list = deserializedList
-            
+        if let unarchivedList = NSKeyedUnarchiver.unarchiveObjectWithData(contents as NSData) as? List {
+            /*
+                This method is called on the queue that the `openWithCompletionHandler(_:)` method was called
+                on (typically, the main queue). List presenter operations are main queue only, so explicitly
+                call on the main queue.
+            */
+            dispatch_async(dispatch_get_main_queue()) {
+                self.listPresenter?.setList(unarchivedList)
+                
+                return
+            }
+
             return true
         }
         
@@ -49,7 +58,11 @@ public class ListDocument: UIDocument {
     }
 
     override public func contentsForType(typeName: String, error outError: NSErrorPointer) -> AnyObject? {
-        return NSKeyedArchiver.archivedDataWithRootObject(list)
+        if let archiveableList = listPresenter?.archiveableList {
+            return NSKeyedArchiver.archivedDataWithRootObject(archiveableList)
+        }
+
+        return nil
     }
     
     // MARK: Deletion
@@ -64,6 +77,11 @@ public class ListDocument: UIDocument {
     
     override public func updateUserActivityState(userActivity: NSUserActivity) {
         super.updateUserActivityState(userActivity)
-        userActivity.addUserInfoEntriesFromDictionary([ AppConfiguration.UserActivity.listColorUserInfoKey: list.color.toRaw() ])
+        
+        if let rawColorValue = listPresenter?.color.rawValue {
+            userActivity.addUserInfoEntriesFromDictionary([
+                AppConfiguration.UserActivity.listColorUserInfoKey: rawColorValue
+            ])
+        }
     }
 }

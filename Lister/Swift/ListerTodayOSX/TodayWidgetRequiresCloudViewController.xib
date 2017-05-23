@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6206.9"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NoItemsRowViewController" customModule="com_example_apple_samplecode_Lister_ListerTodayOSX" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="NoItemsRowViewController" customModule="com_example_apple_samplecode_Lister_ListerToday" customModuleProvider="target">
             <connections>
                 <outlet property="view" destination="5XY-Bc-26H" id="91p-Yc-pQl"/>
             </connections>

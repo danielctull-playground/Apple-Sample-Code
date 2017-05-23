@@ -1,11 +1,9 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `NewListDocumentController` class allows users to create a new list document with a name and preferred color.
-            
+    The `NewListDocumentController` class allows users to create a new list document with a name and preferred color.
 */
 
 import UIKit
@@ -32,18 +30,25 @@ class NewListDocumentController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var titleLabel: UILabel!
     
+    @IBOutlet weak var nameField: UITextField!
+    
     weak var selectedButton: UIButton?
     
     var selectedColor = List.Color.Gray
     var selectedTitle: String?
 
-    var listController: ListController!
+    var listsController: ListsController!
     
     // MARK: IBActions
     
     @IBAction func pickColor(sender: UIButton) {
+        // The user is choosing a color, resign first responder on the text field, if necessary.
+        if nameField.isFirstResponder() {
+            nameField.resignFirstResponder()
+        }
+        
         // Use the button's tag to determine the color.
-        selectedColor = List.Color.fromRaw(sender.tag)!
+        selectedColor = List.Color(rawValue: sender.tag)!
         
         // If a button was previously selected, we need to clear out its previous border.
         if let oldButton = selectedButton {
@@ -61,13 +66,28 @@ class NewListDocumentController: UIViewController, UITextFieldDelegate {
         let list = List()
         list.color = selectedColor
         
-        listController.createListInfoForList(list, withName: selectedTitle!)
+        listsController.createListInfoForList(list, withName: selectedTitle!)
         
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func cancel(sender: AnyObject) {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // MARK: Touch Handling
+    
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        super.touchesBegan(touches, withEvent: event)
+        
+        let possibleTouch = touches.anyObject() as? UITouch
+        
+        if let touch = possibleTouch {
+            // The user has tapped outside the text field, resign first responder, if necessary.
+            if nameField.isFirstResponder() && touch.view != nameField {
+                nameField.resignFirstResponder()
+            }
+        }
     }
     
     // MARK: UITextFieldDelegate
@@ -92,9 +112,12 @@ class NewListDocumentController: UIViewController, UITextFieldDelegate {
     // MARK: Convenience
     
     func updateForProposedListName(name: String) {
-        if listController.canCreateListInfoWithName(name) {
+        if listsController.canCreateListInfoWithName(name) {
             saveButton.enabled = true
             selectedTitle = name
+        }
+        else {
+            saveButton.enabled = false
         }
     }
 }

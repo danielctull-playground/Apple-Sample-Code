@@ -1,11 +1,9 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `CloudListCoordinator` class handles querying for and interacting with lists stored as files in iCloud Drive.
-            
+    The `CloudListCoordinator` class handles querying for and interacting with lists stored as files in iCloud Drive.
 */
 
 import Foundation
@@ -14,6 +12,9 @@ import Foundation
     // MARK: Properties
     
     public weak var delegate: ListCoordinatorDelegate?
+    
+    /// Closure executed after the first update provided by the coordinator regarding tracked URLs.
+    private var firstQueryUpdateHandler: (Void -> Void)?
     
     /// Initialized asynchronously in init(predicate:).
     private var _documentsDirectory: NSURL!
@@ -30,24 +31,26 @@ import Foundation
 
     private var metadataQuery: NSMetadataQuery
     
-    /// A private, local queue to CloudListCoordinator that is used to ensure serial accesss to documentsDirectory.
+    /// A private, local queue to `CloudListCoordinator` that is used to ensure serial accesss to `documentsDirectory`.
     private let documentsDirectoryQueue = dispatch_queue_create("com.example.apple-samplecode.lister.cloudlistcoordinator", DISPATCH_QUEUE_CONCURRENT)
     
     // MARK: Initializers
     
-    public convenience init(pathExtension: String) {
+    public convenience init(pathExtension: String, firstQueryUpdateHandler: (Void -> Void)? = nil) {
         let predicate = NSPredicate(format: "(%K.pathExtension = %@)", argumentArray: [NSMetadataItemURLKey, pathExtension])
         
-        self.init(predicate: predicate)
+        self.init(predicate: predicate, firstQueryUpdateHandler: firstQueryUpdateHandler)
     }
     
-    public convenience init(lastPathComponent: String) {
+    public convenience init(lastPathComponent: String, firstQueryUpdateHandler: (Void -> Void)? = nil) {
         let predicate = NSPredicate(format: "(%K.lastPathComponent = %@)", argumentArray: [NSMetadataItemURLKey, lastPathComponent])
 
-        self.init(predicate: predicate)
+        self.init(predicate: predicate, firstQueryUpdateHandler: firstQueryUpdateHandler)
     }
     
-    private init(predicate: NSPredicate) {
+    private init(predicate: NSPredicate, firstQueryUpdateHandler: (Void -> Void)?) {
+        self.firstQueryUpdateHandler = firstQueryUpdateHandler
+        
         metadataQuery = NSMetadataQuery()
 
         // These search scopes search for files in iCloud Drive.
@@ -81,11 +84,18 @@ import Foundation
     // MARK: ListCoordinator
     
     public func startQuery() {
-        metadataQuery.startQuery()
+        // `NSMetadataQuery` should always be started on the main thread.
+        dispatch_async(dispatch_get_main_queue()) {
+            self.metadataQuery.startQuery()
+            return
+        }
     }
     
     public func stopQuery() {
-        metadataQuery.stopQuery()
+        // `NSMetadataQuery` should always be stopped on the main thread.
+        dispatch_async(dispatch_get_main_queue()) {
+            self.metadataQuery.stopQuery()
+        }
     }
     
     public func createURLForList(list: List, withName name: String) {
@@ -134,6 +144,13 @@ import Foundation
         delegate?.listCoordinatorDidUpdateContents(insertedURLs: insertedURLs, removedURLs: [], updatedURLs: [])
         
         metadataQuery.enableUpdates()
+        
+        // Execute the `firstQueryUpdateHandler`, it will contain the closure from initialization on first update.
+        if let handler = firstQueryUpdateHandler {
+            handler()
+            // Set `firstQueryUpdateHandler` to an empty closure so that the handler provided is only run on first update.
+            firstQueryUpdateHandler = nil
+        }
     }
 
     /**

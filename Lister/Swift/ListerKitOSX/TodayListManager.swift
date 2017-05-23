@@ -1,18 +1,18 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `TodayListManager` class implements convenience methods to create and retrieve the Today list document from the user's ubiquity container.
-            
+    The `TodayListManager` class implements convenience methods to create and retrieve the Today list document from the user's ubiquity container.
 */
 
 import Foundation
 
 public class TodayListManager {
-    /// Fetches the ubiquity container URL for the Today list document. If one isn't found,
-    /// the block is invoked with a `nil` value.
+    /**
+        Fetches the ubiquity container URL for the Today list document. If one isn't found, the block is invoked
+        with a `nil` value.
+    */
     public class func fetchTodayDocumentURLWithCompletionHandler(completionHandler: (url: NSURL?) -> Void) {
         let defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 

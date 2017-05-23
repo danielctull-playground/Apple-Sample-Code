@@ -1,40 +1,73 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                Handles application configuration logic and information.
-            
+    Handles application configuration logic and information.
 */
 
 import Foundation
 
+public typealias StorageState = (storageOption: AppConfiguration.Storage, accountDidChange: Bool, cloudAvailable: Bool)
+
 public class AppConfiguration {
+    // MARK: Types
+    
     private struct Defaults {
         static let firstLaunchKey = "AppConfiguration.Defaults.firstLaunchKey"
         static let storageOptionKey = "AppConfiguration.Defaults.storageOptionKey"
         static let storedUbiquityIdentityToken = "AppConfiguration.Defaults.storedUbiquityIdentityToken"
     }
     
+    // Keys used to store relevant list data in the userInfo dictionary of an NSUserActivity for continuation.
     public struct UserActivity {
-        public static let listColorUserInfoKey = "listColor"
+        // The editing user activity is integrated into the ubiquitous UI/NSDocument architecture.
+        public static let editing = "com.example.apple-samplecode.Lister.editing"
+        
+        // The watch user activity is used to continue activities started on the watch on other devices.
+        public static let watch = "com.example.apple-samplecode.Lister.watch"
+        
+        public static let listURLPathUserInfoKey = "listURLPathUserInfoKey"
+        public static let listColorUserInfoKey = "listColorUserInfoKey"
+    }
+    
+    // Constants used in assembling and handling the custom lister:// URL scheme.
+    public struct ListerScheme {
+        public static let name = "lister"
+        public static let colorQueryKey = "color"
+    }
+    
+    /*
+        The value of the `LISTER_BUNDLE_PREFIX` user-defined build setting is written to the Info.plist file of
+        every target in Swift version of the Lister project. Specifically, the value of `LISTER_BUNDLE_PREFIX` 
+        is used as the string value for a key of `AAPLListerBundlePrefix`. This value is loaded from the target's
+        bundle by the lazily evaluated static variable "prefix" from the nested "Bundle" struct below the first
+        time that "Bundle.prefix" is accessed. This avoids the need for developers to edit both `LISTER_BUNDLE_PREFIX`
+        and the code below. The value of `Bundle.prefix` is then used as part of an interpolated string to insert
+        the user-defined value of `LISTER_BUNDLE_PREFIX` into several static string constants below.
+    */
+    private struct Bundle {
+        static var prefix = NSBundle.mainBundle().objectForInfoDictionaryKey("AAPLListerBundlePrefix") as String
+    }
+
+    struct ApplicationGroups {
+        static let primary = "group.\(Bundle.prefix).Lister.Documents"
     }
     
     #if os(OSX)
     public struct App {
-        public static let bundleIdentifier = "com.example.apple-samplecode.ListerOSX"
+        public static let bundleIdentifier = "\(Bundle.prefix).ListerOSX"
     }
     #endif
-
+    
     public struct Extensions {
         #if os(iOS)
-        public static let widgetBundleIdentifier = "com.example.apple-samplecode.Lister.ListerToday"
+        public static let widgetBundleIdentifier = "\(Bundle.prefix).Lister.ListerToday"
         #elseif os(OSX)
-        public static let widgetBundleIdentifier = "com.example.apple-samplecode.Lister.ListerTodayOSX"
+        public static let widgetBundleIdentifier = "\(Bundle.prefix).Lister.ListerTodayOSX"
         #endif
     }
-
+    
     public enum Storage: Int {
         case NotSet = 0, Local, Cloud
     }
@@ -67,24 +100,39 @@ public class AppConfiguration {
         return "\(localizedTodayDocumentName).\(listerFileExtension)"
     }
     
-    public func runHandlerOnFirstLaunch(firstLaunchHandler: Void -> Void) {
-        let defaults = NSUserDefaults.standardUserDefaults()
-        
+    private var applicationUserDefaults: NSUserDefaults {
+        return NSUserDefaults(suiteName: ApplicationGroups.primary)!
+    }
+    
+    public private(set) var isFirstLaunch: Bool {
+        get {
+            registerDefaults()
+            
+            return applicationUserDefaults.boolForKey(Defaults.firstLaunchKey)
+        }
+        set {
+            applicationUserDefaults.setBool(newValue, forKey: Defaults.firstLaunchKey)
+        }
+    }
+    
+    private func registerDefaults() {
         #if os(iOS)
-        let defaultOptions: [NSObject: AnyObject] = [
-            Defaults.firstLaunchKey: true,
-            Defaults.storageOptionKey: Storage.NotSet.toRaw()
-        ]
+            let defaultOptions: [NSObject: AnyObject] = [
+                Defaults.firstLaunchKey: true,
+                Defaults.storageOptionKey: Storage.NotSet.rawValue
+            ]
         #elseif os(OSX)
-        let defaultOptions: [NSObject: AnyObject] = [
-            Defaults.firstLaunchKey: true
-        ]
+            let defaultOptions: [NSObject: AnyObject] = [
+                Defaults.firstLaunchKey: true
+            ]
         #endif
         
-        defaults.registerDefaults(defaultOptions)
-
-        if defaults.boolForKey(Defaults.firstLaunchKey) {
-            defaults.setBool(false, forKey: Defaults.firstLaunchKey)
+        applicationUserDefaults.registerDefaults(defaultOptions)
+    }
+    
+    public func runHandlerOnFirstLaunch(firstLaunchHandler: Void -> Void) {
+        if isFirstLaunch {
+            isFirstLaunch = false
 
             firstLaunchHandler()
         }
@@ -95,15 +143,19 @@ public class AppConfiguration {
     }
     
     #if os(iOS)
+    public var storageState: StorageState {
+        return (storageOption, hasAccountChanged(), isCloudAvailable)
+    }
+    
     public var storageOption: Storage {
         get {
-            let value = NSUserDefaults.standardUserDefaults().integerForKey(Defaults.storageOptionKey)
+            let value = applicationUserDefaults.integerForKey(Defaults.storageOptionKey)
             
-            return Storage.fromRaw(value)!
+            return Storage(rawValue: value)!
         }
 
         set {
-            NSUserDefaults.standardUserDefaults().setInteger(newValue.toRaw(), forKey: Defaults.storageOptionKey)
+            applicationUserDefaults.setInteger(newValue.rawValue, forKey: Defaults.storageOptionKey)
         }
     }
 
@@ -131,7 +183,7 @@ public class AppConfiguration {
     }
 
     private func persistAccount() {
-        var defaults = NSUserDefaults.standardUserDefaults()
+        var defaults = applicationUserDefaults
         
         if let token = NSFileManager.defaultManager().ubiquityIdentityToken {
             let ubiquityIdentityTokenArchive = NSKeyedArchiver.archivedDataWithRootObject(token)
@@ -149,7 +201,7 @@ public class AppConfiguration {
         var storedToken: protocol<NSCoding, NSCopying, NSObjectProtocol>?
         
         // Determine if the logged in iCloud account has changed since the user last launched the app.
-        let archivedObject: AnyObject? = NSUserDefaults.standardUserDefaults().objectForKey(Defaults.storedUbiquityIdentityToken)
+        let archivedObject: AnyObject? = applicationUserDefaults.objectForKey(Defaults.storedUbiquityIdentityToken)
         
         if let ubiquityIdentityTokenArchive = archivedObject as? NSData {
             if let archivedObject = NSKeyedUnarchiver.unarchiveObjectWithData(ubiquityIdentityTokenArchive) as? protocol<NSCoding, NSCopying, NSObjectProtocol> {
@@ -159,6 +211,60 @@ public class AppConfiguration {
         
         return storedToken
     }
+    
+    /**
+        Returns a `ListCoordinator` based on the current configuration that queries based on `pathExtension`.
+        For example, if the user has chosen local storage, a local `ListCoordinator` object will be returned.
+    */
+    public func listCoordinatorForCurrentConfigurationWithPathExtension(pathExtension: String, firstQueryHandler: (Void -> Void)? = nil) -> ListCoordinator {
+        if AppConfiguration.sharedConfiguration.storageOption != .Cloud {
+            // This will be called if the storage option is either `.Local` or `.NotSet`.
+            return LocalListCoordinator(pathExtension: pathExtension, firstQueryUpdateHandler: firstQueryHandler)
+        }
+        else {
+            return CloudListCoordinator(pathExtension: pathExtension, firstQueryUpdateHandler: firstQueryHandler)
+        }
+    }
+    
+    /**
+        Returns a `ListCoordinator` based on the current configuration that queries based on `lastPathComponent`.
+        For example, if the user has chosen local storage, a local `ListCoordinator` object will be returned.
+    */
+    public func listCoordinatorForCurrentConfigurationWithLastPathComponent(lastPathComponent: String, firstQueryHandler: (Void -> Void)? = nil) -> ListCoordinator {
+        if AppConfiguration.sharedConfiguration.storageOption != .Cloud {
+            // This will be called if the storage option is either `.Local` or `.NotSet`.
+            return LocalListCoordinator(lastPathComponent: lastPathComponent, firstQueryUpdateHandler: firstQueryHandler)
+        }
+        else {
+            return CloudListCoordinator(lastPathComponent: lastPathComponent, firstQueryUpdateHandler: firstQueryHandler)
+        }
+    }
+    
+    /**
+        Returns a `ListsController` instance based on the current configuration. For example, if the user has
+        chosen local storage, a `ListsController` object will be returned that uses a local list coordinator.
+        `pathExtension` is passed down to the list coordinator to filter results.
+    */
+    public func listsControllerForCurrentConfigurationWithPathExtension(pathExtension: String, firstQueryHandler: (Void -> Void)? = nil) -> ListsController {
+        let listCoordinator = listCoordinatorForCurrentConfigurationWithPathExtension(pathExtension, firstQueryHandler: firstQueryHandler)
+        
+        return ListsController(listCoordinator: listCoordinator, delegateQueue: NSOperationQueue.mainQueue()) { lhs, rhs in
+            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .OrderedAscending
+        }
+    }
 
+    /**
+        Returns a `ListsController` instance based on the current configuration. For example, if the user has
+        chosen local storage, a `ListsController` object will be returned that uses a local list coordinator.
+        `lastPathComponent` is passed down to the list coordinator to filter results.
+    */
+    public func listsControllerForCurrentConfigurationWithLastPathComponent(lastPathComponent: String, firstQueryHandler: (Void -> Void)? = nil) -> ListsController {
+        let listCoordinator = listCoordinatorForCurrentConfigurationWithLastPathComponent(lastPathComponent, firstQueryHandler: firstQueryHandler)
+        
+        return ListsController(listCoordinator: listCoordinator, delegateQueue: NSOperationQueue.mainQueue()) { lhs, rhs in
+            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .OrderedAscending
+        }
+    }
+    
     #endif
 }

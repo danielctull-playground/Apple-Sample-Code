@@ -1,56 +1,63 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `LocalListCoordinator` class handles querying for and interacting with lists stored as local files.
-            
+    The `LocalListCoordinator` class handles querying for and interacting with lists stored as local files.
 */
 
 import Foundation
 
-@objc public class LocalListCoordinator: ListCoordinator {
+@objc public class LocalListCoordinator: ListCoordinator, DirectoryMonitorDelegate {
     // MARK: Properties
 
     public weak var delegate: ListCoordinatorDelegate?
+    
+    /**
+        A GCD based monitor used to observe changes to the local documents directory.
+    */
+    private var directoryMonitor: DirectoryMonitor
+    
+    /**
+        Closure executed after the first update provided by the coordinator regarding tracked
+        URLs.
+    */
+    private var firstQueryUpdateHandler: (Void -> Void)?
 
     private let predicate: NSPredicate
+    
+    private var currentLocalContents: [NSURL] = []
 
     // MARK: Initializers
     
-    public init(pathExtension: String) {
+    public init(pathExtension: String, firstQueryUpdateHandler: (Void -> Void)? = nil) {
+        directoryMonitor = DirectoryMonitor(URL: ListUtilities.localDocumentsDirectory)
+        
         predicate = NSPredicate(format: "(pathExtension = %@)", argumentArray: [pathExtension])
+        self.firstQueryUpdateHandler = firstQueryUpdateHandler
+        
+        directoryMonitor.delegate = self
     }
     
-    public init(lastPathComponent: String) {
+    public init(lastPathComponent: String, firstQueryUpdateHandler: (Void -> Void)? = nil) {
+        directoryMonitor = DirectoryMonitor(URL: ListUtilities.localDocumentsDirectory)
+        
         predicate = NSPredicate(format: "(lastPathComponent = %@)", argumentArray: [lastPathComponent])
+        self.firstQueryUpdateHandler = firstQueryUpdateHandler
+        
+        directoryMonitor.delegate = self
     }
     
     // MARK: ListCoordinator
     
     public func startQuery() {
-        let defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-
-        dispatch_async(defaultQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            
-            // Fetch the list documents from container documents directory.
-            let localDocumentURLs = fileManager.contentsOfDirectoryAtURL(ListUtilities.localDocumentsDirectory, includingPropertiesForKeys: nil, options: .SkipsPackageDescendants, error: nil) as [NSURL]
-          
-            var localListURLs = localDocumentURLs.filter { self.predicate.evaluateWithObject($0) }
-
-            if !localListURLs.isEmpty {
-                self.delegate?.listCoordinatorDidUpdateContents(insertedURLs: localListURLs, removedURLs: [], updatedURLs: [])
-            }
-        }
+        processChangeToLocalDocumentsDirectory()
+        
+        directoryMonitor.startMonitoring()
     }
     
     public func stopQuery() {
-        /**
-            Nothing to do here since the documents are local and everything gets funnelled this class
-            if the storage is local.
-        */
+        directoryMonitor.stopMonitoring()
     }
     
     public func removeListAtURL(URL: NSURL) {
@@ -87,7 +94,42 @@ import Foundation
         return !NSFileManager.defaultManager().fileExistsAtPath(documentURL.path!)
     }
     
+    // MARK: DirectoryMonitorDelegate
+    
+    func directoryMonitorDidObserveChange(directoryMonitor: DirectoryMonitor) {
+        processChangeToLocalDocumentsDirectory()
+    }
+    
     // MARK: Convenience
+    
+    func processChangeToLocalDocumentsDirectory() {
+        let defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        
+        dispatch_async(defaultQueue) {
+            let fileManager = NSFileManager.defaultManager()
+            
+            // Fetch the list documents from container documents directory.
+            let localDocumentURLs = fileManager.contentsOfDirectoryAtURL(ListUtilities.localDocumentsDirectory, includingPropertiesForKeys: nil, options: .SkipsPackageDescendants, error: nil) as [NSURL]
+            
+            var localListURLs = localDocumentURLs.filter { self.predicate.evaluateWithObject($0) }
+            
+            if !localListURLs.isEmpty {
+                let insertedURLs = localListURLs.filter { !contains(self.currentLocalContents, $0) }
+                let removedURLs = self.currentLocalContents.filter { !contains(localListURLs, $0) }
+                
+                self.delegate?.listCoordinatorDidUpdateContents(insertedURLs: insertedURLs, removedURLs: removedURLs, updatedURLs: [])
+                
+                self.currentLocalContents = localListURLs
+            }
+            
+            // Execute the `firstQueryUpdateHandler`, it will contain the closure from initialization on first update.
+            if let handler = self.firstQueryUpdateHandler {
+                handler()
+                // Set `firstQueryUpdateHandler` to an empty closure so that the handler provided is only run on first update.
+                self.firstQueryUpdateHandler = nil
+            }
+        }
+    }
     
     private func documentURLForName(name: String) -> NSURL {
         let documentURLWithoutExtension = ListUtilities.localDocumentsDirectory.URLByAppendingPathComponent(name)

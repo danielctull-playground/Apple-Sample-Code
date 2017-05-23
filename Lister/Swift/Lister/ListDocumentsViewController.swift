@@ -1,17 +1,15 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ListDocumentsViewController` displays a list of available documents for users to open.
-            
+    The `ListDocumentsViewController` displays a list of available documents for users to open.
 */
 
 import UIKit
 import ListerKit
 
-class ListDocumentsViewController: UITableViewController, ListControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate {
+class ListDocumentsViewController: UITableViewController, ListsControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate {
     // MARK: Types
 
     struct MainStoryboard {
@@ -33,18 +31,20 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
     
     // MARK: Properties
 
-    var listController: ListController! {
+    var listsController: ListsController! {
         didSet {
-            listController.delegate = self
+            listsController.delegate = self
         }
     }
     
-    private var pendingUserActivity: NSUserActivity? = nil
+    private var pendingLaunchContext: AppLaunchContext?
 
     // MARK: View Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.rowHeight = 44.0
         
         navigationController?.navigationBar.titleTextAttributes = [
             NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline),
@@ -71,11 +71,11 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let activity = pendingUserActivity {
-            restoreUserActivityState(activity)
+        if let launchContext = pendingLaunchContext {
+            configureViewControllerWithLaunchContext(launchContext)
         }
         
-        pendingUserActivity = nil
+        pendingLaunchContext = nil
     }
     
     // MARK: Lifetime
@@ -87,25 +87,10 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
     // MARK: UIResponder
     
     override func restoreUserActivityState(activity: NSUserActivity) {
-        /** 
-            If there is a list currently displayed; pop to the root view controller (this controller) and 
-            continue the activity from there. Otherwise, continue the activity directly.
-        */
-        if navigationController?.topViewController is UINavigationController {
-            navigationController?.popToRootViewControllerAnimated(false)
-            pendingUserActivity = activity
-            return
-        }
+        // Obtain an app launch context from the provided activity and configure the view controller with it.
+        let launchContext = AppLaunchContext(userActivity: activity)
         
-        if let activityURL = activity.userInfo?[NSUserActivityDocumentURLKey] as? NSURL {
-            let activityListInfo = ListInfo(URL: activityURL)
-            
-            let rawListInfoColor = activity.userInfo![AppConfiguration.UserActivity.listColorUserInfoKey]! as Int
-            
-            activityListInfo.color = List.Color.fromRaw(rawListInfoColor)
-
-            performSegueWithIdentifier(MainStoryboard.SegueIdentifiers.showListDocumentFromUserActivity, sender: activityListInfo)
-        }
+        configureViewControllerWithLaunchContext(launchContext)
     }
     
     // MARK: IBActions
@@ -150,7 +135,7 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
     // MARK: UIPickerViewDelegate
     
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
-        // The user selected the document and it should be picked up by the `ListController`.
+        // The user selected the document and it should be picked up by the `ListsController`.
     }
 
     func documentPickerWasCancelled(controller: UIDocumentPickerViewController) {
@@ -160,87 +145,81 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
         */
     }
     
-    // MARK: ListControllerDelegate
+    // MARK: ListsControllerDelegate
     
-    func listControllerWillChangeContent(listController: ListController) {
-        dispatch_async(dispatch_get_main_queue(), tableView.beginUpdates)
+    func listsControllerWillChangeContent(listsController: ListsController) {
+        tableView.beginUpdates()
     }
     
-    func listController(listController: ListController, didInsertListInfo listInfo: ListInfo, atIndex index: Int) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            
-            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        }
+    func listsController(listsController: ListsController, didInsertListInfo listInfo: ListInfo, atIndex index: Int) {
+        let indexPath = NSIndexPath(forRow: index, inSection: 0)
+        
+        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
     
-    func listController(listController: ListController, didRemoveListInfo listInfo: ListInfo, atIndex index: Int) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            
-            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        }
+    func listsController(listsController: ListsController, didRemoveListInfo listInfo: ListInfo, atIndex index: Int) {
+        let indexPath = NSIndexPath(forRow: index, inSection: 0)
+        
+        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
     
-    func listController(listController: ListController, didUpdateListInfo listInfo: ListInfo, atIndex index: Int) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            
-            let cell = self.tableView.cellForRowAtIndexPath(indexPath) as ListCell
-            cell.label.text = listInfo.name
-            
-            listInfo.fetchInfoWithCompletionHandler {
-                dispatch_async(dispatch_get_main_queue()) {
-                    // Make sure that the list info is still visible once the color has been fetched.
-                    let indexPathsForVisibleRows = self.tableView.indexPathsForVisibleRows() as [NSIndexPath]
+    func listsController(listsController: ListsController, didUpdateListInfo listInfo: ListInfo, atIndex index: Int) {
+        let indexPath = NSIndexPath(forRow: index, inSection: 0)
+        
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as ListCell
+        cell.label.text = listInfo.name
+        
+        listInfo.fetchInfoWithCompletionHandler {
+            /* 
+                The fetchInfoWithCompletionHandler(_:) method calls its completion handler on a background
+                queue, dispatch back to the main queue to make UI updates.
+            */
+            dispatch_async(dispatch_get_main_queue()) {
+                // Make sure that the list info is still visible once the color has been fetched.
+                let indexPathsForVisibleRows = self.tableView.indexPathsForVisibleRows() as [NSIndexPath]
 
-                    if find(indexPathsForVisibleRows, indexPath) != nil {
-                        cell.listColorView.backgroundColor = listInfo.color!.colorValue
-                    }
+                if contains(indexPathsForVisibleRows, indexPath) {
+                    cell.listColorView.backgroundColor = listInfo.color!.colorValue
                 }
             }
         }
     }
     
-    func listControllerDidChangeContent(listController: ListController) {
-        dispatch_async(dispatch_get_main_queue(), tableView.endUpdates)
+    func listsControllerDidChangeContent(listsController: ListsController) {
+        tableView.endUpdates()
     }
     
-    func listController(listController: ListController, didFailCreatingListInfo listInfo: ListInfo, withError error: NSError) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let title = NSLocalizedString("Failed to Create List", comment: "")
-            let message = error.localizedDescription
-            let okActionTitle = NSLocalizedString("OK", comment: "")
-            
-            let errorOutController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            
-            let action = UIAlertAction(title: okActionTitle, style: .Cancel, handler: nil)
-            errorOutController.addAction(action)
-            
-            self.presentViewController(errorOutController, animated: true, completion: nil)
-        }
+    func listsController(listsController: ListsController, didFailCreatingListInfo listInfo: ListInfo, withError error: NSError) {
+        let title = NSLocalizedString("Failed to Create List", comment: "")
+        let message = error.localizedDescription
+        let okActionTitle = NSLocalizedString("OK", comment: "")
+        
+        let errorOutController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        
+        let action = UIAlertAction(title: okActionTitle, style: .Cancel, handler: nil)
+        errorOutController.addAction(action)
+        
+        presentViewController(errorOutController, animated: true, completion: nil)
     }
     
-    func listController(listController: ListController, didFailRemovingListInfo listInfo: ListInfo, withError error: NSError) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let title = NSLocalizedString("Failed to Delete List", comment: "")
-            let message = error.localizedFailureReason
-            let okActionTitle = NSLocalizedString("OK", comment: "")
-            
-            let errorOutController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            
-            let action = UIAlertAction(title: okActionTitle, style: .Cancel, handler: nil)
-            errorOutController.addAction(action)
-            
-            self.presentViewController(errorOutController, animated: true, completion: nil)
-        }
+    func listsController(listsController: ListsController, didFailRemovingListInfo listInfo: ListInfo, withError error: NSError) {
+        let title = NSLocalizedString("Failed to Delete List", comment: "")
+        let message = error.localizedFailureReason
+        let okActionTitle = NSLocalizedString("OK", comment: "")
+        
+        let errorOutController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        
+        let action = UIAlertAction(title: okActionTitle, style: .Cancel, handler: nil)
+        errorOutController.addAction(action)
+        
+        presentViewController(errorOutController, animated: true, completion: nil)
     }
     
     // MARK: UITableViewDataSource
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // If the controller is nil, return no rows. Otherwise return the number of total rows.
-        return listController?.count ?? 0
+        return listsController?.count ?? 0
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -252,7 +231,7 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         switch cell {
             case let listCell as ListCell:
-                let listInfo = listController[indexPath.row]
+                let listInfo = listsController[indexPath.row]
                 
                 listCell.label.text = listInfo.name
                 listCell.label.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
@@ -260,11 +239,15 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
                 
                 // Once the list info has been loaded, update the associated cell's properties.
                 listInfo.fetchInfoWithCompletionHandler {
+                    /*
+                        The fetchInfoWithCompletionHandler(_:) method calls its completion handler on a background
+                        queue, dispatch back to the main queue to make UI updates.
+                    */
                     dispatch_async(dispatch_get_main_queue()) {
                         // Make sure that the list info is still visible once the color has been fetched.
                         let indexPathsForVisibleRows = self.tableView.indexPathsForVisibleRows() as [NSIndexPath]
                         
-                        if find(indexPathsForVisibleRows, indexPath) != nil {
+                        if contains(indexPathsForVisibleRows, indexPath) {
                             listCell.listColorView.backgroundColor = listInfo.color!.colorValue
                         }
                     }
@@ -286,21 +269,21 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == MainStoryboard.SegueIdentifiers.newListDocument {
-            let newListController = segue.destinationViewController as NewListDocumentController
+            let newListDocumentController = segue.destinationViewController as NewListDocumentController
 
-            newListController.listController = self.listController
+            newListDocumentController.listsController = listsController
         }
         else if segue.identifier == MainStoryboard.SegueIdentifiers.showListDocument || segue.identifier == MainStoryboard.SegueIdentifiers.showListDocumentFromUserActivity {
             let listNavigationController = segue.destinationViewController as UINavigationController
             let listViewController = listNavigationController.topViewController as ListViewController
-            listViewController.listController = listController
+            listViewController.listsController = listsController
             
             listViewController.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem()
             listViewController.navigationItem.leftItemsSupplementBackButton = true
             
             if segue.identifier == MainStoryboard.SegueIdentifiers.showListDocument {
                 let indexPath = tableView.indexPathForSelectedRow()!
-                listViewController.configureWithListInfo(listController[indexPath.row])
+                listViewController.configureWithListInfo(listsController[indexPath.row])
             }
             else if segue.identifier == MainStoryboard.SegueIdentifiers.showListDocumentFromUserActivity {
                 let userActivityListInfo = sender as ListInfo
@@ -314,4 +297,25 @@ class ListDocumentsViewController: UITableViewController, ListControllerDelegate
     func handleContentSizeCategoryDidChangeNotification(_: NSNotification) {
         tableView.setNeedsLayout()
     }
+    
+    // MARK: Convenience
+    
+    func configureViewControllerWithLaunchContext(launchContext: AppLaunchContext) {
+        /**
+            If there is a list currently displayed; pop to the root view controller (this controller) and
+            continue configuration from there. Otherwise, configure the view controller directly.
+        */
+        if navigationController?.topViewController is UINavigationController {
+            navigationController?.popToRootViewControllerAnimated(false)
+            pendingLaunchContext = launchContext
+            return
+        }
+        
+        let listInfo = ListInfo(URL: launchContext.listURL)
+        listInfo.color = launchContext.listColor
+        
+        performSegueWithIdentifier(MainStoryboard.SegueIdentifiers.showListDocumentFromUserActivity, sender: listInfo)
+    }
+    
+    
 }

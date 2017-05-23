@@ -1,11 +1,9 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ListCoordinator` and `ListCoordinatorDelegate` protocols provide the infrastructure to send updates to a `ListController` object, abstracting away the need to worry about the underlying storage mechanism.
-            
+    The `ListCoordinator` and `ListCoordinatorDelegate` protocols provide the infrastructure to send updates to a `ListsController` object, abstracting away the need to worry about the underlying storage mechanism.
 */
 
 import Foundation
@@ -13,10 +11,10 @@ import Foundation
 /**
     An instance that conforms to the `ListCoordinator` protocol is responsible for implementing
     entry points in order to communicate with a `ListCoordinatorDelegate`. In the case of Lister, this
-    is the `ListController` instance. The main responsibility of a `ListCoordinator` is to track
+    is the `ListsController` instance. The main responsibility of a `ListCoordinator` is to track
     different `NSURL` instances that are important. For example, in Lister there are two types of
     storage mechanisms: local and iCloud based storage. The iCloud coordinator is responsible for making
-    sure that the `ListController` knows about the current set of iCloud documents that are available.
+    sure that the `ListsController` knows about the current set of iCloud documents that are available.
     
     There are also other responsibilities that a `ListCoordinator` must have that are specific to the
     underlying storage mechanism of the coordinator. A `ListCoordinator` determines whether or not a
@@ -45,7 +43,7 @@ import Foundation
         Starts observing changes to the important `NSURL` instances. For example, if a `ListCoordinator`
         conforming class has the responsibility to manage iCloud documents, the `startQuery()` method
         would start observing an `NSMetadataQuery`. This method is called on the `ListCoordinator` once
-        the coordinator is set on the `ListController`.
+        the coordinator is set on the `ListsController`.
     */
     func startQuery()
     
@@ -53,7 +51,7 @@ import Foundation
         Stops observing changes to the important `NSURL` instances. For example, if a `ListCoordinator`
         conforming class has the responsibility to manage iCloud documents, the stopQuery() method
         would stop observing changes to the `NSMetadataQuery`. This method is called on the `ListCoordinator`
-        once a new `ListCoordinator` has been set on the `ListController`.
+        once a new `ListCoordinator` has been set on the `ListsController`.
     */
     func stopQuery()
     
@@ -64,8 +62,8 @@ import Foundation
         delegate by calling `listCoordinatorDidUpdateContents(insertedURLs:removedURLs:updatedURLs:)`
         with the removed `NSURL`. If a failure occurs when removing `URL`, the coordinator object is
         responsible for informing the delegate by calling the `listCoordinatorDidFailRemovingListAtURL(_:withError:)`
-        method. The `ListController` is the only object that should be calling this method directly.
-        The "remove" is intended to be called on the `ListController` instance with a `ListInfo` object
+        method. The `ListsController` is the only object that should be calling this method directly.
+        The "remove" is intended to be called on the `ListsController` instance with a `ListInfo` object
         whose URL would be forwarded down to the coordinator through this method.
     
         :param: URL The `NSURL` instance to remove from the list of important instances.
@@ -74,12 +72,12 @@ import Foundation
 
     /**
         Creates an `NSURL` object representing `list` with the provided name. Callers of this method
-        (which should only be the `ListController` object) should first check to see if a list can be
+        (which should only be the `ListsController` object) should first check to see if a list can be
         created with the provided name via the `canCreateListWithName(_:)` method. If the creation was
         successful, then this method should call the delegate's update method that passes the newly
         tracked `NSURL` as an inserted URL. If the creation was not successful, this method should 
         inform the delegate of the failure by calling its `listCoordinatorDidFailCreatingListAtURL(_:withError:)`
-        method. The "create" is intended to be called on the `ListController` instance with a `ListInfo`
+        method. The "create" is intended to be called on the `ListsController` instance with a `ListInfo`
         object whose URL would be forwarded down to the coordinator through this method.
     
         :param: list The list to create a backing `NSURL` for.
@@ -92,8 +90,8 @@ import Foundation
         instance was responsible for storing its lists locally as a document, the coordinator would
         check to see if there are any other documents on the file system that have the same name. If
         they do, the method would return `false`. Otherwise, it would return `true`. This method should only
-        be called by the `ListController` instance. Normally you would call the users will call the
-        `canCreateListWithName(_:)` method on `ListController`, which will forward down to the current
+        be called by the `ListsController` instance. Normally you would call the users will call the
+        `canCreateListWithName(_:)` method on `ListsController`, which will forward down to the current
         `ListCoordinator` instance.
     
         :param: name The name to use when checking to see if a list can be created.

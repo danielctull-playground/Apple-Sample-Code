@@ -1,11 +1,9 @@
 /*
-    Copyright (C) 2014 Apple Inc. All Rights Reserved.
+    Copyright (C) 2015 Apple Inc. All Rights Reserved.
     See LICENSE.txt for this sample’s licensing information
     
     Abstract:
-    
-                The `ListItem` class represents the text and completion state of a single item in the list.
-            
+    The `ListItem` class represents the text and completion state of a single item in the list.
 */
 
 import Foundation
@@ -20,7 +18,7 @@ import Foundation
     version of Lister to unarchive a `ListItem` instance that was archived in the Swift version.
 */
 @objc(AAPLListItem)
-public class ListItem: NSObject, NSCoding, NSCopying {
+final public class ListItem: NSObject, NSCoding, NSCopying, DebugPrintable {
     // MARK: Types
     
     /**
@@ -30,7 +28,7 @@ public class ListItem: NSObject, NSCoding, NSCopying {
     private struct SerializationKeys {
         static let text = "text"
         static let uuid = "uuid"
-        static let completed = "completed"
+        static let complete = "completed"
     }
     
     // MARK: Properties
@@ -44,7 +42,7 @@ public class ListItem: NSObject, NSCoding, NSCopying {
     /// An underlying identifier to distinguish one `ListItem` from another.
     private var UUID: NSUUID
     
-    // MARK: Initialization
+    // MARK: Initializers
     
     /**
         Initializes a `ListItem` instance with the designated text, completion state, and UUID. This
@@ -52,12 +50,12 @@ public class ListItem: NSObject, NSCoding, NSCopying {
         However, this is the only private initializer.
         
         :param: text The intended text content of the list item.
-        :param: completed The item's initial completion state.
+        :param: complete The item's initial completion state.
         :param: UUID The item's initial UUID.
     */
-    private init(text: String, completed: Bool, UUID: NSUUID) {
+    private init(text: String, complete: Bool, UUID: NSUUID) {
         self.text = text
-        self.isComplete = completed
+        self.isComplete = complete
         self.UUID = UUID
     }
     
@@ -65,10 +63,10 @@ public class ListItem: NSObject, NSCoding, NSCopying {
         Initializes a `ListItem` instance with the designated text and completion state.
         
         :param: text The text content of the list item.
-        :param: completed The item's initial completion state.
+        :param: complete The item's initial completion state.
     */
-    public convenience init(text: String, completed: Bool) {
-        self.init(text: text, completed: completed, UUID: NSUUID())
+    public convenience init(text: String, complete: Bool) {
+        self.init(text: text, complete: complete, UUID: NSUUID())
     }
     
     /**
@@ -78,26 +76,26 @@ public class ListItem: NSObject, NSCoding, NSCopying {
         :param: text The intended text content of the list item.
     */
     public convenience init(text: String) {
-        self.init(text: text, completed: false)
+        self.init(text: text, complete: false)
     }
     
     // MARK: NSCopying
     
     public func copyWithZone(zone: NSZone) -> AnyObject  {
-        return ListItem(text: text, completed: isComplete, UUID: UUID)
+        return ListItem(text: text, complete: isComplete, UUID: UUID)
     }
     
     // MARK: NSCoding
     
     public required init(coder aDecoder: NSCoder) {
         text = aDecoder.decodeObjectForKey(SerializationKeys.text) as String
-        isComplete = aDecoder.decodeBoolForKey(SerializationKeys.completed)
+        isComplete = aDecoder.decodeBoolForKey(SerializationKeys.complete)
         UUID = aDecoder.decodeObjectForKey(SerializationKeys.uuid) as NSUUID
     }
     
     public func encodeWithCoder(encoder: NSCoder) {
         encoder.encodeObject(text, forKey: SerializationKeys.text)
-        encoder.encodeBool(isComplete, forKey: SerializationKeys.completed)
+        encoder.encodeBool(isComplete, forKey: SerializationKeys.complete)
         encoder.encodeObject(UUID, forKey: SerializationKeys.uuid)
     }
     
@@ -127,5 +125,11 @@ public class ListItem: NSObject, NSCoding, NSCopying {
         }
         
         return false
+    }
+    
+    // MARK: DebugPrintable
+    
+    public override var debugDescription: String {
+        return "\"\(text)\""
     }
 }
